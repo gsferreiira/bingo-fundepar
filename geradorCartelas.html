@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerador de Cartelas - Bingo FUNDEPAR</title>
+    <style>
+        :root {
+            --azure-web: #D6EBEEff;
+            --zomp: #57A288ff;
+            --skobeloff: #1E7670ff;
+            --tiffany-blue: #A4D0CDff;
+            --white: #FFFFFFff;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--azure-web);
+            color: var(--skobeloff);
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 20px;
+            margin-top: 70px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: var(--skobeloff);
+            margin-bottom: 30px;
+        }
+        
+        .controls {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
+        }
+        
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--skobeloff);
+        }
+        
+        input, select {
+            padding: 10px;
+            border: 2px solid var(--tiffany-blue);
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: var(--skobeloff);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            align-self: flex-end;
+            margin-top: auto;
+        }
+        
+        button:hover {
+            background-color: var(--zomp);
+            transform: translateY(-2px);
+        }
+        
+        .cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .bingo-card {
+            width: 300px;
+            height: 400px;
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            page-break-inside: avoid;
+        }
+        
+        .card-header {
+            text-align: center;
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--tiffany-blue);
+        }
+        
+        .card-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--skobeloff);
+            margin: 0;
+        }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        
+        .column-titles {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .card-column-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: var(--skobeloff);
+            text-align: center;
+        }
+        
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 5px;
+            flex-grow: 1;
+        }
+        
+        .card-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--azure-web);
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            position: relative;
+            border: 1px solid var(--skobeloff); /* Adicione esta linha */
+        }
+        
+        .card-cell.free {
+            color: var(--white);
+        }
+
+        .card-cell.fundepar {
+            background-color: transparent;
+        }
+        
+        .card-logo {
+            position: absolute;
+            top: 58%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 45px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        
+        .card-logo img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .print-button {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .header-nav {
+            background-color: var(--skobeloff);
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        .nav-link {
+            color: var(--white);
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+        }
+        
+        @media print {
+            body {
+                background-color: white;
+                padding: 0;
+            }
+
+            header {
+                display: none;
+            }
+            
+            .controls, button {
+                display: none;
+            }
+            
+            .cards-container {
+                gap: 10px;
+            }
+            
+            .bingo-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+                height: 350px;
+            }
+
+            .card-logo {
+                top: 59%;
+                left: 50%;
+                width: 45px;
+                height: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header style="background-color: #1E7670; padding: 10px 20px; text-align: center;">
+        <nav>
+            <a href="index.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Cadastro de Pedras</a>
+            <a href="sorteador.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Sorteador de Bingo</a>
+        </nav>
+    </header>
+    <div class="container header">
+        <h1>Gerador de Cartelas - Bingo FUNDEPAR</h1>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="cardQuantity">Quantidade de Cartelas:</label>
+                <input type="number" id="cardQuantity" min="1" max="100" value="10">
+            </div>
+            
+            <button id="generateButton">Gerar Cartelas</button>
+        </div>
+        
+        <div class="print-button">
+            <button id="printButton">Imprimir Cartelas</button>
+        </div>
+        
+        <div class="cards-container" id="cardsContainer">
+            <!-- Cartelas serão geradas aqui -->
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const generateButton = document.getElementById('generateButton');
+        const printButton = document.getElementById('printButton');
+        const cardsContainer = document.getElementById('cardsContainer');
+        const cardQuantity = document.getElementById('cardQuantity');
+        
+        // Intervalos para cada coluna (B-I-N-G-O)
+        const ranges = {
+            'B': { min: 1, max: 15 },
+            'I': { min: 16, max: 30 },
+            'N': { min: 31, max: 45 },
+            'G': { min: 46, max: 60 },
+            'O': { min: 61, max: 75 }
+        };
+        
+        // Limpar cartelas quando o valor for alterado
+        cardQuantity.addEventListener('input', function() {
+            cardsContainer.innerHTML = '';
+        });
+        
+        // Gerar cartelas
+        generateButton.addEventListener('click', function() {
+            const quantity = parseInt(cardQuantity.value);
+            
+            if (isNaN(quantity)) {
+                alert('Por favor, insira um número válido');
+                return;
+            }
+            
+            if (quantity < 1 || quantity > 300) {
+                alert('Por favor, insira um número entre 1 e 300');
+                return;
+            }
+            
+            cardsContainer.innerHTML = '';
+            
+            for (let i = 1; i <= quantity; i++) {
+                const card = generateBingoCard(i);
+                cardsContainer.appendChild(card);
+            }
+        });
+        
+        // Função para gerar uma única cartela
+        function generateBingoCard(id) {
+            const card = document.createElement('div');
+            card.className = 'bingo-card';
+            
+            // Cabeçalho da cartela
+            const header = document.createElement('div');
+            header.className = 'card-header';
+            header.innerHTML = `
+                <h3 class="card-title">BINGO FUNDEPAR</h3>
+            `;
+            card.appendChild(header);
+            
+            // Container para o conteúdo da cartela
+            const content = document.createElement('div');
+            content.className = 'card-content';
+            
+            // Títulos das colunas
+            const columnTitles = document.createElement('div');
+            columnTitles.className = 'column-titles';
+            
+            'BINGO'.split('').forEach(letter => {
+                const title = document.createElement('div');
+                title.className = 'card-column-title';
+                title.textContent = letter;
+                columnTitles.appendChild(title);
+            });
+            
+            content.appendChild(columnTitles);
+            
+            // Grid de números
+            const grid = document.createElement('div');
+            grid.className = 'card-grid';
+            
+            // Gerar números para cada coluna
+            const columns = {};
+            'BINGO'.split('').forEach(letter => {
+                columns[letter] = generateRandomNumbers(
+                    ranges[letter].min, 
+                    ranges[letter].max, 
+                    5
+                );
+            });
+            
+            // Preencher o grid por LINHAS
+            for (let row = 0; row < 5; row++) {
+                'BINGO'.split('').forEach(letter => {
+                    const cell = document.createElement('div');
+                    cell.className = 'card-cell';
+                    
+                    // Se for a terceira linha (row === 2) e a coluna N (letter === 'N'), é o espaço livre
+                    if (row === 2 && letter === 'N') {
+                        cell.textContent = '';
+                        cell.classList.add('fundepar');
+                    } else {
+                        cell.textContent = columns[letter][row];
+                    }
+                    
+                    grid.appendChild(cell);
+                });
+            }
+            
+            content.appendChild(grid);
+            card.appendChild(content);
+            
+            // Adicionar logo no centro
+            const logo = document.createElement('div');
+            logo.className = 'card-logo';
+            logo.innerHTML = '<img src="assets/logo_fundepar.jpg" alt="Logo FUNDEPAR">';
+            card.appendChild(logo);
+            
+            return card;
+        }
+        
+       // Função para gerar números aleatórios únicos em um intervalo (sem ordenar)
+        function generateRandomNumbers(min, max, count) {
+            const numbers = [];
+            const availableNumbers = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+            
+            for (let i = 0; i < count; i++) {
+                const randomIndex = Math.floor(Math.random() * availableNumbers.length);
+                numbers.push(availableNumbers[randomIndex]);
+                availableNumbers.splice(randomIndex, 1);
+            }
+            
+            return numbers; // Removido o .sort() para manter a ordem aleatória
+        }
+        
+        // Botão de impressão
+        printButton.addEventListener('click', function() {
+            const cartelas = document.querySelectorAll('.bingo-card');
+            
+            if (cartelas.length === 0) {
+                alert('Por favor, gere as cartelas antes de imprimir');
+                return;
+            }
+            
+            // Desabilitar o botão temporariamente para evitar múltiplos cliques
+            printButton.disabled = true;
+            printButton.textContent = 'Preparando para impressão...';
+            
+            setTimeout(() => {
+                window.print();
+                printButton.disabled = false;
+                printButton.textContent = 'Imprimir Cartelas';
+            }, 500);
+        });
+    });
+</script>
+</body>
+</html>
