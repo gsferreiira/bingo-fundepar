@@ -8,11 +8,12 @@ let rodadaAtual = 1;
 let sorteados = [];
 let available = [];
 
+// null = jogando rodada atual | número = visualizando rodada passada (somente leitura)
+let rodadaVisualizando = null;
+
 // ── LocalStorage ───────────────────────────────
 
-function storageKey(r) {
-    return `bingo-rodada-${r}`;
-}
+function storageKey(r) { return `bingo-rodada-${r}`; }
 
 function loadState() {
     rodadaAtual = parseInt(localStorage.getItem(STORAGE_RODADA_ATUAL)) || 1;
@@ -27,6 +28,11 @@ function saveState() {
     existing.sorteados = sorteados;
     localStorage.setItem(storageKey(rodadaAtual), JSON.stringify(existing));
     localStorage.setItem(STORAGE_RODADA_ATUAL, rodadaAtual);
+}
+
+function loadRodadaSorteados(r) {
+    const saved = localStorage.getItem(storageKey(r));
+    return saved ? (JSON.parse(saved).sorteados || []) : [];
 }
 
 // ── Lógica de sorteio ──────────────────────────
@@ -73,6 +79,7 @@ function endRound() {
 
             if (isLast) {
                 showResult('🎉', 'Evento encerrado!', 'Todas as 10 rodadas foram concluídas. Parabéns!');
+                render(null);
                 return;
             }
 
@@ -82,34 +89,93 @@ function endRound() {
             available = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1)
                 .filter(n => !sorteados.includes(n));
             saveState();
+            rodadaVisualizando = null;
             render(null);
         }
     );
 }
 
-function verifyWinner() {
-    const input = document.getElementById('verifySerial');
-    const serial = parseInt(input.value);
-    if (isNaN(serial) || serial < 1 || serial > 500) {
-        input.style.borderColor = 'var(--vermelho)';
-        return;
-    }
-    closeModal('verifyModal');
+function restartAll() {
+    showConfirm(
+        '⚠️ Reiniciar todo o evento?',
+        'Todos os sorteios de todas as rodadas serão apagados permanentemente. Esta ação não pode ser desfeita.',
+        () => {
+            for (let i = 1; i <= MAX_RODADAS; i++) {
+                localStorage.removeItem(storageKey(i));
+                localStorage.removeItem(`bingo-cartelas-rodada-${i}`);
+            }
+            localStorage.removeItem(STORAGE_RODADA_ATUAL);
+            rodadaAtual = 1;
+            sorteados = [];
+            available = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+            rodadaVisualizando = null;
+            render(null);
+        }
+    );
+}
 
-    const card = generateCard(rodadaAtual, serial);
-    const won = checkFullCard(card, sorteados);
-    const serialStr = String(serial).padStart(4, '0');
+// ── Navegação por rodadas (somente leitura) ────
 
-    if (won) {
-        showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaAtual} é vencedora!`);
+function viewRound(r) {
+    if (r < 1) return;
+    rodadaVisualizando = r;
+    renderViewMode();
+}
+
+function returnToCurrentRound() {
+    rodadaVisualizando = null;
+    render(sorteados.length > 0 ? sorteados[sorteados.length - 1] : null);
+}
+
+function renderViewMode() {
+    const r = rodadaVisualizando;
+    const viewSorteados = loadRodadaSorteados(r);
+    const isEncerrada = (() => {
+        const d = localStorage.getItem(storageKey(r));
+        return d ? (JSON.parse(d).encerrada || false) : false;
+    })();
+
+    // Banner de leitura
+    const banner = document.getElementById('viewModeBanner');
+    banner.style.display = 'block';
+    banner.textContent = `Visualizando Rodada ${r} de ${MAX_RODADAS} — ${isEncerrada ? 'ENCERRADA' : 'em andamento'} (somente leitura)`;
+
+    document.getElementById('returnBtn').style.display = 'inline-block';
+
+    // Round label
+    document.getElementById('roundLabel').textContent = `Rodada ${r} de ${MAX_RODADAS}`;
+
+    // Bola
+    const lastDrawn = viewSorteados[viewSorteados.length - 1];
+    if (lastDrawn !== undefined) {
+        document.getElementById('ballLetter').textContent = getBingoLetter(lastDrawn);
+        document.getElementById('ballNumber').textContent = lastDrawn;
+        document.getElementById('ballCaption').textContent = `${viewSorteados.length} de ${TOTAL_NUMBERS} sorteados`;
+        document.getElementById('currentBall').classList.remove('idle', 'animate');
     } else {
-        showResult('❌', 'Ainda não!', `A cartela #${serialStr} ainda não completou todos os números.`);
+        resetBall();
     }
+
+    // Tabuleiro (somente leitura)
+    renderBoardData(viewSorteados, true);
+
+    // Histórico
+    renderHistoryData(viewSorteados);
+
+    // Navegação
+    const prevBtn = document.getElementById('prevRoundBtn');
+    const nextBtn = document.getElementById('nextRoundBtn');
+    prevBtn.disabled = r <= 1;
+    nextBtn.disabled = r >= rodadaAtual;
+
+    // Controles desabilitados
+    setControlsDisabled(true);
 }
 
 // ── Toggle manual de pedra ─────────────────────
 
 function toggleManual(n) {
+    if (rodadaVisualizando !== null) return;
     if (sorteados.includes(n)) {
         showConfirm(
             `Remover ${getBingoLetter(n)}-${n}?`,
@@ -130,60 +196,95 @@ function toggleManual(n) {
     }
 }
 
-// ── Renderização ───────────────────────────────
+// ── Verificar vencedor ─────────────────────────
 
-function render(lastDrawn) {
-    renderRoundLabel();
-    renderCurrentBall(lastDrawn);
-    renderBoard();
-    renderHistory();
-    renderControls();
-}
+function verifyWinner() {
+    const input = document.getElementById('verifySerial');
+    const serial = parseInt(input.value);
+    if (isNaN(serial) || serial < 1 || serial > 500) {
+        input.style.borderColor = 'var(--vermelho)';
+        return;
+    }
+    closeModal('verifyModal');
 
-function renderRoundLabel() {
-    document.getElementById('roundLabel').textContent = `Rodada ${rodadaAtual} de ${MAX_RODADAS}`;
-}
+    const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
+    const sorteadosRef = rodadaVisualizando !== null ? loadRodadaSorteados(rodadaVisualizando) : sorteados;
 
-function renderCurrentBall(n) {
-    const ballEl   = document.getElementById('currentBall');
-    const letterEl = document.getElementById('ballLetter');
-    const numberEl = document.getElementById('ballNumber');
-    const captionEl = document.getElementById('ballCaption');
-
-    // Ao desfazer, mostrar o novo último número se existir
-    if (n === null) {
-        const last = sorteados[sorteados.length - 1];
-        if (last !== undefined) {
-            letterEl.textContent = getBingoLetter(last);
-            numberEl.textContent = last;
-            captionEl.textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
-            ballEl.classList.remove('idle');
-        } else {
-            resetBall();
-        }
+    const cartelasData = localStorage.getItem(`bingo-cartelas-rodada-${rodadaRef}`);
+    if (!cartelasData) {
+        showResult('⚠️', 'Cartelas não encontradas', `As cartelas da Rodada ${rodadaRef} não foram geradas neste dispositivo ou foram apagadas.`);
         return;
     }
 
-    letterEl.textContent = getBingoLetter(n);
-    numberEl.textContent = n;
-    captionEl.textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
-    ballEl.classList.remove('idle', 'animate');
-    void ballEl.offsetWidth;
-    ballEl.classList.add('animate');
+    const { cards } = JSON.parse(cartelasData);
+    const card = cards[serial - 1];
+    if (!card) {
+        showResult('❌', 'Cartela não encontrada', `A cartela #${String(serial).padStart(4, '0')} não existe nesta rodada.`);
+        return;
+    }
+
+    const won = checkFullCard(card, sorteadosRef);
+    const serialStr = String(serial).padStart(4, '0');
+    if (won) {
+        showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`);
+    } else {
+        showResult('❌', 'Ainda não!', `A cartela #${serialStr} ainda não completou todos os números.`);
+    }
+}
+
+// ── Renderização ───────────────────────────────
+
+function render(lastDrawn) {
+    const banner = document.getElementById('viewModeBanner');
+    banner.style.display = 'none';
+    document.getElementById('returnBtn').style.display = 'none';
+
+    document.getElementById('roundLabel').textContent = `Rodada ${rodadaAtual} de ${MAX_RODADAS}`;
+
+    if (lastDrawn === null) {
+        const last = sorteados[sorteados.length - 1];
+        if (last !== undefined) {
+            document.getElementById('ballLetter').textContent = getBingoLetter(last);
+            document.getElementById('ballNumber').textContent = last;
+            document.getElementById('ballCaption').textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
+            document.getElementById('currentBall').classList.remove('idle', 'animate');
+        } else {
+            resetBall();
+        }
+    } else {
+        const ballEl = document.getElementById('currentBall');
+        document.getElementById('ballLetter').textContent = getBingoLetter(lastDrawn);
+        document.getElementById('ballNumber').textContent = lastDrawn;
+        document.getElementById('ballCaption').textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
+        ballEl.classList.remove('idle', 'animate');
+        void ballEl.offsetWidth;
+        ballEl.classList.add('animate');
+    }
+
+    renderBoardData(sorteados, false);
+    renderHistoryData(sorteados);
+    renderControls();
+
+    const prevBtn = document.getElementById('prevRoundBtn');
+    const nextBtn = document.getElementById('nextRoundBtn');
+    prevBtn.disabled = rodadaAtual <= 1;
+    nextBtn.disabled = true;
+    setControlsDisabled(false);
 }
 
 function resetBall() {
     document.getElementById('ballLetter').textContent = '';
     document.getElementById('ballNumber').textContent = '?';
     document.getElementById('ballCaption').textContent = 'Nenhuma pedra sorteada';
-    document.getElementById('currentBall').classList.add('idle');
-    document.getElementById('currentBall').classList.remove('animate');
+    const ballEl = document.getElementById('currentBall');
+    ballEl.classList.add('idle');
+    ballEl.classList.remove('animate');
 }
 
-function renderBoard() {
+function renderBoardData(drawnList, readOnly) {
     const board = document.getElementById('bingoBoard');
     board.innerHTML = '';
-    const drawn = new Set(sorteados);
+    const drawn = new Set(drawnList);
 
     for (const { letter, min, max } of RANGES) {
         const label = document.createElement('div');
@@ -195,41 +296,48 @@ function renderBoard() {
             const ball = document.createElement('div');
             ball.className = 'board-ball' + (drawn.has(n) ? ' drawn' : '');
             ball.textContent = n;
-            ball.title = `${letter}-${n} — clique para marcar/desmarcar`;
-            ball.addEventListener('click', () => toggleManual(n));
+            if (!readOnly) {
+                ball.title = `${letter}-${n} — clique para marcar/desmarcar`;
+                ball.addEventListener('click', () => toggleManual(n));
+            } else {
+                ball.style.cursor = 'default';
+            }
             board.appendChild(ball);
         }
     }
 }
 
-function renderHistory() {
-    const list = document.getElementById('historyList');
-    list.innerHTML = '';
-
-    if (sorteados.length === 0) {
+function renderHistoryData(list) {
+    const histList = document.getElementById('historyList');
+    histList.innerHTML = '';
+    if (list.length === 0) {
         const empty = document.createElement('span');
         empty.className = 'history-empty';
         empty.textContent = 'Nenhuma pedra sorteada ainda';
-        list.appendChild(empty);
+        histList.appendChild(empty);
         return;
     }
-
-    sorteados.forEach(n => {
+    list.forEach(n => {
         const chip = document.createElement('span');
         chip.className = 'history-chip';
         chip.textContent = `${getBingoLetter(n)}-${n}`;
-        list.appendChild(chip);
+        histList.appendChild(chip);
     });
 }
 
 function renderControls() {
     document.getElementById('undoBtn').disabled = sorteados.length === 0;
     document.getElementById('drawBtn').disabled = available.length === 0;
-
     const endBtn = document.getElementById('endRoundBtn');
     endBtn.textContent = rodadaAtual >= MAX_RODADAS
         ? '🎊 Encerrar Evento'
         : `Encerrar Rodada ${rodadaAtual} e Iniciar a Próxima ▶`;
+}
+
+function setControlsDisabled(disabled) {
+    ['drawBtn', 'undoBtn', 'verifyBtn', 'endRoundBtn'].forEach(id => {
+        document.getElementById(id).disabled = disabled;
+    });
 }
 
 // ── Modais ─────────────────────────────────────
@@ -250,26 +358,40 @@ function showResult(icon, title, message) {
     openModal('resultModal');
 }
 
-function openModal(id) {
-    document.getElementById(id).classList.add('open');
-}
-
-function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
 
 // ── Init ───────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
     loadState();
-
-    const lastDrawn = sorteados.length > 0 ? sorteados[sorteados.length - 1] : null;
-    if (lastDrawn === null) resetBall();
-    render(lastDrawn);
+    if (sorteados.length > 0) {
+        render(sorteados[sorteados.length - 1]);
+    } else {
+        render(null);
+    }
 
     document.getElementById('drawBtn').addEventListener('click', drawNumber);
     document.getElementById('undoBtn').addEventListener('click', undoLast);
     document.getElementById('endRoundBtn').addEventListener('click', endRound);
+    document.getElementById('restartBtn').addEventListener('click', restartAll);
+    document.getElementById('returnBtn').addEventListener('click', returnToCurrentRound);
+
+    document.getElementById('prevRoundBtn').addEventListener('click', () => {
+        const target = rodadaVisualizando !== null ? rodadaVisualizando - 1 : rodadaAtual - 1;
+        if (target >= 1) viewRound(target);
+    });
+
+    document.getElementById('nextRoundBtn').addEventListener('click', () => {
+        if (rodadaVisualizando !== null && rodadaVisualizando < rodadaAtual) {
+            const next = rodadaVisualizando + 1;
+            if (next === rodadaAtual) {
+                returnToCurrentRound();
+            } else {
+                viewRound(next);
+            }
+        }
+    });
 
     document.getElementById('verifyBtn').addEventListener('click', () => {
         const input = document.getElementById('verifySerial');
@@ -290,7 +412,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Enter') verifyWinner();
     });
     document.getElementById('verifyCancel').addEventListener('click', () => closeModal('verifyModal'));
-
     document.getElementById('resultClose').addEventListener('click', () => closeModal('resultModal'));
 
     document.querySelectorAll('.modal').forEach(modal => {

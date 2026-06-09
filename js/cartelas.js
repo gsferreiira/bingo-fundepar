@@ -2,13 +2,23 @@
 
 let rodadaSelecionada = 1;
 
+// ── Detectar rodada atual do sorteador ─────────
+
+function detectRodadaAtual() {
+    const r = parseInt(localStorage.getItem('bingo-rodada-atual'));
+    return (!isNaN(r) && r >= 1 && r <= 10) ? r : 1;
+}
+
 // ── Botões de rodada ───────────────────────────
 
 function initRodadaButtons() {
+    const rodadaDetectada = detectRodadaAtual();
+    rodadaSelecionada = rodadaDetectada;
+
     const container = document.getElementById('rodadaButtons');
     for (let i = 1; i <= 10; i++) {
         const btn = document.createElement('button');
-        btn.className = 'rodada-btn' + (i === 1 ? ' active' : '');
+        btn.className = 'rodada-btn' + (i === rodadaDetectada ? ' active' : '');
         btn.textContent = i;
         btn.dataset.rodada = i;
         btn.addEventListener('click', () => {
@@ -52,9 +62,15 @@ function cardHTML(rodada, serial, card) {
     </div>`;
 }
 
+// ── Verificar se já foi gerada ─────────────────
+
+function cartelasJaGeradas(rodada) {
+    return !!localStorage.getItem(`bingo-cartelas-rodada-${rodada}`);
+}
+
 // ── Geração ────────────────────────────────────
 
-function generateCards() {
+function doGenerate() {
     const qty = parseInt(document.getElementById('qtdInput').value);
     const status = document.getElementById('statusText');
 
@@ -67,14 +83,15 @@ function generateCards() {
     status.textContent = `Gerando ${qty} cartelas para a Rodada ${rodadaSelecionada}...`;
     status.style.color = 'var(--cinza)';
 
-    // Defer para o status aparecer antes de bloquear a thread
     setTimeout(() => {
-        const container = document.getElementById('cardsContainer');
+        const hashes = new Set();
+        const cards = [];
         let html = '';
         let pageHTML = '<div class="print-page">';
 
         for (let i = 1; i <= qty; i++) {
-            const card = generateCard(rodadaSelecionada, i);
+            const card = generateRandomCard(hashes);
+            cards.push(card);
             pageHTML += cardHTML(rodadaSelecionada, i, card);
 
             if (i % 4 === 0 || i === qty) {
@@ -84,10 +101,25 @@ function generateCards() {
             }
         }
 
-        container.innerHTML = html;
+        // Salva no localStorage para verificação de vencedores depois
+        localStorage.setItem(
+            `bingo-cartelas-rodada-${rodadaSelecionada}`,
+            JSON.stringify({ cards, qty, geradoEm: new Date().toISOString() })
+        );
+
+        document.getElementById('cardsContainer').innerHTML = html;
         status.textContent = `${qty} cartelas geradas para a Rodada ${rodadaSelecionada}. Pronto para imprimir!`;
         status.style.color = 'var(--verde-escuro)';
     }, 50);
+}
+
+function generateCards() {
+    if (cartelasJaGeradas(rodadaSelecionada)) {
+        document.getElementById('regenRodadaLabel').textContent = `Rodada ${rodadaSelecionada}`;
+        openModal('regenModal');
+    } else {
+        doGenerate();
+    }
 }
 
 // ── Impressão ──────────────────────────────────
@@ -100,10 +132,29 @@ function printCards() {
     window.print();
 }
 
+// ── Modal helpers ──────────────────────────────
+
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
 // ── Init ───────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
     initRodadaButtons();
+
     document.getElementById('generateBtn').addEventListener('click', generateCards);
     document.getElementById('printBtn').addEventListener('click', printCards);
+
+    // Modal de re-geração
+    document.getElementById('regenConfirm').addEventListener('click', () => {
+        closeModal('regenModal');
+        doGenerate();
+    });
+    document.getElementById('regenCancel').addEventListener('click', () => closeModal('regenModal'));
+
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('open');
+        });
+    });
 });

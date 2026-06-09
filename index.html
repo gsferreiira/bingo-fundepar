@@ -28,10 +28,22 @@
 
     <main class="sorteador-main">
 
-        <div class="round-indicator">
+        <!-- Banner somente leitura (oculto por padrão) -->
+        <div class="view-mode-banner" id="viewModeBanner" style="display:none;"></div>
+
+        <!-- Navegação por rodadas -->
+        <div class="round-nav">
+            <button class="btn btn-secondary btn-sm" id="prevRoundBtn" disabled>← Rodada Anterior</button>
             <span class="round-label" id="roundLabel">Rodada 1 de 10</span>
+            <button class="btn btn-secondary btn-sm" id="nextRoundBtn" disabled>Rodada Seguinte →</button>
         </div>
 
+        <!-- Botão voltar à rodada atual (oculto por padrão) -->
+        <div style="text-align:center; margin-top: 8px;">
+            <button class="btn btn-warning btn-sm" id="returnBtn" style="display:none;">▶ Voltar à Rodada Atual</button>
+        </div>
+
+        <!-- Bola atual -->
         <div class="current-ball-wrapper">
             <div class="current-ball idle" id="currentBall">
                 <span class="ball-letter" id="ballLetter"></span>
@@ -40,23 +52,32 @@
             <p class="ball-caption" id="ballCaption">Nenhuma pedra sorteada</p>
         </div>
 
+        <!-- Controles principais -->
         <div class="controls">
             <button class="btn btn-primary" id="drawBtn">🎲 Sortear</button>
             <button class="btn btn-secondary" id="undoBtn">↩ Desfazer</button>
             <button class="btn btn-warning" id="verifyBtn">🏆 Verificar Vencedor</button>
         </div>
 
+        <!-- Tabuleiro -->
         <div class="bingo-board-wrapper">
             <div class="bingo-board" id="bingoBoard"></div>
         </div>
 
+        <!-- Histórico -->
         <div class="history-panel card-panel">
             <h3 class="history-title">Pedras sorteadas (em ordem)</h3>
             <div class="history-list" id="historyList"></div>
         </div>
 
+        <!-- Encerrar rodada -->
         <div class="end-round-section">
             <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+        </div>
+
+        <!-- Reiniciar evento -->
+        <div class="restart-section">
+            <button class="btn btn-secondary btn-sm" id="restartBtn">🗑️ Reiniciar Evento do Zero</button>
         </div>
 
     </main>

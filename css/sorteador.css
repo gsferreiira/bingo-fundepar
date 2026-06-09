@@ -6,24 +6,6 @@
     padding: 0 16px 56px;
 }
 
-/* ── Indicador de rodada ──────────────────────── */
-
-.round-indicator {
-    text-align: center;
-    margin: 20px 0 16px;
-}
-
-.round-label {
-    display: inline-block;
-    background: var(--vermelho);
-    color: var(--branco);
-    font-size: 1.3rem;
-    padding: 10px 36px;
-    border-radius: 32px;
-    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
-    letter-spacing: 1px;
-}
-
 /* ── Bola atual ───────────────────────────────── */
 
 .current-ball-wrapper {
@@ -189,6 +171,47 @@
     align-self: center;
 }
 
+/* ── Navegação por rodadas ────────────────────── */
+
+.round-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin: 20px 0 8px;
+    flex-wrap: wrap;
+}
+
+.round-label {
+    display: inline-block;
+    background: var(--vermelho);
+    color: var(--branco);
+    font-size: 1.3rem;
+    padding: 10px 36px;
+    border-radius: 32px;
+    box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.btn-sm {
+    font-size: 0.85rem;
+    padding: 8px 16px;
+}
+
+/* Banner de visualização somente leitura */
+.view-mode-banner {
+    background: var(--amarelo);
+    color: var(--marrom-escuro);
+    text-align: center;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
 /* ── Encerrar rodada ──────────────────────────── */
 
 .end-round-section {
@@ -196,4 +219,12 @@
     margin-top: 28px;
     padding-top: 20px;
     border-top: 2px dashed var(--palha-escura);
+}
+
+/* ── Reiniciar evento ─────────────────────────── */
+
+.restart-section {
+    text-align: center;
+    margin-top: 16px;
+    padding-bottom: 8px;
 }

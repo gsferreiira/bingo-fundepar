@@ -48,6 +48,21 @@
         <div id="cardsContainer"></div>
     </main>
 
+    <!-- Modal: aviso de re-geração -->
+    <div class="modal" id="regenModal">
+        <div class="modal-box">
+            <div class="result-icon">⚠️</div>
+            <h2>Cartelas já geradas!</h2>
+            <p>As cartelas da <strong id="regenRodadaLabel">Rodada X</strong> já foram impressas anteriormente.</p>
+            <p style="margin-top:8px;">Gerar novamente criará <strong>cartelas diferentes</strong> das já distribuídas, o que pode causar problemas na verificação de vencedores.</p>
+            <p style="margin-top:8px;">Tem certeza que deseja continuar?</p>
+            <div class="modal-actions">
+                <button class="btn btn-danger" id="regenConfirm">Sim, gerar novas cartelas</button>
+                <button class="btn btn-primary" id="regenCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/bingo-core.js"></script>
     <script src="js/cartelas.js"></script>
 </body>

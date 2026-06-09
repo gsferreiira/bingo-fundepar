@@ -16,40 +16,36 @@ function getBingoLetter(n) {
     return 'O';
 }
 
-// Mulberry32 — PRNG determinístico por semente
-function mulberry32(seed) {
-    return function () {
-        seed = (seed + 0x6D2B79F5) | 0;
-        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-}
-
-function pickColumn(min, max, rng) {
+function pickRandomColumn(min, max) {
     const pool = [];
     for (let i = min; i <= max; i++) pool.push(i);
     const picked = [];
     for (let i = 0; i < 5; i++) {
-        const idx = Math.floor(rng() * pool.length);
+        const idx = Math.floor(Math.random() * pool.length);
         picked.push(pool.splice(idx, 1)[0]);
     }
     return picked;
 }
 
-// Gera a cartela de forma determinística: mesma rodada + mesmo serial = mesma cartela sempre.
-// Retorna { B: [n1..n5], I: [..], N: [..], G: [..], O: [..] }
-// N[2] é tratado como espaço livre na UI (não exibido/exigido).
-function generateCard(rodada, serial) {
-    const rng = mulberry32(rodada * 1000003 + serial);
-    const result = {};
-    for (const { letter, min, max } of RANGES) {
-        result[letter] = pickColumn(min, max, rng);
-    }
-    return result;
+function cardHash(card) {
+    return ['B', 'I', 'N', 'G', 'O'].map(l => card[l].join(',')).join('|');
 }
 
-// Retorna true se todos os 24 números da cartela (exceto espaço livre) estiverem em sorteados.
+// Gera uma cartela aleatória única, garantida contra o set de hashes já existentes.
+function generateRandomCard(existingHashes) {
+    let card, hash;
+    do {
+        card = {};
+        for (const { letter, min, max } of RANGES) {
+            card[letter] = pickRandomColumn(min, max);
+        }
+        hash = cardHash(card);
+    } while (existingHashes && existingHashes.has(hash));
+    if (existingHashes) existingHashes.add(hash);
+    return card;
+}
+
+// Retorna true se todos os 24 números da cartela (exceto espaço livre N[2]) estiverem em sorteados.
 function checkFullCard(card, sorteados) {
     const s = new Set(sorteados);
     for (const { letter } of RANGES) {
