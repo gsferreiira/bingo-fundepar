@@ -140,8 +140,9 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 .card-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-rows: repeat(5, auto);
     flex-grow: 1;
+    align-content: stretch;
 }
 
 .card-cell {
