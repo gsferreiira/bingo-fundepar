@@ -1,158 +1,141 @@
 /* ── Layout ───────────────────────────────────── */
 
-main {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 16px 56px;
-}
+main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 
 /* ── Painel de controles ──────────────────────── */
 
-.controls-panel {
-    margin: 20px 0;
-}
+.controls-panel { margin: 16px 0; }
 
 .control-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 24px;
+    gap: 20px;
     align-items: flex-end;
 }
 
 .control-group {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
 }
 
 .control-group label {
-    font-size: 0.88rem;
-    color: var(--marrom);
-    font-family: Arial, sans-serif;
-    font-weight: bold;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
 .ctrl-input {
-    padding: 10px 14px;
-    border: 2px solid var(--palha-escura);
+    padding: 9px 14px;
+    border: 1.5px solid var(--borda);
     border-radius: 8px;
-    font-size: 1rem;
-    color: var(--marrom-escuro);
-    font-family: Arial, sans-serif;
-    width: 160px;
-    background: var(--branco);
+    font-size: 0.95rem;
+    color: var(--texto);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    width: 150px;
+    background: var(--bg-card);
+    transition: border-color 0.15s;
 }
 
-.ctrl-input:focus {
-    outline: none;
-    border-color: var(--amarelo);
-}
+.ctrl-input:focus { outline: none; border-color: var(--primario); }
 
-/* Botões de seleção de rodada */
-.rodada-buttons {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-}
+/* Botões de rodada */
+.rodada-buttons { display: flex; gap: 5px; flex-wrap: wrap; }
 
 .rodada-btn {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
     padding: 0;
-    border-radius: 50%;
-    background: var(--palha-escura);
-    color: var(--marrom-escuro);
-    font-size: 0.9rem;
-    box-shadow: 0 2px 0 rgba(0,0,0,0.15);
-    border: none;
+    border-radius: 8px;
+    background: var(--borda-suave);
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+    font-weight: 800;
+    border: 1.5px solid var(--borda);
     cursor: pointer;
-    font-family: 'Lilita One', sans-serif;
-    transition: background 0.15s, transform 0.1s;
+    font-family: 'Nunito', sans-serif;
+    transition: all 0.14s;
 }
 
-.rodada-btn:hover {
-    background: var(--laranja);
-    color: var(--branco);
-    transform: scale(1.1);
-}
+.rodada-btn:hover { background: #FFF3BF; color: var(--primario-dark); border-color: var(--amarelo); }
+.rodada-btn.active { background: var(--primario); color: #fff; border-color: var(--primario-dark); }
 
-.rodada-btn.active {
-    background: var(--vermelho);
-    color: var(--branco);
-    box-shadow: 0 2px 0 rgba(0,0,0,0.25);
-}
+.control-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 
-.control-actions {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: flex-end;
-}
+.status-text { margin-top: 12px; font-size: 0.85rem; font-weight: 600; min-height: 1.2em; }
 
-.status-text {
-    margin-top: 14px;
-    font-family: Arial, sans-serif;
-    font-size: 0.9rem;
-    min-height: 1.2em;
-}
-
-/* ── Páginas de impressão (preview na tela) ───── */
+/* ── Páginas de impressão ─────────────────────── */
 
 .print-page {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     padding: 20px;
-    background: var(--branco);
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    background: var(--bg-card);
+    border-radius: 14px;
+    border: 1px solid var(--borda);
 }
 
-/* ── Cartela de bingo ─────────────────────────── */
+/* ── Cartela ──────────────────────────────────── */
 
 .bingo-card {
-    border: 2px solid var(--marrom);
-    border-radius: 10px;
+    border: 2px solid #CBD5E0;
+    border-radius: 12px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    background: var(--branco);
+    background: var(--bg-card);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .card-header {
-    background: var(--vermelho);
-    color: var(--branco);
-    padding: 8px 12px;
+    background: var(--primario-dark);
+    color: #fff;
+    padding: 10px 14px;
     text-align: center;
 }
 
 .card-event {
-    font-family: 'Lilita One', sans-serif;
-    font-size: 0.8rem;
-    opacity: 0.88;
-    letter-spacing: 0.5px;
-}
-
-.card-id {
-    font-family: 'Lilita One', sans-serif;
-    font-size: 1.05rem;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    opacity: 0.7;
+    text-transform: uppercase;
     letter-spacing: 1px;
 }
 
+.card-id {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--amarelo-claro);
+}
+
+/* Letras B-I-N-G-O coloridas */
 .card-bingo-letters {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    background: var(--amarelo);
 }
 
 .card-letter {
     text-align: center;
-    font-family: 'Lilita One', sans-serif;
-    font-size: 1.3rem;
-    color: var(--marrom-escuro);
-    padding: 5px 0;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 900;
+    padding: 6px 0;
+    color: #fff;
 }
+
+.card-letter:nth-child(1) { background: var(--cor-B); }
+.card-letter:nth-child(2) { background: var(--cor-I); }
+.card-letter:nth-child(3) { background: var(--cor-N); }
+.card-letter:nth-child(4) { background: var(--cor-G); }
+.card-letter:nth-child(5) { background: var(--cor-O); }
 
 .card-grid {
     display: grid;
@@ -165,96 +148,48 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Arial, sans-serif;
-    font-weight: bold;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
     font-size: 1rem;
-    border-right: 1px solid var(--palha-escura);
-    border-bottom: 1px solid var(--palha-escura);
+    border-right: 1px solid #E5E7EB;
+    border-bottom: 1px solid #E5E7EB;
     padding: 8px 4px;
-    min-height: 38px;
-    color: var(--marrom-escuro);
+    min-height: 40px;
+    color: var(--texto);
 }
 
-.card-cell:nth-child(5n) {
-    border-right: none;
-}
+.card-cell:nth-child(5n)   { border-right: none; }
+.card-cell:nth-child(n+21) { border-bottom: none; }
 
-.card-cell:nth-child(n+21) {
-    border-bottom: none;
-}
+.card-cell.free-space { background: #F0FFF4; }
 
-.card-cell.free-space {
-    background: var(--palha);
-}
-
-.free-logo {
-    width: 30px;
-    height: 30px;
-    object-fit: contain;
-}
+.free-logo { width: 30px; height: 30px; object-fit: contain; }
 
 /* ── Impressão ────────────────────────────────── */
 
 @media print {
-    @page {
-        size: A4 portrait;
-        margin: 8mm;
-    }
+    @page { size: A4 portrait; margin: 8mm; }
 
-    .no-print,
-    header,
-    .page-header,
-    .controls-panel {
-        display: none !important;
-    }
+    .no-print, header, .page-header, .controls-panel { display: none !important; }
 
-    body {
-        background: white !important;
-        background-image: none !important;
-    }
-
-    main {
-        max-width: 100%;
-        padding: 0;
-    }
+    body { background: white !important; }
+    main { max-width: 100%; padding: 0; }
 
     .print-page {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 5mm;
-        margin: 0;
-        padding: 0;
-        background: none;
-        box-shadow: none;
-        border-radius: 0;
-        page-break-after: always;
-        break-after: page;
+        margin: 0; padding: 0;
+        background: none; box-shadow: none; border: none; border-radius: 0;
+        page-break-after: always; break-after: page;
         height: calc(297mm - 16mm);
         align-items: stretch;
     }
 
-    .print-page:last-child {
-        page-break-after: auto;
-        break-after: auto;
-    }
+    .print-page:last-child { page-break-after: auto; break-after: auto; }
 
-    .bingo-card {
-        box-shadow: none;
-        border: 1.5px solid #555;
-    }
-
-    .card-cell {
-        font-size: 0.88rem;
-        min-height: 0;
-    }
-
-    .card-letter {
-        font-size: 1.1rem;
-        padding: 3px 0;
-    }
-
-    .free-logo {
-        width: 26px;
-        height: 26px;
-    }
+    .bingo-card { box-shadow: none; border: 1.5px solid #999; }
+    .card-cell  { font-size: 0.88rem; min-height: 0; }
+    .card-letter { font-size: 1rem; padding: 4px 0; }
+    .free-logo  { width: 24px; height: 24px; }
 }

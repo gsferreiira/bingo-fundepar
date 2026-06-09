@@ -244,19 +244,24 @@ function render(lastDrawn) {
     if (lastDrawn === null) {
         const last = sorteados[sorteados.length - 1];
         if (last !== undefined) {
-            document.getElementById('ballLetter').textContent = getBingoLetter(last);
+            const ballEl = document.getElementById('currentBall');
+            const letter = getBingoLetter(last);
+            document.getElementById('ballLetter').textContent = letter;
             document.getElementById('ballNumber').textContent = last;
             document.getElementById('ballCaption').textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
-            document.getElementById('currentBall').classList.remove('idle', 'animate');
+            ballEl.className = 'current-ball active';
+            ballEl.dataset.letter = letter;
         } else {
             resetBall();
         }
     } else {
         const ballEl = document.getElementById('currentBall');
-        document.getElementById('ballLetter').textContent = getBingoLetter(lastDrawn);
+        const letter = getBingoLetter(lastDrawn);
+        document.getElementById('ballLetter').textContent = letter;
         document.getElementById('ballNumber').textContent = lastDrawn;
         document.getElementById('ballCaption').textContent = `${sorteados.length} de ${TOTAL_NUMBERS} sorteados`;
-        ballEl.classList.remove('idle', 'animate');
+        ballEl.className = 'current-ball active';
+        ballEl.dataset.letter = letter;
         void ballEl.offsetWidth;
         ballEl.classList.add('animate');
     }
@@ -289,12 +294,14 @@ function renderBoardData(drawnList, readOnly) {
     for (const { letter, min, max } of RANGES) {
         const label = document.createElement('div');
         label.className = 'board-letter';
+        label.dataset.letter = letter;
         label.textContent = letter;
         board.appendChild(label);
 
         for (let n = min; n <= max; n++) {
             const ball = document.createElement('div');
             ball.className = 'board-ball' + (drawn.has(n) ? ' drawn' : '');
+            ball.dataset.letter = letter;
             ball.textContent = n;
             if (!readOnly) {
                 ball.title = `${letter}-${n} — clique para marcar/desmarcar`;
@@ -318,9 +325,11 @@ function renderHistoryData(list) {
         return;
     }
     list.forEach(n => {
+        const letter = getBingoLetter(n);
         const chip = document.createElement('span');
         chip.className = 'history-chip';
-        chip.textContent = `${getBingoLetter(n)}-${n}`;
+        chip.dataset.letter = letter;
+        chip.textContent = `${letter}-${n}`;
         histList.appendChild(chip);
     });
 }

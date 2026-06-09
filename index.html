@@ -6,7 +6,7 @@
     <title>Sorteador — Bingo Junino Fundepar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/theme.css">
     <link rel="stylesheet" href="css/sorteador.css">
 </head>
@@ -28,18 +28,20 @@
 
     <main class="sorteador-main">
 
-        <!-- Banner somente leitura (oculto por padrão) -->
+        <!-- Banner somente leitura -->
         <div class="view-mode-banner" id="viewModeBanner" style="display:none;"></div>
 
-        <!-- Navegação por rodadas -->
+        <!-- Navegação de rodadas -->
         <div class="round-nav">
-            <button class="btn btn-secondary btn-sm" id="prevRoundBtn" disabled>← Rodada Anterior</button>
-            <span class="round-label" id="roundLabel">Rodada 1 de 10</span>
-            <button class="btn btn-secondary btn-sm" id="nextRoundBtn" disabled>Rodada Seguinte →</button>
+            <button class="btn btn-secondary btn-sm" id="prevRoundBtn" disabled>← Anterior</button>
+            <div class="round-badge">
+                <span class="round-label" id="roundLabel">Rodada 1 de 10</span>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="nextRoundBtn" disabled>Próxima →</button>
         </div>
 
-        <!-- Botão voltar à rodada atual (oculto por padrão) -->
-        <div style="text-align:center; margin-top: 8px;">
+        <!-- Botão voltar à rodada atual -->
+        <div style="text-align:center; margin: 6px 0;">
             <button class="btn btn-warning btn-sm" id="returnBtn" style="display:none;">▶ Voltar à Rodada Atual</button>
         </div>
 
@@ -49,14 +51,18 @@
                 <span class="ball-letter" id="ballLetter"></span>
                 <span class="ball-number" id="ballNumber">?</span>
             </div>
-            <p class="ball-caption" id="ballCaption">Nenhuma pedra sorteada</p>
+            <p class="ball-caption" id="ballCaption">Aguardando sorteio</p>
         </div>
 
-        <!-- Controles principais -->
-        <div class="controls">
-            <button class="btn btn-primary" id="drawBtn">🎲 Sortear</button>
-            <button class="btn btn-secondary" id="undoBtn">↩ Desfazer</button>
-            <button class="btn btn-warning" id="verifyBtn">🏆 Verificar Vencedor</button>
+        <!-- Botão principal de sortear -->
+        <div class="draw-section">
+            <button class="btn-draw" id="drawBtn">🎲 Sortear</button>
+        </div>
+
+        <!-- Controles secundários -->
+        <div class="controls-secondary">
+            <button class="btn btn-secondary btn-sm" id="undoBtn">↩ Desfazer</button>
+            <button class="btn btn-secondary btn-sm" id="verifyBtn">🏆 Verificar Vencedor</button>
         </div>
 
         <!-- Tabuleiro -->
@@ -66,7 +72,7 @@
 
         <!-- Histórico -->
         <div class="history-panel card-panel">
-            <h3 class="history-title">Pedras sorteadas (em ordem)</h3>
+            <p class="history-title">Pedras sorteadas (em ordem)</p>
             <div class="history-list" id="historyList"></div>
         </div>
 
@@ -75,14 +81,14 @@
             <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
         </div>
 
-        <!-- Reiniciar evento -->
+        <!-- Reiniciar -->
         <div class="restart-section">
             <button class="btn btn-secondary btn-sm" id="restartBtn">🗑️ Reiniciar Evento do Zero</button>
         </div>
 
     </main>
 
-    <!-- Modal: confirmação genérica -->
+    <!-- Modal: confirmação -->
     <div class="modal" id="confirmModal">
         <div class="modal-box">
             <h2 id="confirmTitle">Confirmar?</h2>
@@ -97,7 +103,7 @@
     <!-- Modal: verificar vencedor -->
     <div class="modal" id="verifyModal">
         <div class="modal-box">
-            <h2>Verificar Vencedor</h2>
+            <h2>🏆 Verificar Vencedor</h2>
             <p>Digite o número da cartela (1 a 500)</p>
             <input type="number" id="verifySerial" class="modal-input" min="1" max="500" placeholder="Ex: 42">
             <div class="modal-actions">
