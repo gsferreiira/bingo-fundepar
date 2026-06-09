@@ -6,53 +6,90 @@
     padding: 0 16px 64px;
 }
 
-/* ── Navegação de rodadas ─────────────────────── */
+/* ═══════════════════════════════════════════════
+   PALCO NOTURNO — área escura do sorteio
+════════════════════════════════════════════════ */
+
+.hero-stage {
+    background:
+        radial-gradient(ellipse at 50% 0%, #2a1550 0%, transparent 70%),
+        linear-gradient(180deg, #1a0535 0%, #0d0d2b 60%, #1a1a0a 100%);
+    border-radius: 20px;
+    padding: 24px 20px 28px;
+    margin: 16px 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+}
+
+/* Estrelas estáticas no fundo */
+.hero-stage::before {
+    content: '✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧ ★ ✦ ✧';
+    position: absolute;
+    top: 12px;
+    left: 0; right: 0;
+    text-align: center;
+    color: rgba(255,255,255,0.18);
+    font-size: 9px;
+    letter-spacing: 16px;
+    pointer-events: none;
+}
+
+/* Fogueiras animadas */
+.stage-fire {
+    position: absolute;
+    bottom: 10px;
+    font-size: 2.8rem;
+    line-height: 1;
+    animation: fogueira 1.2s ease-in-out infinite alternate;
+    pointer-events: none;
+    user-select: none;
+    filter: drop-shadow(0 0 10px rgba(255,120,0,0.6));
+}
+
+.fire-left  { left: 16px;  animation-delay: 0s; }
+.fire-right { right: 16px; animation-delay: 0.6s; }
+
+@keyframes fogueira {
+    from { transform: scale(1)    rotate(-4deg) translateY(0); }
+    to   { transform: scale(1.1)  rotate(4deg)  translateY(-4px); }
+}
+
+/* ── Navegação dentro do palco ────────────────── */
 
 .round-nav {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin: 20px 0 8px;
-}
-
-.round-badge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    flex: 1;
-    text-align: center;
+    margin-bottom: 8px;
 }
 
 .round-label {
     display: inline-block;
-    background: var(--primario);
+    background: rgba(255,255,255,0.12);
     color: #fff;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 900;
-    padding: 10px 28px;
+    padding: 9px 28px;
     border-radius: 100px;
     letter-spacing: 0.5px;
-}
-
-.round-sub {
-    font-size: 0.72rem;
-    color: var(--texto-suave);
-    font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.2);
+    flex: 1;
+    text-align: center;
 }
 
 /* Banner somente leitura */
 .view-mode-banner {
-    background: var(--amarelo-claro);
-    color: var(--primario-dark);
+    background: rgba(245,159,0,0.2);
+    color: #FFE066;
     text-align: center;
-    padding: 9px 16px;
+    padding: 8px 16px;
     border-radius: 8px;
     margin-bottom: 10px;
     font-size: 0.82rem;
     font-weight: 700;
-    border: 1px solid var(--amarelo);
+    border: 1px solid rgba(245,159,0,0.4);
 }
 
 /* ── Bola atual ───────────────────────────────── */
@@ -69,46 +106,28 @@
     width: 168px;
     height: 168px;
     border-radius: 50%;
-    background: var(--borda-suave);
+    background: rgba(255,255,255,0.08);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
-    transition: background 0.3s;
+    box-shadow:
+        0 0 0 4px rgba(255,255,255,0.08),
+        0 12px 40px rgba(0,0,0,0.5);
+    transition: background 0.3s, box-shadow 0.3s;
     position: relative;
 }
 
-/* Anel decorativo */
-.current-ball::after {
-    content: '';
-    position: absolute;
-    inset: -5px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    background: conic-gradient(var(--cor-B), var(--cor-I), var(--cor-N), var(--cor-G), var(--cor-O), var(--cor-B)) border-box;
-    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: destination-out;
-    mask-composite: exclude;
-    opacity: 0;
-    transition: opacity 0.3s;
-}
-
-.current-ball.active::after { opacity: 1; }
-
-.current-ball.idle { background: var(--borda-suave); }
-
-/* Cor por letra */
-.current-ball[data-letter="B"] { background: var(--cor-B); }
-.current-ball[data-letter="I"] { background: var(--cor-I); }
-.current-ball[data-letter="N"] { background: var(--cor-N); }
-.current-ball[data-letter="G"] { background: var(--cor-G); }
-.current-ball[data-letter="O"] { background: var(--cor-O); }
+.current-ball[data-letter="B"] { background: var(--cor-B); box-shadow: 0 0 0 4px rgba(201,42,42,0.3),  0 12px 40px rgba(201,42,42,0.4); }
+.current-ball[data-letter="I"] { background: var(--cor-I); box-shadow: 0 0 0 4px rgba(230,119,0,0.3),  0 12px 40px rgba(230,119,0,0.4); }
+.current-ball[data-letter="N"] { background: var(--cor-N); box-shadow: 0 0 0 4px rgba(43,138,62,0.3),  0 12px 40px rgba(43,138,62,0.4); }
+.current-ball[data-letter="G"] { background: var(--cor-G); box-shadow: 0 0 0 4px rgba(112,72,232,0.3), 0 12px 40px rgba(112,72,232,0.4); }
+.current-ball[data-letter="O"] { background: var(--cor-O); box-shadow: 0 0 0 4px rgba(25,113,194,0.3), 0 12px 40px rgba(25,113,194,0.4); }
 
 .ball-letter {
     font-size: 1.5rem;
     font-weight: 900;
-    color: rgba(255,255,255,0.8);
+    color: rgba(255,255,255,0.7);
     line-height: 1;
     letter-spacing: 2px;
 }
@@ -118,14 +137,15 @@
     font-weight: 900;
     color: #fff;
     line-height: 1;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.3);
 }
 
-.current-ball.idle .ball-letter { color: var(--texto-suave); }
-.current-ball.idle .ball-number { color: var(--borda); font-size: 3rem; }
+.current-ball.idle .ball-letter { color: rgba(255,255,255,0.2); }
+.current-ball.idle .ball-number { color: rgba(255,255,255,0.15); font-size: 3rem; }
 
 .ball-caption {
     font-size: 0.78rem;
-    color: var(--texto-suave);
+    color: rgba(255,255,255,0.45);
     font-weight: 600;
 }
 
@@ -137,9 +157,8 @@
 
 .current-ball.animate { animation: pulse-ball 0.5s ease-out; }
 
-/* ── Área de controles ────────────────────────── */
+/* ── Botão sortear ────────────────────────────── */
 
-/* Botão principal de sortear — destaque máximo */
 .draw-section {
     display: flex;
     justify-content: center;
@@ -147,14 +166,14 @@
 }
 
 .btn-draw {
-    font-size: 1.25rem;
+    font-size: 1.2rem;
     font-weight: 900;
-    padding: 18px 56px;
+    padding: 17px 52px;
     border-radius: 14px;
     background: var(--primario);
     color: #fff;
     letter-spacing: 0.5px;
-    box-shadow: 0 6px 0 var(--primario-dark);
+    box-shadow: 0 6px 0 var(--primario-dark), 0 8px 24px rgba(201,42,42,0.45);
     border: none;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
@@ -164,20 +183,22 @@
     gap: 10px;
 }
 
-.btn-draw:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 var(--primario-dark); }
-.btn-draw:active { transform: translateY(3px);  box-shadow: 0 3px 0 var(--primario-dark); }
+.btn-draw:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 var(--primario-dark), 0 12px 28px rgba(201,42,42,0.5); }
+.btn-draw:active { transform: translateY(3px);  box-shadow: 0 3px 0 var(--primario-dark), 0 4px 12px rgba(201,42,42,0.3); }
 .btn-draw:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: 0 6px 0 var(--primario-dark); }
 
-/* Controles secundários */
+/* Controles secundários no palco */
 .controls-secondary {
     display: flex;
     justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
 }
 
-/* ── Tabuleiro ────────────────────────────────── */
+/* ═══════════════════════════════════════════════
+   ÁREA CLARA — tabuleiro e histórico
+════════════════════════════════════════════════ */
 
 .bingo-board-wrapper {
     background: var(--bg-card);
@@ -185,7 +206,7 @@
     padding: 16px 20px;
     border: 1px solid var(--borda);
     box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    margin: 12px 0;
+    margin: 16px 0;
     overflow-x: auto;
 }
 
@@ -227,14 +248,13 @@
     user-select: none;
 }
 
-.board-ball:hover { transform: scale(1.18); border-color: var(--borda); background: var(--bg-card); z-index: 1; position: relative; }
+.board-ball:hover { transform: scale(1.18); border-color: var(--borda); z-index: 1; position: relative; }
 
-/* Sorteada: cor sólida por coluna */
-.board-ball.drawn[data-letter="B"] { background: var(--cor-B); color: #fff; transform: scale(0.9); }
-.board-ball.drawn[data-letter="I"] { background: var(--cor-I); color: #fff; transform: scale(0.9); }
-.board-ball.drawn[data-letter="N"] { background: var(--cor-N); color: #fff; transform: scale(0.9); }
-.board-ball.drawn[data-letter="G"] { background: var(--cor-G); color: #fff; transform: scale(0.9); }
-.board-ball.drawn[data-letter="O"] { background: var(--cor-O); color: #fff; transform: scale(0.9); }
+.board-ball.drawn[data-letter="B"] { background: var(--cor-B); color: #fff; transform: scale(0.9); border-color: transparent; }
+.board-ball.drawn[data-letter="I"] { background: var(--cor-I); color: #fff; transform: scale(0.9); border-color: transparent; }
+.board-ball.drawn[data-letter="N"] { background: var(--cor-N); color: #fff; transform: scale(0.9); border-color: transparent; }
+.board-ball.drawn[data-letter="G"] { background: var(--cor-G); color: #fff; transform: scale(0.9); border-color: transparent; }
+.board-ball.drawn[data-letter="O"] { background: var(--cor-O); color: #fff; transform: scale(0.9); border-color: transparent; }
 
 /* ── Histórico ────────────────────────────────── */
 
@@ -273,20 +293,14 @@
 
 .history-empty { color: var(--texto-suave); font-size: 0.82rem; align-self: center; }
 
-/* ── Encerrar rodada ──────────────────────────── */
+/* ── Encerrar / Reiniciar ─────────────────────── */
 
 .end-round-section {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
     margin-top: 24px;
     padding-top: 20px;
     border-top: 1px dashed var(--borda);
-}
-
-/* ── Reiniciar ────────────────────────────────── */
-
-.restart-section {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
 }
