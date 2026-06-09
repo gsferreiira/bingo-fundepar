@@ -39,7 +39,7 @@
 .stage-fire {
     position: absolute;
     bottom: 10px;
-    max-height: 1.5rem;
+    max-height: 2.5rem;
     animation: fogueira 1.2s ease-in-out infinite alternate;
     pointer-events: none;
     user-select: none;
