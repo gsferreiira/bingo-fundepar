@@ -170,7 +170,6 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 .card-cell:nth-child(n+21) { border-bottom: none; }
 
 .card-cell.free-space {
-    background: #C8E6C9;
     padding: 0;
     overflow: hidden;
 }
@@ -222,5 +221,5 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
     .card-id       { font-size: 0.85rem; }
     .card-letter   { font-size: 0.82rem; padding: 3px 0; }
     .card-cell     { font-size: 0.78rem; min-height: 0; padding: 2px; }
-    .card-cell.free-space { padding: 4px; background: #C8E6C9; }
+    .card-cell.free-space { padding: 4px; }
 }
