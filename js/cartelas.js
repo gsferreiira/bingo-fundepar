@@ -44,7 +44,7 @@ function cardHTML(rodada, serial, card) {
     for (let row = 0; row < 5; row++) {
         for (const letter of letters) {
             if (letter === 'N' && row === 2) {
-                cellsHTML += `<div class="card-cell free-space"><img src="assets/logo_fundepar.jpg" alt="★" class="free-logo"></div>`;
+                cellsHTML += `<div class="card-cell free-space"><img src="assets/logo_fundepar.png" alt="★" class="free-logo"></div>`;
             } else {
                 cellsHTML += `<div class="card-cell">${card[letter][row]}</div>`;
             }
