@@ -3,569 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro de Pedras - Bingo FUNDEPAR</title>
-    <style>
-        :root {
-            --azure-web: #D6EBEEff;
-            --zomp: #57A288ff;
-            --skobeloff: #1E7670ff;
-            --tiffany-blue: #e1f2f1;
-            --white: #FFFFFFff;
-            --red: #e74c3c;
-            --blue: #234885;
-        }
-        
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: var(--azure-web);
-            color: var(--skobeloff);
-        }
-        
-        .header {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 20px;
-            margin-top: 50px;
-            gap: 20px;
-        }
-        
-        .logo-container {
-            width: 150px;
-            height: 150px;
-            background-color: var(--white);
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        
-        .logo-container img {
-            max-width: 90%;
-            max-height: 90%;
-        }
-        
-        h1 {
-            color: var(--skobeloff);
-            margin: 0;
-            font-size: 2.5rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-        
-        .bingo-sections {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 5px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .bingo-section {
-            background-color: var(--white);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 170px;
-        }
-
-        .bingo-sections-help {
-            background-color: var(--white);
-            padding: 15px;
-            border-radius: 10px;
-            /* margin: 20px auto;
-            margin-top: none; */
-            margin: 0 auto 20px auto;
-            max-width: 800px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-        }
-        
-        .section-title {
-            font-size: 28px;
-            margin: 0 0 15px 0;
-            color: var(--skobeloff);
-            font-weight: bold;
-        }
-        
-        .bingo-balls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
-        }
-        
-        .bingo-ball {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: var(--tiffany-blue);
-            color: var(--skobeloff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        
-        .bingo-ball:hover {
-            transform: scale(1.1);
-            background-color: var(--skobeloff);
-            color: var(--tiffany-blue);
-        }
-        
-        .bingo-ball.drawn {
-            background-color: var(--blue);
-            color: var(--white);
-            transform: scale(0.95);
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.7);
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .modal-content {
-            background-color: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-        }
-        
-        .modal-ball {
-            width: 200px;
-            height: 200px;
-            font-size: 80px;
-            margin: 0 auto 20px;
-            background: var(--blue);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            box-shadow: 0 10px 25px rgba(30, 118, 112, 0.4);
-        }
-        
-        .modal-title {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: var(--skobeloff);
-        }
-        
-        .modal-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        
-        .modal-button {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .confirm {
-            background-color: var(--zomp);
-            color: var(--white);
-        }
-        
-        .cancel {
-            background-color: var(--red);
-            color: var(--white);
-        }
-        
-        .drawn-numbers {
-            background-color: var(--white);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px auto;
-            max-width: 800px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            display: none;
-        }
-        
-        .drawn-numbers h3 {
-            margin-top: 0;
-            font-size: 50px;
-            color: var(--skobeloff);
-        }
-        
-        .drawn-numbers-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .drawn-number {
-            background-color: var(--blue);
-            color: var(--white);
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 40px;
-            margin: 5px;
-        }
-        
-        .controls {
-            margin: 30px 0;
-        }
-        
-        button {
-            background-color: var(--skobeloff);
-            color: var(--white);
-            border: none;
-            padding: 12px 25px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
-            transition: all 0.3s;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        button:hover {
-            background-color: var(--zomp);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-       .bola-legenda-nao-sorteada,
-        .bola-legenda-sorteada {
-            display: inline-block; /* Necessário para respeitar width/height */
-            border-radius: 100%;
-            width: 12px;
-            height: 12px;
-            margin-right: 5px;
-            vertical-align: middle; /* Alinha melhor com o texto */
-        }
-
-        .bola-legenda-nao-sorteada {
-            background-color: var(--tiffany-blue); /* Bolinha cheia */
-            border: 1px solid var(--tiffany-blue);
-        }
-
-        .bola-legenda-sorteada {
-            background-color: var(--blue); /* Bolinha cheia */
-            border: 1px solid var(--blue);
-        }
-
-        .drawn-last-number {
-            margin: 20px auto;
-            display: none;
-            text-align: center;
-        }
-
-
-    </style>
+    <title>Sorteador — Bingo Junino Fundepar</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/sorteador.css">
 </head>
 <body>
-    <header style="background-color: #1E7670; padding: 10px 20px; text-align: center;">
-        <nav>
-            <a href="sorteador.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Sorteador de Bingo</a>
-            <a href="geradorCartelas.html" style="color: white; margin: 0 15px; text-decoration: none; font-weight: bold;">Gerador de Cartelas</a>
+    <header>
+        <nav class="site-nav">
+            <a href="index.html" class="active">Sorteador</a>
+            <a href="cartelas.html">Cartelas</a>
         </nav>
+        <div class="nav-stripe"></div>
     </header>
 
-    <div class="header">
+    <div class="page-header">
         <div class="logo-container">
             <img src="assets/logo_fundepar.jpg" alt="Logo FUNDEPAR">
         </div>
-        <h1>Cadastro de Pedras - Bingo FUNDEPAR</h1>
-    </div>
-    
-    <div class="controls">
-        <button id="resetButton">Reiniciar Jogo</button>
-        <button id="undoButton">Desfazer Última Pedra</button>
-        <button id="showLastNumberButton">Mostrar última pedra</button>
-        <button id="toggleHelpButton">Ocultar Legenda</button>
+        <h1 class="page-title">Bingo Junino Fundepar</h1>
     </div>
 
-    
-    <div class="drawn-numbers">
-        <h3>Pedras Sorteadas:</h3>
-        <div id="drawnNumbersList" class="drawn-numbers-list"></div>
-    </div>
+    <main class="sorteador-main">
 
-    <div class="drawn-last-number" id="drawn-last-number">
-        <h1>Teste</h1>
-    </div>
-    
-    <div class="bingo-sections" id="bingoSections"></div>
+        <div class="round-indicator">
+            <span class="round-label" id="roundLabel">Rodada 1 de 10</span>
+        </div>
 
-    <div class="bingo-sections-help">
-        <h1>Legenda</h1>
-        <p><strong class="bola-legenda-sorteada"></strong>Pedras Sorteadas</p>
-        <p><strong class="bola-legenda-nao-sorteada"></strong>Pedras Não Sorteadas</p>
-    </div>
+        <div class="current-ball-wrapper">
+            <div class="current-ball idle" id="currentBall">
+                <span class="ball-letter" id="ballLetter"></span>
+                <span class="ball-number" id="ballNumber">?</span>
+            </div>
+            <p class="ball-caption" id="ballCaption">Nenhuma pedra sorteada</p>
+        </div>
 
-    
-    <div class="modal" id="confirmationModal">
-        <div class="modal-content">
-            <div class="modal-ball" id="modalBall"></div>
-            <h3 class="modal-title" id="modalTitle">Confirmar pedra?</h3>
-            <div class="modal-buttons">
-                <button class="modal-button confirm" id="confirmButton">Confirmar</button>
-                <button class="modal-button cancel" id="cancelButton">Cancelar</button>
+        <div class="controls">
+            <button class="btn btn-primary" id="drawBtn">🎲 Sortear</button>
+            <button class="btn btn-secondary" id="undoBtn">↩ Desfazer</button>
+            <button class="btn btn-warning" id="verifyBtn">🏆 Verificar Vencedor</button>
+        </div>
+
+        <div class="bingo-board-wrapper">
+            <div class="bingo-board" id="bingoBoard"></div>
+        </div>
+
+        <div class="history-panel card-panel">
+            <h3 class="history-title">Pedras sorteadas (em ordem)</h3>
+            <div class="history-list" id="historyList"></div>
+        </div>
+
+        <div class="end-round-section">
+            <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+        </div>
+
+    </main>
+
+    <!-- Modal: confirmação genérica -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-box">
+            <h2 id="confirmTitle">Confirmar?</h2>
+            <p id="confirmMessage"></p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="confirmOk">Confirmar</button>
+                <button class="btn btn-secondary" id="confirmCancel">Cancelar</button>
             </div>
         </div>
     </div>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const bingoSections = document.getElementById('bingoSections');
-        const drawnNumbersList = document.getElementById('drawnNumbersList');
-        const resetButton = document.getElementById('resetButton');
-        const undoButton = document.getElementById('undoButton');
-        const confirmationModal = document.getElementById('confirmationModal');
-        const modalBall = document.getElementById('modalBall');
-        const modalTitle = document.getElementById('modalTitle');
-        const confirmButton = document.getElementById('confirmButton');
-        const cancelButton = document.getElementById('cancelButton');
-        const showLastNumberButton = document.getElementById('showLastNumberButton');
-        const drawnLastNumberDiv = document.getElementById('drawn-last-number');
-        const toggleHelpButton = document.getElementById('toggleHelpButton');
-        const helpSection = document.querySelector('.bingo-sections-help');
 
-        let drawnNumbers = JSON.parse(localStorage.getItem('bingoDrawnNumbers')) || [];
-        let settings = JSON.parse(localStorage.getItem('bingoSettings')) || {
-            showLastNumber: false,
-            showLegend: true
-        };
+    <!-- Modal: verificar vencedor -->
+    <div class="modal" id="verifyModal">
+        <div class="modal-box">
+            <h2>Verificar Vencedor</h2>
+            <p>Digite o número da cartela (1 a 500)</p>
+            <input type="number" id="verifySerial" class="modal-input" min="1" max="500" placeholder="Ex: 42">
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="verifyOk">Verificar</button>
+                <button class="btn btn-secondary" id="verifyCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-        let currentSelectedNumber = null;
+    <!-- Modal: resultado -->
+    <div class="modal" id="resultModal">
+        <div class="modal-box">
+            <div class="result-icon" id="resultIcon"></div>
+            <h2 id="resultTitle"></h2>
+            <p id="resultMessage"></p>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="resultClose">Fechar</button>
+            </div>
+        </div>
+    </div>
 
-        const bingoRanges = [
-            { letter: 'B', min: 1, max: 15 },
-            { letter: 'I', min: 16, max: 30 },
-            { letter: 'N', min: 31, max: 45 },
-            { letter: 'G', min: 46, max: 60 },
-            { letter: 'O', min: 61, max: 75 }
-        ];
-
-        function initializeSettings() {
-            if (settings.showLastNumber) {
-                showLastNumberButton.textContent = 'Ocultar última pedra';
-                drawnLastNumberDiv.style.display = 'block';
-            } else {
-                showLastNumberButton.textContent = 'Mostrar última pedra';
-                drawnLastNumberDiv.style.display = 'none';
-            }
-
-            if (settings.showLegend) {
-                helpSection.style.display = 'block';
-                toggleHelpButton.textContent = 'Ocultar Legenda';
-            } else {
-                helpSection.style.display = 'none';
-                toggleHelpButton.textContent = 'Mostrar Legenda';
-            }
-        }
-
-        function initializeBoard() {
-            bingoSections.innerHTML = '';
-
-            bingoRanges.forEach(range => {
-                const section = document.createElement('div');
-                section.className = 'bingo-section';
-
-                const title = document.createElement('h2');
-                title.className = 'section-title';
-                title.textContent = range.letter;
-                section.appendChild(title);
-
-                const ballsContainer = document.createElement('div');
-                ballsContainer.className = 'bingo-balls';
-
-                for (let i = range.min; i <= range.max; i++) {
-                    const ball = document.createElement('div');
-                    ball.className = 'bingo-ball';
-                    if (drawnNumbers.includes(i)) {
-                        ball.classList.add('drawn');
-                    }
-                    ball.textContent = i;
-                    ball.dataset.number = i;
-                    ball.addEventListener('click', () => selectNumber(i));
-                    ballsContainer.appendChild(ball);
-                }
-
-                section.appendChild(ballsContainer);
-                bingoSections.appendChild(section);
-            });
-
-            updateDrawnNumbersList();
-            updateLastNumberDisplay();
-        }
-
-        function updateDrawnNumbersList() {
-            drawnNumbersList.innerHTML = '';
-
-            const groupedNumbers = { 'B': [], 'I': [], 'N': [], 'G': [], 'O': [] };
-
-            drawnNumbers.forEach(num => {
-                const letter = getBingoLetter(num);
-                groupedNumbers[letter].push(num);
-            });
-
-            for (const letter in groupedNumbers) {
-                if (groupedNumbers[letter].length > 0) {
-                    const letterGroup = document.createElement('div');
-                    letterGroup.style.margin = '10px 0';
-
-                    const letterTitle = document.createElement('strong');
-                    letterTitle.textContent = `${letter}: `;
-                    letterTitle.style.fontSize = '40px';
-                    letterGroup.appendChild(letterTitle);
-
-                    groupedNumbers[letter].sort((a, b) => a - b).forEach(num => {
-                        const numElement = document.createElement('span');
-                        numElement.className = 'drawn-number';
-                        numElement.textContent = num;
-                        letterGroup.appendChild(numElement);
-                    });
-
-                    drawnNumbersList.appendChild(letterGroup);
-                }
-            }
-        }
-
-        function updateLastNumberDisplay() {
-            if (settings.showLastNumber && drawnNumbers.length > 0) {
-                const lastNumber = drawnNumbers[drawnNumbers.length - 1];
-                const letter = getBingoLetter(lastNumber);
-                drawnLastNumberDiv.innerHTML = `
-                    <div class="modal-ball" style="margin: 0 auto;">
-                        <span style="font-size: 60px;">${letter}</span><span style="font-size: 100px;">-${lastNumber}</span>
-                    </div>
-                `;
-                drawnLastNumberDiv.style.display = 'block';
-            } else {
-                drawnLastNumberDiv.style.display = 'none';
-            }
-        }
-
-        function toggleLastNumberDisplay() {
-            settings.showLastNumber = !settings.showLastNumber;
-            saveSettings();
-            updateLastNumberDisplay();
-            showLastNumberButton.textContent = settings.showLastNumber ? 'Ocultar última pedra' : 'Mostrar última pedra';
-        }
-
-        function selectNumber(number) {
-            currentSelectedNumber = number;
-            const letter = getBingoLetter(number);
-
-            modalBall.innerHTML = `<span style="font-size: 60px;">${letter}</span><span style="font-size: 100px;">-${number}</span>`;
-            modalTitle.textContent = drawnNumbers.includes(number) ?
-                `Remover ${letter}-${number}?` :
-                `Confirmar pedra ${letter}-${number}?`;
-
-            confirmationModal.style.display = 'flex';
-        }
-
-        function confirmSelection() {
-            if (!currentSelectedNumber) return;
-
-            const number = currentSelectedNumber;
-            const index = drawnNumbers.indexOf(number);
-
-            if (index === -1) {
-                drawnNumbers.push(number);
-            } else {
-                drawnNumbers.splice(index, 1);
-            }
-
-            saveToLocalStorage();
-            initializeBoard();
-            closeModal();
-        }
-
-        function closeModal() {
-            confirmationModal.style.display = 'none';
-            currentSelectedNumber = null;
-        }
-
-        function getBingoLetter(number) {
-            if (number <= 15) return 'B';
-            if (number <= 30) return 'I';
-            if (number <= 45) return 'N';
-            if (number <= 60) return 'G';
-            return 'O';
-        }
-
-        function resetAll() {
-            if (confirm('Tem certeza que deseja limpar todas as pedras sorteadas?')) {
-                drawnNumbers = [];
-                saveToLocalStorage();
-                initializeBoard();
-            }
-        }
-
-        function undoLast() {
-            if (drawnNumbers.length === 0) {
-                alert('Não há pedras para desfazer!');
-                return;
-            } else if (confirm('Tem certeza que deseja desfazer a última bola?')) {
-                drawnNumbers.pop();
-                saveToLocalStorage();
-                initializeBoard();
-            }
-        }
-
-        function toggleHelpSection() {
-            settings.showLegend = !settings.showLegend;
-            helpSection.style.display = settings.showLegend ? 'block' : 'none';
-            toggleHelpButton.textContent = settings.showLegend ? 'Ocultar Legenda' : 'Mostrar Legenda';
-            saveSettings();
-        }
-
-        function saveToLocalStorage() {
-            localStorage.setItem('bingoDrawnNumbers', JSON.stringify(drawnNumbers));
-        }
-
-        function saveSettings() {
-            localStorage.setItem('bingoSettings', JSON.stringify(settings));
-        }
-
-        confirmButton.addEventListener('click', confirmSelection);
-        cancelButton.addEventListener('click', closeModal);
-        resetButton.addEventListener('click', resetAll);
-        undoButton.addEventListener('click', undoLast);
-        showLastNumberButton.addEventListener('click', toggleLastNumberDisplay);
-        toggleHelpButton.addEventListener('click', toggleHelpSection);
-
-        confirmationModal.addEventListener('click', (e) => {
-            if (e.target === confirmationModal) {
-                closeModal();
-            }
-        });
-
-        initializeSettings();
-        initializeBoard();
-    });
-    </script>
-
-
+    <script src="js/bingo-core.js"></script>
+    <script src="js/sorteador.js"></script>
 </body>
 </html>
