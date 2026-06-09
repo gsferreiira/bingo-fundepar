@@ -46,7 +46,48 @@ function drawNumber() {
     const n = available.splice(idx, 1)[0];
     sorteados.push(n);
     saveState();
-    render(n);
+    animateDraw(n, () => render(n));
+}
+
+function animateDraw(finalNumber, onComplete) {
+    const ballEl   = document.getElementById('currentBall');
+    const letterEl = document.getElementById('ballLetter');
+    const numberEl = document.getElementById('ballNumber');
+    const caption  = document.getElementById('ballCaption');
+
+    // Bloqueia controles durante animação
+    document.getElementById('drawBtn').disabled = true;
+    document.getElementById('undoBtn').disabled = true;
+
+    ballEl.className = 'current-ball spinning';
+    delete ballEl.dataset.letter;
+    caption.textContent = 'Sorteando...';
+
+    const TOTAL_MS = 2400;
+    let elapsed = 0;
+    let delay = 45;
+
+    function tick() {
+        // Exibe número aleatório enquanto rola
+        const rand = Math.floor(Math.random() * TOTAL_NUMBERS) + 1;
+        const letter = getBingoLetter(rand);
+        letterEl.textContent = letter;
+        numberEl.textContent = rand;
+        ballEl.dataset.letter = letter;
+
+        elapsed += delay;
+        if (elapsed >= TOTAL_MS) {
+            ballEl.className = 'current-ball';
+            onComplete();
+            return;
+        }
+
+        // Desacelera progressivamente (começa em 45ms, termina em ~420ms)
+        delay = Math.round(45 + (elapsed / TOTAL_MS) * 375);
+        setTimeout(tick, delay);
+    }
+
+    setTimeout(tick, delay);
 }
 
 function undoLast() {

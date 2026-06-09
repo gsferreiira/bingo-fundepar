@@ -159,7 +159,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 }
 
 /* Cores de fundo por coluna */
-.card-cell:nth-child(5n+1) { background: #FDECEA; }
+.card-cell:nth-child(5n+1) { background: #E0F7FA; }
 .card-cell:nth-child(5n+2) { background: #FFF3E0; }
 .card-cell:nth-child(5n+3) { background: #E8F5E9; }
 .card-cell:nth-child(5n+4) { background: #EDE7F6; }
@@ -168,9 +168,18 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 .card-cell:nth-child(5n)   { border-right: none; }
 .card-cell:nth-child(n+21) { border-bottom: none; }
 
-.card-cell.free-space { background: #C8E6C9; }
+.card-cell.free-space {
+    background: #C8E6C9;
+    padding: 0;
+    overflow: hidden;
+}
 
-.free-logo { width: 46px; height: 46px; object-fit: contain; }
+.free-logo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
 
 /* ── Impressão ────────────────────────────────── */
 

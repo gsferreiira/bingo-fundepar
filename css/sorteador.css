@@ -118,7 +118,7 @@
     position: relative;
 }
 
-.current-ball[data-letter="B"] { background: var(--cor-B); box-shadow: 0 0 0 4px rgba(201,42,42,0.3),  0 12px 40px rgba(201,42,42,0.4); }
+.current-ball[data-letter="B"] { background: var(--cor-B); box-shadow: 0 0 0 4px rgba(16,152,173,0.3),  0 12px 40px rgba(16,152,173,0.4); }
 .current-ball[data-letter="I"] { background: var(--cor-I); box-shadow: 0 0 0 4px rgba(230,119,0,0.3),  0 12px 40px rgba(230,119,0,0.4); }
 .current-ball[data-letter="N"] { background: var(--cor-N); box-shadow: 0 0 0 4px rgba(43,138,62,0.3),  0 12px 40px rgba(43,138,62,0.4); }
 .current-ball[data-letter="G"] { background: var(--cor-G); box-shadow: 0 0 0 4px rgba(112,72,232,0.3), 0 12px 40px rgba(112,72,232,0.4); }
@@ -157,6 +157,20 @@
 
 .current-ball.animate { animation: pulse-ball 0.5s ease-out; }
 
+/* Animação de roleta na hora do sorteio */
+@keyframes spin-roll {
+    0%   { transform: rotate(-12deg) scale(0.92); }
+    25%  { transform: rotate(12deg)  scale(1.07); }
+    50%  { transform: rotate(-8deg)  scale(0.95); }
+    75%  { transform: rotate(8deg)   scale(1.04); }
+    100% { transform: rotate(-12deg) scale(0.92); }
+}
+
+.current-ball.spinning {
+    animation: spin-roll 0.16s ease-in-out infinite;
+    filter: blur(0.4px);
+}
+
 /* ── Botão sortear ────────────────────────────── */
 
 .draw-section {
@@ -173,7 +187,7 @@
     background: var(--primario);
     color: #fff;
     letter-spacing: 0.5px;
-    box-shadow: 0 6px 0 var(--primario-dark), 0 8px 24px rgba(201,42,42,0.45);
+    box-shadow: 0 6px 0 var(--primario-dark), 0 8px 24px rgba(180,83,9,0.45);
     border: none;
     cursor: pointer;
     font-family: 'Nunito', sans-serif;
@@ -183,8 +197,8 @@
     gap: 10px;
 }
 
-.btn-draw:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 var(--primario-dark), 0 12px 28px rgba(201,42,42,0.5); }
-.btn-draw:active { transform: translateY(3px);  box-shadow: 0 3px 0 var(--primario-dark), 0 4px 12px rgba(201,42,42,0.3); }
+.btn-draw:hover  { transform: translateY(-3px); box-shadow: 0 9px 0 var(--primario-dark), 0 12px 28px rgba(180,83,9,0.5); }
+.btn-draw:active { transform: translateY(3px);  box-shadow: 0 3px 0 var(--primario-dark), 0 4px 12px rgba(180,83,9,0.3); }
 .btn-draw:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: 0 6px 0 var(--primario-dark); }
 
 /* Controles secundários no palco */

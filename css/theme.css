@@ -2,14 +2,14 @@
 
 :root {
     /* Paleta Festa Junina moderna */
-    --cor-B: #E03131;   /* vermelho */
-    --cor-I: #E67700;   /* âmbar */
+    --cor-B: #1098AD;   /* teal */
+    --cor-I: #E67700;   /* âmbar/laranja */
     --cor-N: #2B8A3E;   /* verde */
     --cor-G: #7048E8;   /* roxo */
     --cor-O: #1971C2;   /* azul */
 
-    --primario:     #C92A2A;
-    --primario-dark:#9B1C1C;
+    --primario:     #B45309;
+    --primario-dark:#78350F;
     --amarelo:      #F59F00;
     --amarelo-claro:#FFF3BF;
     --verde:        #2B8A3E;
