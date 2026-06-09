@@ -95,8 +95,8 @@ body {
 }
 
 .logo-container {
-    width: 52px;
-    height: 52px;
+    width: 104px;
+    height: 104px;
     background: var(--bg-card);
     border-radius: 50%;
     display: flex;
