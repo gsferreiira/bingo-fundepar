@@ -28,6 +28,7 @@ function initRodadaButtons() {
             document.getElementById('cardsContainer').innerHTML = '';
             document.getElementById('statusText').textContent = '';
             document.getElementById('statusText').style.color = '';
+            updateViewBtn();
         });
         container.appendChild(btn);
     }
@@ -68,6 +69,33 @@ function cartelasJaGeradas(rodada) {
     return !!localStorage.getItem(`bingo-cartelas-rodada-${rodada}`);
 }
 
+function updateViewBtn() {
+    document.getElementById('viewBtn').disabled = !cartelasJaGeradas(rodadaSelecionada);
+}
+
+function viewGeneratedCards() {
+    const raw = localStorage.getItem(`bingo-cartelas-rodada-${rodadaSelecionada}`);
+    if (!raw) return;
+    const { cards, qty, geradoEm } = JSON.parse(raw);
+    const status = document.getElementById('statusText');
+
+    let html = '';
+    let pageHTML = '<div class="print-page">';
+    for (let i = 1; i <= qty; i++) {
+        pageHTML += cardHTML(rodadaSelecionada, i, cards[i - 1]);
+        if (i % 4 === 0 || i === qty) {
+            pageHTML += '</div>';
+            html += pageHTML;
+            if (i < qty) pageHTML = '<div class="print-page">';
+        }
+    }
+    document.getElementById('cardsContainer').innerHTML = html;
+
+    const data = new Date(geradoEm).toLocaleString('pt-BR');
+    status.textContent = `Exibindo ${qty} cartelas da Rodada ${rodadaSelecionada} — geradas em ${data}.`;
+    status.style.color = 'var(--texto-suave)';
+}
+
 // ── Geração ────────────────────────────────────
 
 function doGenerate() {
@@ -76,12 +104,12 @@ function doGenerate() {
 
     if (isNaN(qty) || qty < 1 || qty > 500) {
         status.textContent = 'Insira um número entre 1 e 500.';
-        status.style.color = 'var(--vermelho)';
+        status.style.color = 'var(--primario)';
         return;
     }
 
     status.textContent = `Gerando ${qty} cartelas para a Rodada ${rodadaSelecionada}...`;
-    status.style.color = 'var(--cinza)';
+    status.style.color = 'var(--texto-suave)';
 
     setTimeout(() => {
         const hashes = new Set();
@@ -109,7 +137,8 @@ function doGenerate() {
 
         document.getElementById('cardsContainer').innerHTML = html;
         status.textContent = `${qty} cartelas geradas para a Rodada ${rodadaSelecionada}. Pronto para imprimir!`;
-        status.style.color = 'var(--verde-escuro)';
+        status.style.color = 'var(--verde)';
+        updateViewBtn();
     }, 50);
 }
 
@@ -141,8 +170,10 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 
 document.addEventListener('DOMContentLoaded', () => {
     initRodadaButtons();
+    updateViewBtn();
 
     document.getElementById('generateBtn').addEventListener('click', generateCards);
+    document.getElementById('viewBtn').addEventListener('click', viewGeneratedCards);
     document.getElementById('printBtn').addEventListener('click', printCards);
 
     // Modal de re-geração

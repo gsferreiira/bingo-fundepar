@@ -158,17 +158,27 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
     color: var(--texto);
 }
 
+/* Cores de fundo por coluna */
+.card-cell:nth-child(5n+1) { background: #FDECEA; }
+.card-cell:nth-child(5n+2) { background: #FFF3E0; }
+.card-cell:nth-child(5n+3) { background: #E8F5E9; }
+.card-cell:nth-child(5n+4) { background: #EDE7F6; }
+.card-cell:nth-child(5n)   { background: #E3F2FD; }
+
 .card-cell:nth-child(5n)   { border-right: none; }
 .card-cell:nth-child(n+21) { border-bottom: none; }
 
-.card-cell.free-space { background: #F0FFF4; }
+.card-cell.free-space { background: #C8E6C9; }
 
-.free-logo { width: 30px; height: 30px; object-fit: contain; }
+.free-logo { width: 46px; height: 46px; object-fit: contain; }
 
 /* ── Impressão ────────────────────────────────── */
 
 @media print {
     @page { size: A4 portrait; margin: 8mm; }
+
+    /* Garante que fundos coloridos sejam impressos */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
     .no-print, header, .page-header, .controls-panel { display: none !important; }
 
@@ -182,14 +192,23 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
         margin: 0; padding: 0;
         background: none; box-shadow: none; border: none; border-radius: 0;
         page-break-after: always; break-after: page;
-        height: calc(297mm - 16mm);
-        align-items: stretch;
+        /* sem height fixo — cada cartela tem tamanho próprio */
+        align-items: start;
+        align-content: start;
     }
 
     .print-page:last-child { page-break-after: auto; break-after: auto; }
 
-    .bingo-card { box-shadow: none; border: 1.5px solid #999; }
+    /* Cada cartela ocupa exatamente metade da altura útil da página A4:
+       (297mm - 16mm margens - 5mm gap) / 2 ≈ 138mm */
+    .bingo-card {
+        height: calc((297mm - 16mm - 5mm) / 2);
+        box-shadow: none;
+        border: 1.5px solid #999;
+        overflow: hidden;
+    }
+
     .card-cell  { font-size: 0.88rem; min-height: 0; }
     .card-letter { font-size: 1rem; padding: 4px 0; }
-    .free-logo  { width: 24px; height: 24px; }
+    .free-logo  { width: 34px; height: 34px; }
 }
