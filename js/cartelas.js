@@ -83,7 +83,7 @@ function viewGeneratedCards() {
     let pageHTML = '<div class="print-page">';
     for (let i = 1; i <= qty; i++) {
         pageHTML += cardHTML(rodadaSelecionada, i, cards[i - 1]);
-        if (i % 4 === 0 || i === qty) {
+        if (i % 6 === 0 || i === qty) {
             pageHTML += '</div>';
             html += pageHTML;
             if (i < qty) pageHTML = '<div class="print-page">';
@@ -122,7 +122,7 @@ function doGenerate() {
             cards.push(card);
             pageHTML += cardHTML(rodadaSelecionada, i, card);
 
-            if (i % 4 === 0 || i === qty) {
+            if (i % 6 === 0 || i === qty) {
                 pageHTML += '</div>';
                 html += pageHTML;
                 if (i < qty) pageHTML = '<div class="print-page">';
