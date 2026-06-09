@@ -142,6 +142,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
     flex-grow: 1;
+    min-height: 0;
 }
 
 .card-cell {
@@ -177,7 +178,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 .free-logo {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
@@ -197,27 +198,29 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
     .print-page {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 5mm;
+        gap: 4mm;
         margin: 0; padding: 0;
         background: none; box-shadow: none; border: none; border-radius: 0;
         page-break-after: always; break-after: page;
-        /* sem height fixo — cada cartela tem tamanho próprio */
         align-items: start;
         align-content: start;
     }
 
     .print-page:last-child { page-break-after: auto; break-after: auto; }
 
-    /* Cada cartela ocupa exatamente metade da altura útil da página A4:
-       (297mm - 16mm margens - 5mm gap) / 2 ≈ 138mm */
+    /* 6 cartelas por folha A4 (2 colunas × 3 linhas):
+       (297mm - 16mm margens - 2×4mm gaps) / 3 ≈ 87mm por cartela */
     .bingo-card {
-        height: calc((297mm - 16mm - 5mm) / 2);
+        height: calc((297mm - 16mm - 8mm) / 3);
         box-shadow: none;
         border: 1.5px solid #999;
         overflow: hidden;
     }
 
-    .card-cell  { font-size: 0.88rem; min-height: 0; }
-    .card-letter { font-size: 1rem; padding: 4px 0; }
-    .free-logo  { width: 34px; height: 34px; }
+    .card-header   { padding: 5px 10px; }
+    .card-event    { font-size: 0.58rem; }
+    .card-id       { font-size: 0.85rem; }
+    .card-letter   { font-size: 0.82rem; padding: 3px 0; }
+    .card-cell     { font-size: 0.78rem; min-height: 0; padding: 2px; }
+    .card-cell.free-space { padding: 0; }
 }
