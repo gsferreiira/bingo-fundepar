@@ -264,7 +264,7 @@ function verifyWinner() {
         return;
     }
 
-    const won = checkRow(card, sorteadosRef);
+    const won = checkRows(card, sorteadosRef);
     const serialStr = String(serial).padStart(4, '0');
     if (won) {
         showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`);
