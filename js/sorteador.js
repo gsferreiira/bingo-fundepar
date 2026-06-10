@@ -1,14 +1,11 @@
 'use strict';
 
-const MAX_RODADAS = 10;
 const TOTAL_NUMBERS = 75;
 const STORAGE_RODADA_ATUAL = 'bingo-rodada-atual';
 
 let rodadaAtual = 1;
 let sorteados = [];
 let available = [];
-
-// null = jogando rodada atual | número = visualizando rodada passada (somente leitura)
 let rodadaVisualizando = null;
 
 // ── LocalStorage ───────────────────────────────
@@ -33,6 +30,11 @@ function saveState() {
 function loadRodadaSorteados(r) {
     const saved = localStorage.getItem(storageKey(r));
     return saved ? (JSON.parse(saved).sorteados || []) : [];
+}
+
+function getRodadaTipo(r) {
+    const d = localStorage.getItem(storageKey(r));
+    return d ? (JSON.parse(d).tipo || 'diagonal') : 'diagonal';
 }
 
 // ── Lógica de sorteio ──────────────────────────
@@ -107,49 +109,70 @@ function undoLast() {
 }
 
 function endRound() {
-    const isLast = rodadaAtual >= MAX_RODADAS;
     showConfirm(
-        isLast ? 'Encerrar o evento?' : `Encerrar Rodada ${rodadaAtual}?`,
-        isLast
-            ? 'Esta é a última rodada. O evento será encerrado.'
-            : `A Rodada ${rodadaAtual} será encerrada e a Rodada ${rodadaAtual + 1} começará.`,
+        `Encerrar Rodada ${rodadaAtual}?`,
+        'A rodada atual será encerrada. Você poderá criar a próxima em seguida.',
         () => {
             const data = JSON.parse(localStorage.getItem(storageKey(rodadaAtual))) || {};
             data.encerrada = true;
             localStorage.setItem(storageKey(rodadaAtual), JSON.stringify(data));
-
-            if (isLast) {
-                showResult('🎉', 'Evento encerrado!', 'Todas as 10 rodadas foram concluídas. Parabéns!');
-                render(null);
-                return;
-            }
-
-            rodadaAtual++;
-            const next = localStorage.getItem(storageKey(rodadaAtual));
-            sorteados = next ? (JSON.parse(next).sorteados || []) : [];
-            available = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1)
-                .filter(n => !sorteados.includes(n));
-            saveState();
-            rodadaVisualizando = null;
-            render(null);
+            openCreateRoundModal();
         }
     );
+}
+
+function openCreateRoundModal() {
+    const proxima = rodadaAtual + 1;
+    document.getElementById('createRoundNumber').textContent = proxima;
+    document.querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector('.win-type-card[data-tipo="diagonal"]').classList.add('selected');
+    openModal('createRoundModal');
+}
+
+function confirmCreateRound() {
+    const selected = document.querySelector('.win-type-card.selected');
+    if (!selected) return;
+
+    const tipo = selected.dataset.tipo;
+    const proxima = rodadaAtual + 1;
+
+    localStorage.setItem(storageKey(proxima), JSON.stringify({
+        sorteados: [],
+        tipo,
+        encerrada: false,
+    }));
+
+    rodadaAtual = proxima;
+    sorteados   = [];
+    available   = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+    rodadaVisualizando = null;
+
+    saveState();
+    closeModal('createRoundModal');
+    render(null);
 }
 
 function restartAll() {
     showConfirm(
         '⚠️ Reiniciar todo o evento?',
-        'Todos os sorteios de todas as rodadas serão apagados permanentemente. Esta ação não pode ser desfeita.',
+        'Todos os sorteios de todas as rodadas serão apagados permanentemente.',
         () => {
-            for (let i = 1; i <= MAX_RODADAS; i++) {
+            let i = 1;
+            while (localStorage.getItem(storageKey(i))) {
                 localStorage.removeItem(storageKey(i));
                 localStorage.removeItem(`bingo-cartelas-rodada-${i}`);
+                i++;
             }
             localStorage.removeItem(STORAGE_RODADA_ATUAL);
             rodadaAtual = 1;
-            sorteados = [];
-            available = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+            sorteados   = [];
+            available   = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
             rodadaVisualizando = null;
+
+            localStorage.setItem(storageKey(1), JSON.stringify({
+                sorteados: [], tipo: 'diagonal', encerrada: false
+            }));
+            saveState();
             render(null);
         }
     );
@@ -179,12 +202,12 @@ function renderViewMode() {
     // Banner de leitura
     const banner = document.getElementById('viewModeBanner');
     banner.style.display = 'block';
-    banner.textContent = `Visualizando Rodada ${r} de ${MAX_RODADAS} — ${isEncerrada ? 'ENCERRADA' : 'em andamento'} (somente leitura)`;
+    banner.textContent = `Visualizando Rodada ${r} — ${isEncerrada ? 'ENCERRADA' : 'em andamento'} (somente leitura)`;
 
     document.getElementById('returnBtn').style.display = 'inline-block';
 
     // Round label
-    document.getElementById('roundLabel').textContent = `Rodada ${r} de ${MAX_RODADAS}`;
+    document.getElementById('roundLabel').textContent = `Rodada ${r}`;
 
     // Bola
     const lastDrawn = viewSorteados[viewSorteados.length - 1];
@@ -264,7 +287,8 @@ function verifyWinner() {
         return;
     }
 
-    const won = checkDiagonal(card, sorteadosRef);
+    const tipoRodada = getRodadaTipo(rodadaRef);
+    const won = checkWin(card, sorteadosRef, tipoRodada);
     const serialStr = String(serial).padStart(4, '0');
     if (won) {
         showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`);
@@ -280,7 +304,7 @@ function render(lastDrawn) {
     banner.style.display = 'none';
     document.getElementById('returnBtn').style.display = 'none';
 
-    document.getElementById('roundLabel').textContent = `Rodada ${rodadaAtual} de ${MAX_RODADAS}`;
+    document.getElementById('roundLabel').textContent = `Rodada ${rodadaAtual}`;
 
     if (lastDrawn === null) {
         const last = sorteados[sorteados.length - 1];
@@ -378,10 +402,10 @@ function renderHistoryData(list) {
 function renderControls() {
     document.getElementById('undoBtn').disabled = sorteados.length === 0;
     document.getElementById('drawBtn').disabled = available.length === 0;
-    const endBtn = document.getElementById('endRoundBtn');
-    endBtn.textContent = rodadaAtual >= MAX_RODADAS
-        ? '🎊 Encerrar Evento'
-        : `Encerrar Rodada ${rodadaAtual} e Iniciar a Próxima ▶`;
+    const tipoAtual = WIN_TYPES[getRodadaTipo(rodadaAtual)] || 'Diagonal';
+    document.getElementById('endRoundBtn').textContent =
+        `Encerrar Rodada ${rodadaAtual} e Criar Próxima ▶`;
+    document.getElementById('roundTipoBadge').textContent = `🏆 ${tipoAtual}`;
 }
 
 function setControlsDisabled(disabled) {
@@ -463,6 +487,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('verifyCancel').addEventListener('click', () => closeModal('verifyModal'));
     document.getElementById('resultClose').addEventListener('click', () => closeModal('resultModal'));
+
+    document.getElementById('createRoundConfirm').addEventListener('click', confirmCreateRound);
+    document.getElementById('createRoundCancel').addEventListener('click', () => closeModal('createRoundModal'));
+
+    document.querySelectorAll('.win-type-card').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+        });
+    });
 
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', e => {

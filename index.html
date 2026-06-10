@@ -73,6 +73,20 @@
                 <button class="btn btn-warning btn-sm" id="returnBtn" style="display:none;">▶ Voltar à Rodada Atual</button>
             </div>
 
+            <div style="text-align:center; margin: 4px 0 8px;">
+                <span id="roundTipoBadge" style="
+                    display:inline-block;
+                    background:rgba(255,255,255,0.12);
+                    color:#FFE066;
+                    font-size:0.78rem;
+                    font-weight:700;
+                    padding:4px 14px;
+                    border-radius:100px;
+                    border:1px solid rgba(255,255,255,0.2);
+                    letter-spacing:0.5px;
+                ">🏆 Diagonal</span>
+            </div>
+
             <div class="current-ball-wrapper">
                 <div class="current-ball idle" id="currentBall">
                     <span class="ball-letter" id="ballLetter"></span>
@@ -143,6 +157,45 @@
             <p id="resultMessage"></p>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="resultClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: criar nova rodada -->
+    <div class="modal" id="createRoundModal">
+        <div class="modal-box create-round-modal-box">
+            <div class="create-round-header">
+                <div class="create-round-icon">🎪</div>
+                <h2>Criar Rodada <span id="createRoundNumber">2</span></h2>
+                <p>Escolha como os jogadores vão ganhar nesta rodada</p>
+            </div>
+
+            <div class="win-type-grid">
+                <div class="win-type-card selected" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
+                </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="coluna">
+                    <div class="win-type-icon">⋮⋮</div>
+                    <div class="win-type-name">Coluna</div>
+                    <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="completa">
+                    <div class="win-type-icon">⊞</div>
+                    <div class="win-type-name">Cartela Cheia</div>
+                    <div class="win-type-desc">Todos os 24 números da cartela sorteados</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="createRoundConfirm">🚀 Iniciar Rodada</button>
+                <button class="btn btn-secondary" id="createRoundCancel">Cancelar</button>
             </div>
         </div>
     </div>

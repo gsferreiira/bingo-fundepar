@@ -93,6 +93,24 @@ function checkColumns(card, sorteados) {
     return false;
 }
 
+// ── Despachante de verificação ─────────────────
+const WIN_TYPES = {
+    diagonal: 'Diagonal',
+    linha:    'Linha',
+    coluna:   'Coluna',
+    completa: 'Cartela Completa',
+};
+
+function checkWin(card, sorteados, tipo) {
+    switch (tipo) {
+        case 'linha':    return checkRows(card, sorteados);
+        case 'coluna':   return checkColumns(card, sorteados);
+        case 'completa': return checkFullCard(card, sorteados);
+        case 'diagonal':
+        default:         return checkDiagonal(card, sorteados);
+    }
+}
+
 // Retorna true se todos os 4 números de uma diagonal estiverem sorteados.
 function checkDiagonal(card, sorteados) {
     const s = new Set(sorteados);

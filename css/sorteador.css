@@ -317,3 +317,90 @@
     padding-top: 20px;
     border-top: 1px dashed var(--borda);
 }
+
+/* ── Modal criar rodada ───────────────────────── */
+
+.create-round-modal-box {
+    max-width: 520px !important;
+    padding: 28px 24px !important;
+}
+
+.create-round-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.create-round-icon {
+    font-size: 2.8rem;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.create-round-header h2 {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--texto);
+    margin-bottom: 6px;
+}
+
+.create-round-header p {
+    color: var(--texto-suave);
+    font-size: 0.85rem;
+}
+
+.win-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.win-type-card {
+    border: 2px solid var(--borda);
+    border-radius: 12px;
+    padding: 16px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s;
+    background: var(--bg);
+    user-select: none;
+}
+
+.win-type-card:hover {
+    border-color: var(--primario);
+    background: #F5F3FF;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(84,63,219,0.15);
+}
+
+.win-type-card.selected {
+    border-color: var(--primario);
+    background: linear-gradient(135deg, #EDE9FE, #F5F3FF);
+    box-shadow: 0 0 0 3px rgba(84,63,219,0.2);
+}
+
+.win-type-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-family: monospace;
+    color: var(--primario);
+    font-weight: 900;
+}
+
+.win-type-card.selected .win-type-icon {
+    color: var(--primario-dark);
+}
+
+.win-type-name {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--texto);
+    margin-bottom: 4px;
+}
+
+.win-type-desc {
+    font-size: 0.72rem;
+    color: var(--texto-suave);
+    line-height: 1.4;
+}
