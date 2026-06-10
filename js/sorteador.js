@@ -37,6 +37,25 @@ function getRodadaTipo(r) {
     return d ? (JSON.parse(d).tipo || 'diagonal') : 'diagonal';
 }
 
+// ── Tela inicial ───────────────────────────────
+
+function startGame() {
+    const selected = document.querySelector('#startScreen .win-type-card.selected');
+    const tipo = selected ? selected.dataset.tipo : 'diagonal';
+
+    localStorage.setItem(storageKey(1), JSON.stringify({
+        sorteados: [], tipo, encerrada: false,
+    }));
+
+    const screen = document.getElementById('startScreen');
+    screen.classList.add('hiding');
+    setTimeout(() => {
+        screen.classList.remove('visible', 'hiding');
+        loadState();
+        render(null);
+    }, 520);
+}
+
 // ── Lógica de sorteio ──────────────────────────
 
 function drawNumber() {
@@ -124,13 +143,13 @@ function endRound() {
 function openCreateRoundModal() {
     const proxima = rodadaAtual + 1;
     document.getElementById('createRoundNumber').textContent = proxima;
-    document.querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector('.win-type-card[data-tipo="diagonal"]').classList.add('selected');
+    document.querySelectorAll('#createRoundModal .win-type-card').forEach(c => c.classList.remove('selected'));
+    document.querySelector('#createRoundModal .win-type-card[data-tipo="diagonal"]').classList.add('selected');
     openModal('createRoundModal');
 }
 
 function confirmCreateRound() {
-    const selected = document.querySelector('.win-type-card.selected');
+    const selected = document.querySelector('#createRoundModal .win-type-card.selected');
     if (!selected) return;
 
     const tipo = selected.dataset.tipo;
@@ -169,11 +188,12 @@ function restartAll() {
             available   = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
             rodadaVisualizando = null;
 
-            localStorage.setItem(storageKey(1), JSON.stringify({
-                sorteados: [], tipo: 'diagonal', encerrada: false
-            }));
-            saveState();
-            render(null);
+            const screen = document.getElementById('startScreen');
+            screen.classList.remove('hiding');
+            screen.classList.add('visible');
+            document.querySelectorAll('#startScreen .win-type-card').forEach((c, i) => {
+                c.classList.toggle('selected', i === 0);
+            });
         }
     );
 }
@@ -438,13 +458,19 @@ function closeModal(id) { document.getElementById(id).classList.remove('open'); 
 // ── Init ───────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadState();
-    if (sorteados.length > 0) {
-        render(sorteados[sorteados.length - 1]);
+    const hasGame = !!localStorage.getItem(storageKey(1)) || !!localStorage.getItem(STORAGE_RODADA_ATUAL);
+    if (hasGame) {
+        loadState();
+        if (sorteados.length > 0) {
+            render(sorteados[sorteados.length - 1]);
+        } else {
+            render(null);
+        }
     } else {
-        render(null);
+        document.getElementById('startScreen').classList.add('visible');
     }
 
+    document.getElementById('startGameBtn').addEventListener('click', startGame);
     document.getElementById('drawBtn').addEventListener('click', drawNumber);
     document.getElementById('undoBtn').addEventListener('click', undoLast);
     document.getElementById('endRoundBtn').addEventListener('click', endRound);
@@ -493,7 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.win-type-card').forEach(card => {
         card.addEventListener('click', () => {
-            document.querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
+            card.closest('.win-type-grid').querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
         });
     });

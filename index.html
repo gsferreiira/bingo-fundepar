@@ -12,6 +12,66 @@
 </head>
 <body>
 
+    <!-- Tela de entrada -->
+    <div id="startScreen" class="start-screen">
+        <svg class="start-bands" viewBox="0 0 1200 62" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M-10,16 Q600,34 1210,16" stroke="#4A2912" stroke-width="1.8" fill="none"/>
+            <polygon points="26,16  54,16  40,50"   fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
+            <polygon points="96,20  124,20 110,54"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
+            <polygon points="166,23 194,23 180,57"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
+            <polygon points="236,25 264,25 250,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
+            <polygon points="306,27 334,27 320,61"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
+            <polygon points="376,28 404,28 390,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
+            <polygon points="446,29 474,29 460,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
+            <polygon points="516,30 544,30 530,62"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
+            <polygon points="586,30 614,30 600,62"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
+            <polygon points="656,30 684,30 670,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
+            <polygon points="726,29 754,29 740,62"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
+            <polygon points="796,28 824,28 810,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
+            <polygon points="866,27 894,27 880,61"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
+            <polygon points="936,25 964,25 950,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
+            <polygon points="1006,23 1034,23 1020,57" fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
+            <polygon points="1076,20 1104,20 1090,54" fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
+            <polygon points="1146,16 1174,16 1160,50" fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
+        </svg>
+
+        <img class="start-fogueira start-fogueira-l" src="assets/3153859.png" aria-hidden="true">
+        <img class="start-fogueira start-fogueira-r" src="assets/3153859.png" aria-hidden="true">
+
+        <div class="start-card">
+            <div class="start-logo-ring">
+                <img src="assets/logo_fundepar.png" alt="Logo Fundepar">
+            </div>
+            <h1 class="start-title">Bingo <span>Junino</span></h1>
+            <p class="start-org">Fundepar 2026</p>
+            <div class="start-sep">✦ &ensp; ✦ &ensp; ✦</div>
+            <p class="start-choose">Escolha o tipo de vitória da 1ª rodada</p>
+            <div class="win-type-grid">
+                <div class="win-type-card selected" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro</div>
+                </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal</div>
+                </div>
+                <div class="win-type-card" data-tipo="coluna">
+                    <div class="win-type-icon">⋮⋮</div>
+                    <div class="win-type-name">Coluna</div>
+                    <div class="win-type-desc">Qualquer coluna B-O</div>
+                </div>
+                <div class="win-type-card" data-tipo="completa">
+                    <div class="win-type-icon">⊞</div>
+                    <div class="win-type-name">Cartela Cheia</div>
+                    <div class="win-type-desc">Todos os 24 números</div>
+                </div>
+            </div>
+            <button id="startGameBtn" class="start-btn">🎉 Iniciar Jogo</button>
+        </div>
+    </div>
+
     <header>
         <nav class="site-nav">
             <a href="index.html" class="active">Sorteador</a>

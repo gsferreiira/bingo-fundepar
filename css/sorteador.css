@@ -404,3 +404,194 @@
     color: var(--texto-suave);
     line-height: 1.4;
 }
+
+/* ═══════════════════════════════════════════════
+   TELA INICIAL
+════════════════════════════════════════════════ */
+
+.start-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    background: linear-gradient(180deg, #060615 0%, #0d0d2b 45%, #071a06 100%);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 76px 16px 20px;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.start-screen.visible { display: flex; }
+
+.start-screen.hiding {
+    opacity: 0;
+    transform: scale(1.04);
+    pointer-events: none;
+}
+
+/* Campo estrelado */
+.start-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(1.5px 1.5px at  8%  8%, rgba(255,255,255,0.8) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 22% 14%, rgba(255,255,220,0.6) 50%, transparent 50%),
+        radial-gradient(2px   2px   at 35%  6%, rgba(255,255,200,0.7) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 48% 11%, rgba(255,255,255,0.5) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 60%  4%, rgba(255,255,200,0.8) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 74% 16%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(2px   2px   at 88%  9%, rgba(255,255,220,0.7) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 15% 28%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 30% 32%, rgba(255,255,200,0.5) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 55% 24%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 78% 30%, rgba(255,255,220,0.5) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 92% 22%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(1px   1px   at  5% 42%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(1px   1px   at 42% 45%, rgba(255,255,200,0.4) 50%, transparent 50%),
+        radial-gradient(1.5px 1.5px at 68% 40%, rgba(255,255,255,0.4) 50%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Bandeirinhas */
+.start-bands {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    width: 100%; height: 62px;
+    z-index: 1;
+}
+
+/* Fogueiras */
+.start-fogueira {
+    position: absolute;
+    bottom: 0;
+    height: 190px;
+    animation: fogueira 1.2s ease-in-out infinite alternate;
+    pointer-events: none;
+    filter: drop-shadow(0 0 22px rgba(255,120,0,0.5));
+    z-index: 1;
+}
+.start-fogueira-l { left: 0;  animation-delay: 0s; }
+.start-fogueira-r { right: 0; animation-delay: 0.7s; }
+
+/* Card central */
+.start-card {
+    background: rgba(8, 6, 35, 0.82);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(245, 215, 50, 0.22);
+    border-radius: 24px;
+    padding: 32px 28px 28px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+    overflow-y: auto;
+    max-height: calc(100vh - 100px);
+}
+
+/* Logo */
+.start-logo-ring {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.95);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    border: 3px solid #F59F00;
+    box-shadow: 0 0 28px rgba(245,159,0,0.5), 0 4px 16px rgba(0,0,0,0.5);
+    flex-shrink: 0;
+}
+.start-logo-ring img { width: 62%; height: 62%; object-fit: contain; }
+
+/* Título */
+.start-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    margin-bottom: 4px;
+}
+.start-title span {
+    color: #F59F00;
+    text-shadow: 0 0 32px rgba(245,159,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+/* Organização */
+.start-org {
+    font-size: 0.82rem; font-weight: 700;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+/* Separador */
+.start-sep {
+    color: #F59F00; font-size: 0.72rem;
+    letter-spacing: 6px; opacity: 0.65;
+    margin-bottom: 14px;
+}
+
+/* Label do tipo */
+.start-choose {
+    font-size: 0.75rem; font-weight: 700;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+/* Win-type cards no start screen (dark override) */
+.start-card .win-type-card {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.14);
+}
+.start-card .win-type-card:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(245,159,0,0.5);
+    box-shadow: 0 4px 16px rgba(245,159,0,0.12);
+}
+.start-card .win-type-card.selected {
+    background: rgba(245,159,0,0.14);
+    border-color: #F59F00;
+    box-shadow: 0 0 0 2px rgba(245,159,0,0.28);
+}
+.start-card .win-type-icon { color: #F59F00; }
+.start-card .win-type-card.selected .win-type-icon { color: #FFD43B; }
+.start-card .win-type-name { color: #fff; }
+.start-card .win-type-desc { color: rgba(255,255,255,0.45); }
+
+/* Botão Iniciar Jogo */
+.start-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900; font-size: 1.1rem;
+    padding: 15px 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #F59F00 0%, #E67700 100%);
+    color: #1a0a00;
+    border: none; cursor: pointer;
+    letter-spacing: 0.2px;
+    box-shadow: 0 6px 0 #9A4200, 0 8px 24px rgba(245,159,0,0.4);
+    transition: transform 0.12s, box-shadow 0.12s;
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 20px;
+}
+.start-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 0 #9A4200, 0 12px 28px rgba(245,159,0,0.5);
+}
+.start-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 3px 0 #9A4200, 0 4px 12px rgba(245,159,0,0.3);
+}
+
+@media (max-width: 500px) {
+    .start-title { font-size: 2.1rem; }
+    .start-fogueira { height: 130px; opacity: 0.5; }
+    .start-card { padding: 24px 16px 20px; }
+}
