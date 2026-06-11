@@ -2,21 +2,36 @@
 
 let rodadaSelecionada = 1;
 
+// ── Total de rodadas configurado ───────────────
+
+function getTotalRodadas() {
+    const n = parseInt(localStorage.getItem('bingo-total-rodadas'));
+    return (!isNaN(n) && n >= 1) ? n : 10;
+}
+
+function setTotalRodadas(n) {
+    localStorage.setItem('bingo-total-rodadas', n);
+}
+
 // ── Detectar rodada atual do sorteador ─────────
 
 function detectRodadaAtual() {
+    const total = getTotalRodadas();
     const r = parseInt(localStorage.getItem('bingo-rodada-atual'));
-    return (!isNaN(r) && r >= 1 && r <= 10) ? r : 1;
+    return (!isNaN(r) && r >= 1 && r <= total) ? r : 1;
 }
 
 // ── Botões de rodada ───────────────────────────
 
 function initRodadaButtons() {
+    const total = getTotalRodadas();
     const rodadaDetectada = detectRodadaAtual();
     rodadaSelecionada = rodadaDetectada;
 
     const container = document.getElementById('rodadaButtons');
-    for (let i = 1; i <= 10; i++) {
+    container.innerHTML = '';
+
+    for (let i = 1; i <= total; i++) {
         const btn = document.createElement('button');
         btn.className = 'rodada-btn' + (i === rodadaDetectada ? ' active' : '');
         btn.textContent = i;
@@ -32,6 +47,46 @@ function initRodadaButtons() {
         });
         container.appendChild(btn);
     }
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'rodada-btn rodada-btn-add';
+    addBtn.textContent = '+';
+    addBtn.title = 'Criar mais rodadas';
+    addBtn.addEventListener('click', openAddRodadasModal);
+    container.appendChild(addBtn);
+}
+
+function openAddRodadasModal() {
+    const total = getTotalRodadas();
+    const input = document.getElementById('addRodadasInput');
+    input.min = total + 1;
+    input.value = total + 5;
+    document.getElementById('addRodadasAtual').textContent = total;
+    openModal('addRodadasModal');
+}
+
+function confirmAddRodadas() {
+    const total = getTotalRodadas();
+    const input = document.getElementById('addRodadasInput');
+    const novoTotal = parseInt(input.value);
+    const error = document.getElementById('addRodadasError');
+
+    if (isNaN(novoTotal) || novoTotal <= total) {
+        error.textContent = `Insira um número maior que ${total}.`;
+        error.style.display = 'block';
+        return;
+    }
+    if (novoTotal > 99) {
+        error.textContent = 'O máximo permitido é 99 rodadas.';
+        error.style.display = 'block';
+        return;
+    }
+
+    error.style.display = 'none';
+    setTotalRodadas(novoTotal);
+    closeModal('addRodadasModal');
+    initRodadaButtons();
+    updateViewBtn();
 }
 
 // ── HTML de uma cartela ────────────────────────
@@ -182,6 +237,16 @@ document.addEventListener('DOMContentLoaded', () => {
         doGenerate();
     });
     document.getElementById('regenCancel').addEventListener('click', () => closeModal('regenModal'));
+
+    // Modal de adicionar rodadas
+    document.getElementById('addRodadasConfirm').addEventListener('click', confirmAddRodadas);
+    document.getElementById('addRodadasCancel').addEventListener('click', () => {
+        document.getElementById('addRodadasError').style.display = 'none';
+        closeModal('addRodadasModal');
+    });
+    document.getElementById('addRodadasInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') confirmAddRodadas();
+    });
 
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', e => {

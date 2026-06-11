@@ -76,6 +76,24 @@
         <div id="cardsContainer"></div>
     </main>
 
+    <!-- Modal: adicionar rodadas -->
+    <div class="modal" id="addRodadasModal">
+        <div class="modal-box">
+            <div class="result-icon">🎪</div>
+            <h2>Criar mais rodadas</h2>
+            <p>Total atual: <strong id="addRodadasAtual">10</strong> rodadas.</p>
+            <p style="margin-top:8px;">Quantas rodadas deseja ter no total?</p>
+            <div style="margin-top:14px;">
+                <input type="number" id="addRodadasInput" min="11" max="99" value="15" class="ctrl-input" style="width:100px; text-align:center;">
+            </div>
+            <p class="status-text" id="addRodadasError" style="color:var(--primario); display:none; margin-top:8px;"></p>
+            <div class="modal-actions" style="margin-top:16px;">
+                <button class="btn btn-primary" id="addRodadasConfirm">Confirmar</button>
+                <button class="btn btn-secondary" id="addRodadasCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal: aviso re-geração -->
     <div class="modal" id="regenModal">
         <div class="modal-box">
