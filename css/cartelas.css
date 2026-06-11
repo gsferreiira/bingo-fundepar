@@ -63,6 +63,13 @@ main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
 .rodada-btn:hover { background: #FFF3BF; color: var(--primario-dark); border-color: var(--secundario); }
 .rodada-btn.active { background: var(--primario); color: #fff; border-color: var(--primario-dark); }
 
+.rodada-btn-add {
+    color: var(--primario);
+    border-style: dashed;
+    font-size: 1.1rem;
+}
+.rodada-btn-add:hover { background: #FFF3BF; color: var(--primario-dark); border-color: var(--primario); }
+
 .control-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
 
 .status-text { margin-top: 12px; font-size: 0.85rem; font-weight: 600; min-height: 1.2em; }
