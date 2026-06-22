@@ -321,7 +321,8 @@ function verifyWinner() {
     const won = checkWin(card, sorteadosRef, tipoRodada);
     const serialStr = String(serial).padStart(4, '0');
     if (won) {
-        showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`);
+        const thumbHTML = renderCardGridHTML(card, sorteadosRef);
+        showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`, thumbHTML);
     } else {
         showResult('❌', 'Ainda não!', `A cartela #${serialStr} ainda não completou todos os números.`);
     }
@@ -465,10 +466,18 @@ function showConfirm(title, message, onConfirm) {
     openModal('confirmModal');
 }
 
-function showResult(icon, title, message) {
+function showResult(icon, title, message, cardThumbHTML) {
     document.getElementById('resultIcon').textContent = icon;
     document.getElementById('resultTitle').textContent = title;
     document.getElementById('resultMessage').textContent = message;
+    const thumb = document.getElementById('resultCardThumb');
+    if (cardThumbHTML) {
+        thumb.innerHTML = cardThumbHTML;
+        thumb.style.display = 'block';
+    } else {
+        thumb.innerHTML = '';
+        thumb.style.display = 'none';
+    }
     openModal('resultModal');
 }
 
