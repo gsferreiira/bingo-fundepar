@@ -101,14 +101,17 @@ const WIN_TYPES = {
     completa: 'Cartela Completa',
 };
 
-function checkWin(card, sorteados, tipo) {
-    switch (tipo) {
-        case 'linha':    return checkRows(card, sorteados);
-        case 'coluna':   return checkColumns(card, sorteados);
-        case 'completa': return checkFullCard(card, sorteados);
-        case 'diagonal':
-        default:         return checkDiagonal(card, sorteados);
-    }
+function checkWin(card, sorteados, tipos) {
+    const lista = Array.isArray(tipos) ? tipos : [tipos];
+    return lista.some(tipo => {
+        switch (tipo) {
+            case 'linha':    return checkRows(card, sorteados);
+            case 'coluna':   return checkColumns(card, sorteados);
+            case 'completa': return checkFullCard(card, sorteados);
+            case 'diagonal': return checkDiagonal(card, sorteados);
+            default:         return false;
+        }
+    });
 }
 
 // Retorna true se todos os 4 números de uma diagonal estiverem sorteados.
