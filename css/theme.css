@@ -155,10 +155,12 @@ body {
 .btn-warning   { background: var(--secundario);        color: var(--primario-dark); }
 .btn-secondary { background: var(--borda-suave);   color: var(--texto); border: 1px solid var(--borda); }
 .btn-orange    { background: #E67700;               color: #fff; }
-.btn-ghost     { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25); }
+.btn-ghost     { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25);}
 .btn-ghost:hover { background: rgba(255,255,255,0.22); box-shadow: none; filter: none; }
 .btn-ghost:disabled { opacity: 0.3; }
-.btn-sm        { font-size: 0.8rem; padding: 7px 14px; border-radius: 8px; }
+.btn-sm        { font-size: 0.8rem; padding: 11px 9px; border-radius: 8px;}
+#verifyBtn        { background: #008000; color: #ffffff; border: 1px solid rgba(255,255,255,0.25); font-size: 0.rem; padding: 15px 18px; border-radius:30px;}
+#undoBtn        { background: #ff660034; color: #ffffff; border: 1px solid rgba(255,255,255,0.25); font-size: 0.rem; padding: 4px 5px; border-radius: 30px;}
 
 /* ── Card panel ───────────────────────────────── */
 
