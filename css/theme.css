@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap');
 
 :root {
-    /* Paleta Festa Junina moderna */
-    --cor-B: #1098AD;   /* teal */
-    --cor-I: #E67700;   /* âmbar/laranja */
-    --cor-N: #2B8A3E;   /* verde */
-    --cor-G: #7048E8;   /* roxo */
-    --cor-O: #1971C2;   /* azul */
+    --cor-B: #0a8cad;
+    --cor-I: #e67700;
+    --cor-N: #2B8A3E;
+    --cor-G: #aa64ff;
+    --cor-O: #1971C2;
 
     --primario:     #543fDB;
     --primario-dark:#264580;
