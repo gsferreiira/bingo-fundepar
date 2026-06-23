@@ -93,22 +93,33 @@ function checkColumns(card, sorteados) {
     return false;
 }
 
+// Retorna true se os 4 cantos da cartela (B[0], O[0], B[4], O[4]) estiverem sorteados.
+function checkCorners(card, sorteados) {
+    const s = new Set(sorteados);
+    return s.has(card.B[0]) && s.has(card.O[0]) && s.has(card.B[4]) && s.has(card.O[4]);
+}
+
 // ── Despachante de verificação ─────────────────
 const WIN_TYPES = {
     diagonal: 'Diagonal',
     linha:    'Linha',
     coluna:   'Coluna',
     completa: 'Cartela Completa',
+    cantos:   '4 Cantos',
 };
 
-function checkWin(card, sorteados, tipo) {
-    switch (tipo) {
-        case 'linha':    return checkRows(card, sorteados);
-        case 'coluna':   return checkColumns(card, sorteados);
-        case 'completa': return checkFullCard(card, sorteados);
-        case 'diagonal':
-        default:         return checkDiagonal(card, sorteados);
-    }
+function checkWin(card, sorteados, tipos) {
+    const lista = Array.isArray(tipos) ? tipos : [tipos];
+    return lista.some(tipo => {
+        switch (tipo) {
+            case 'linha':    return checkRows(card, sorteados);
+            case 'coluna':   return checkColumns(card, sorteados);
+            case 'completa': return checkFullCard(card, sorteados);
+            case 'diagonal': return checkDiagonal(card, sorteados);
+            case 'cantos':   return checkCorners(card, sorteados);
+            default:         return false;
+        }
+    });
 }
 
 // Retorna true se todos os 4 números de uma diagonal estiverem sorteados.

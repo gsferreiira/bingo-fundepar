@@ -34,14 +34,21 @@ function loadRodadaSorteados(r) {
 
 function getRodadaTipo(r) {
     const d = localStorage.getItem(storageKey(r));
-    return d ? (JSON.parse(d).tipo || 'diagonal') : 'diagonal';
+    if (!d) return ['diagonal'];
+    const tipo = JSON.parse(d).tipo;
+    if (!tipo) return ['diagonal'];
+    return Array.isArray(tipo) ? tipo : [tipo];
 }
 
 // ── Tela inicial ───────────────────────────────
 
 function startGame() {
-    const selected = document.querySelector('#startScreen .win-type-card.selected');
-    const tipo = selected ? selected.dataset.tipo : 'diagonal';
+    const selected = document.querySelectorAll('#startScreen .win-type-card.selected');
+    const tipo = Array.from(selected).map(c => c.dataset.tipo);
+    if (tipo.length === 0) {
+        flashWinTypeGridError('#startScreen');
+        return;
+    }
 
     localStorage.setItem(storageKey(1), JSON.stringify({
         sorteados: [], tipo, encerrada: false,
@@ -149,10 +156,13 @@ function openCreateRoundModal() {
 }
 
 function confirmCreateRound() {
-    const selected = document.querySelector('#createRoundModal .win-type-card.selected');
-    if (!selected) return;
+    const selected = document.querySelectorAll('#createRoundModal .win-type-card.selected');
+    const tipo = Array.from(selected).map(c => c.dataset.tipo);
+    if (tipo.length === 0) {
+        flashWinTypeGridError('#createRoundModal');
+        return;
+    }
 
-    const tipo = selected.dataset.tipo;
     const proxima = rodadaAtual + 1;
 
     localStorage.setItem(storageKey(proxima), JSON.stringify({
@@ -422,10 +432,20 @@ function renderHistoryData(list) {
 function renderControls() {
     document.getElementById('undoBtn').disabled = sorteados.length === 0;
     document.getElementById('drawBtn').disabled = available.length === 0;
-    const tipoAtual = WIN_TYPES[getRodadaTipo(rodadaAtual)] || 'Diagonal';
+    const tipos = getRodadaTipo(rodadaAtual);
+    const labels = tipos.map(t => WIN_TYPES[t] || t);
+    const badgeText = labels.length <= 2 ? labels.join(' + ') : `${labels.length} tipos de vitória`;
     document.getElementById('endRoundBtn').textContent =
         `Encerrar Rodada ${rodadaAtual} e Criar Próxima ▶`;
-    document.getElementById('roundTipoBadge').textContent = `🏆 ${tipoAtual}`;
+    document.getElementById('roundTipoBadge').textContent = `🏆 ${badgeText}`;
+    document.getElementById('roundTipoBadge').title = labels.join(', ');
+}
+
+function flashWinTypeGridError(scopeSelector) {
+    const grid = document.querySelector(`${scopeSelector} .win-type-grid`);
+    if (!grid) return;
+    grid.classList.add('win-type-grid-error');
+    setTimeout(() => grid.classList.remove('win-type-grid-error'), 600);
 }
 
 function setControlsDisabled(disabled) {
@@ -518,10 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('createRoundCancel').addEventListener('click', () => closeModal('createRoundModal'));
 
     document.querySelectorAll('.win-type-card').forEach(card => {
-        card.addEventListener('click', () => {
-            card.closest('.win-type-grid').querySelectorAll('.win-type-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-        });
+        card.addEventListener('click', () => card.classList.toggle('selected'));
     });
 
     document.querySelectorAll('.modal').forEach(modal => {
