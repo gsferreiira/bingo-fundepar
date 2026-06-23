@@ -2,6 +2,7 @@
 
 const TOTAL_NUMBERS = 75;
 const STORAGE_RODADA_ATUAL = 'bingo-rodada-atual';
+const STORAGE_HIDE_SORTEAR = 'bingo-hide-sortear-btn';
 
 let rodadaAtual = 1;
 let sorteados = [];
@@ -498,6 +499,17 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         document.getElementById('startScreen').classList.add('visible');
     }
+
+    const hideSortear = localStorage.getItem(STORAGE_HIDE_SORTEAR) === 'true';
+    document.getElementById('hideSortearToggle').checked = hideSortear;
+    document.body.classList.toggle('hide-sortear', hideSortear);
+
+    document.getElementById('settingsBtn').addEventListener('click', () => openModal('settingsModal'));
+    document.getElementById('settingsClose').addEventListener('click', () => closeModal('settingsModal'));
+    document.getElementById('hideSortearToggle').addEventListener('change', e => {
+        localStorage.setItem(STORAGE_HIDE_SORTEAR, e.target.checked);
+        document.body.classList.toggle('hide-sortear', e.target.checked);
+    });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
     document.getElementById('drawBtn').addEventListener('click', drawNumber);

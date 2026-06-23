@@ -170,6 +170,46 @@
     filter: blur(0.4px);
 }
 
+/* ── Botão de configurações (engrenagem) ───────── */
+
+.btn-icon {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    margin-left: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s, transform 0.15s;
+}
+.btn-icon:hover { background: rgba(255,255,255,0.22); transform: rotate(25deg); }
+
+.settings-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    text-align: left;
+    margin: 18px 0 4px;
+    padding: 12px 14px;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    background: var(--borda-suave);
+    cursor: pointer;
+    font-size: 0.85rem;
+    color: var(--texto);
+    font-weight: 600;
+}
+.settings-toggle input { margin-top: 2px; width: 18px; height: 18px; accent-color: var(--primario); cursor: pointer; }
+
+/* Modo "sorteio físico": esconde só o botão de sortear, mantém o resto do palco */
+body.hide-sortear .draw-section { display: none; }
+
 /* ── Botão sortear ────────────────────────────── */
 
 .draw-section {
@@ -202,9 +242,10 @@
 
 /* Controles secundários no palco */
 .controls-secondary {
-    display: grid;
+    display: flex;
     justify-content: center;
-    gap: 8px;
+    align-items: center;
+    gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 4px;
 }
@@ -553,6 +594,33 @@
     top: 0; left: 0; right: 0;
     width: 100%; height: 62px;
     z-index: 1;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: bottom left;
+    background-size: 210px 62px;
+}
+
+/* Chapéu de palha decorativo na tela inicial */
+.start-hat {
+    position: absolute;
+    top: 70px;
+    right: 6%;
+    width: 90px;
+    z-index: 3;
+    opacity: 0.85;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+    animation: hat-sway 3.2s ease-in-out infinite alternate;
+    pointer-events: none;
+}
+.start-hat svg { width: 100%; display: block; }
+
+@keyframes hat-sway {
+    from { transform: rotate(-4deg); }
+    to   { transform: rotate(4deg); }
+}
+
+@media (max-width: 700px) {
+    .start-hat { display: none; }
 }
 
 /* Fogueiras */
@@ -570,7 +638,10 @@
 
 /* Card central */
 .start-card {
-    background: rgba(8, 6, 35, 0.82);
+    background:
+        repeating-linear-gradient(0deg,  rgba(25,113,194,0.05) 0 18px, transparent 18px 36px),
+        repeating-linear-gradient(90deg, rgba(25,113,194,0.05) 0 18px, transparent 18px 36px),
+        rgba(8, 6, 35, 0.82);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(245, 215, 50, 0.22);
@@ -707,7 +778,8 @@
         flex-shrink: 0;
         padding-bottom: 0;
     }
-    .bandeirinhas { height: 28px; margin-bottom: -4px; }
+    .bandeirinhas { height: 28px; margin-bottom: -4px; background-size: 95px 28px; }
+    .bandeirinhas-tier2 { display: none; }
     .page-header { padding: 6px 24px 8px; gap: 10px; }
     .logo-container { width: 52px; height: 52px; }
     .page-title { font-size: 1.1rem; }
