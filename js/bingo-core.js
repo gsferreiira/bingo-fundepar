@@ -144,3 +144,23 @@ function checkDiagonal(card, sorteados) {
     }
     return diagonal1 || diagonal2;
 }
+
+// Gera o grid 5x5 de uma cartela com números sorteados marcados (para exibição, não impressão).
+function renderCardGridHTML(card, sorteados) {
+    const drawn = new Set(sorteados);
+    const letters = ['B', 'I', 'N', 'G', 'O'];
+    let cellsHTML = '';
+    for (let row = 0; row < 5; row++) {
+        for (const letter of letters) {
+            if (letter === 'N' && row === 2) {
+                cellsHTML += `<div class="result-card-cell result-card-free"><img src="assets/logo_fundepar.png" alt="★" class="result-card-free-logo"></div>`;
+            } else {
+                const n = card[letter][row];
+                const isDrawn = drawn.has(n);
+                cellsHTML += `<div class="result-card-cell${isDrawn ? ' is-drawn' : ''}" data-letter="${letter}">${n}</div>`;
+            }
+        }
+    }
+    return `<div class="result-card-letters">${letters.map(l => `<div class="result-card-letter" data-letter="${l}">${l}</div>`).join('')}</div>
+        <div class="result-card-grid">${cellsHTML}</div>`;
+}

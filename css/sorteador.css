@@ -318,6 +318,70 @@
     border-top: 1px dashed var(--borda);
 }
 
+/* ── Modal resultado: miniatura da cartela vencedora ── */
+
+.result-modal-box {
+    max-width: 640px !important;
+}
+
+.result-card-thumb {
+    margin: 18px 0 4px;
+}
+
+.result-card-letters {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    margin-bottom: 2px;
+}
+
+.result-card-letter {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 900;
+    padding: 8px 0;
+    color: #fff;
+    border-radius: 6px 6px 0 0;
+}
+
+.result-card-letter[data-letter="B"] { background: var(--cor-B); }
+.result-card-letter[data-letter="I"] { background: var(--cor-I); }
+.result-card-letter[data-letter="N"] { background: var(--cor-N); }
+.result-card-letter[data-letter="G"] { background: var(--cor-G); }
+.result-card-letter[data-letter="O"] { background: var(--cor-O); }
+
+.result-card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    border: 3px solid var(--borda);
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+.result-card-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 900;
+    min-height: 76px;
+    border-right: 1px solid var(--borda-suave);
+    border-bottom: 1px solid var(--borda-suave);
+    color: var(--texto-suave);
+    background: var(--bg);
+}
+
+.result-card-cell.is-drawn {
+    background: var(--verde);
+    color: #fff;
+}
+
+.result-card-cell:nth-child(5n) { border-right: none; }
+.result-card-cell:nth-child(n+21) { border-bottom: none; }
+
+.result-card-free { padding: 4px; }
+.result-card-free-logo { width: 100%; height: 100%; object-fit: contain; display: block; }
+
 /* ── Modal criar rodada ───────────────────────── */
 
 .create-round-modal-box {
