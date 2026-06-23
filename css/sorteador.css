@@ -687,3 +687,71 @@
     .start-fogueira { height: 130px; opacity: 0.5; }
     .start-card { padding: 24px 16px 20px; }
 }
+
+/* ═══════════════════════════════════════════════
+   TELÃO — layout paisagem para 1920x1080 e similares
+   Aditivo: telas menores continuam com o stack vertical.
+════════════════════════════════════════════════ */
+
+@media (min-width: 1280px) and (orientation: landscape) {
+    body {
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    header { flex-shrink: 0; }
+
+    .page-hero {
+        flex-shrink: 0;
+        padding-bottom: 0;
+    }
+    .bandeirinhas { height: 28px; margin-bottom: -4px; }
+    .page-header { padding: 6px 24px 8px; gap: 10px; }
+    .logo-container { width: 52px; height: 52px; }
+    .page-title { font-size: 1.1rem; }
+    .page-subtitle { font-size: 0.7rem; }
+
+    .sorteador-main {
+        flex: 1;
+        min-height: 0;
+        max-width: 1800px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 16px 32px 20px;
+        display: grid;
+        grid-template-columns: minmax(420px, 38%) 1fr;
+        grid-template-rows: 1fr auto auto;
+        grid-template-areas:
+            "stage board"
+            "stage history"
+            "stage end";
+        gap: 18px;
+        align-items: start;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    .hero-stage   { grid-area: stage;   margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+    .bingo-board-wrapper { grid-area: board;   margin: 0; }
+    .history-panel       { grid-area: history; margin: 0; }
+    .end-round-section   { grid-area: end;     margin-top: 0; padding-top: 16px; }
+
+    .current-ball { width: 220px; height: 220px; }
+    .ball-number  { font-size: 5.2rem; }
+    .ball-letter  { font-size: 1.9rem; }
+    .btn-draw     { font-size: 1.4rem; padding: 20px 60px; }
+
+    .bingo-board { min-width: 0; }
+    .board-ball  { font-size: 0.95rem; }
+
+    .history-list { gap: 6px; }
+    .history-chip { font-size: 0.9rem; padding: 5px 14px; }
+}
+
+@media (min-width: 1280px) and (orientation: landscape) {
+    .start-card { max-width: 640px; }
+    .win-type-grid { grid-template-columns: repeat(5, 1fr); }
+    .create-round-modal-box, .result-modal-box { max-width: 760px !important; }
+}
