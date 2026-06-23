@@ -209,6 +209,14 @@
             <h2 id="resultTitle"></h2>
             <p id="resultMessage"></p>
             <div class="result-card-thumb" id="resultCardThumb" style="display:none;"></div>
+            <div class="winner-name-box" id="winnerNameBox" style="display:none;">
+                <input type="text" id="winnerNameInput" class="modal-input winner-name-input" placeholder="Nome do vencedor" maxlength="40">
+                <button class="btn btn-primary btn-sm" id="winnerNameSave">Salvar</button>
+            </div>
+            <div class="winners-rank" id="winnersRank" style="display:none;">
+                <div class="winners-rank-title">🏅 Vencedores da rodada</div>
+                <div class="winners-rank-list" id="winnersRankList"></div>
+            </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="resultClose">Fechar</button>
             </div>

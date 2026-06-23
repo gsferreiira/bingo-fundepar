@@ -362,11 +362,14 @@ body.hide-sortear .draw-section { display: none; }
 /* ── Modal resultado: miniatura da cartela vencedora ── */
 
 .result-modal-box {
-    max-width: 640px !important;
+    max-width: 400px !important;
 }
 
 .result-card-thumb {
-    margin: 18px 0 4px;
+    margin: 14px 0 4px;
+    max-width: 260px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .result-card-letters {
@@ -377,9 +380,9 @@ body.hide-sortear .draw-section { display: none; }
 
 .result-card-letter {
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 0.9rem;
     font-weight: 900;
-    padding: 8px 0;
+    padding: 4px 0;
     color: #fff;
     border-radius: 6px 6px 0 0;
 }
@@ -394,8 +397,8 @@ body.hide-sortear .draw-section { display: none; }
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    border: 3px solid var(--borda);
-    border-radius: 0 0 10px 10px;
+    border: 2px solid var(--borda);
+    border-radius: 0 0 8px 8px;
     overflow: hidden;
 }
 
@@ -403,9 +406,9 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.8rem;
+    font-size: 0.95rem;
     font-weight: 900;
-    min-height: 76px;
+    min-height: 40px;
     border-right: 1px solid var(--borda-suave);
     border-bottom: 1px solid var(--borda-suave);
     color: var(--texto-suave);
@@ -420,8 +423,79 @@ body.hide-sortear .draw-section { display: none; }
 .result-card-cell:nth-child(5n) { border-right: none; }
 .result-card-cell:nth-child(n+21) { border-bottom: none; }
 
-.result-card-free { padding: 4px; }
+.result-card-free { padding: 2px; }
 .result-card-free-logo { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* ── Nome do vencedor + mini ranking ───────────── */
+
+.winner-name-box {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.winner-name-input {
+    flex: 1;
+    width: auto;
+    margin-top: 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: left;
+    border-radius: 8px;
+}
+
+.winners-rank {
+    margin-top: 14px;
+    text-align: left;
+}
+
+.winners-rank-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+}
+
+.winners-rank-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.winners-rank-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--borda-suave);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+}
+
+.winners-rank-pos {
+    font-weight: 900;
+    color: var(--primario-dark);
+    min-width: 1.4em;
+}
+
+.winners-rank-name {
+    flex: 1;
+    font-weight: 700;
+    color: var(--texto);
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.winners-rank-serial {
+    font-size: 0.72rem;
+    color: var(--texto-suave);
+    font-weight: 700;
+}
 
 /* ── Modal criar rodada ───────────────────────── */
 
@@ -825,5 +899,6 @@ body.hide-sortear .draw-section { display: none; }
 @media (min-width: 1280px) and (orientation: landscape) {
     .start-card { max-width: 640px; }
     .win-type-grid { grid-template-columns: repeat(5, 1fr); }
-    .create-round-modal-box, .result-modal-box { max-width: 760px !important; }
+    .create-round-modal-box { max-width: 760px !important; }
+    .result-modal-box { max-width: 440px !important; }
 }

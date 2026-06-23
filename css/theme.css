@@ -78,7 +78,10 @@ body {
 /* ── Bandeirinhas + hero ──────────────────────── */
 
 .page-hero {
-    background: linear-gradient(180deg, #FFF8E7 0%, var(--bg) 100%);
+    background:
+        repeating-linear-gradient(0deg,  rgba(25,113,194,0.05) 0 22px, transparent 22px 44px),
+        repeating-linear-gradient(90deg, rgba(25,113,194,0.05) 0 22px, transparent 22px 44px),
+        linear-gradient(180deg, #FFF8E7 0%, var(--bg) 100%);
     border-bottom: 1px solid var(--borda);
     overflow: hidden;
 }
@@ -86,24 +89,24 @@ body {
 .bandeirinhas {
     display: block;
     width: 100%;
-    height: 62px;
+    height: 92px;
     margin-bottom: -4px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
     background-position: bottom left;
-    background-size: 210px 62px;
+    background-size: 312px 92px;
 }
 
 /* Segunda camada de bandeirinhas, mais fina e defasada — dá densidade ao topo */
 .bandeirinhas-tier2 {
     display: block;
     width: 100%;
-    height: 22px;
+    height: 34px;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3C/svg%3E");
     background-repeat: repeat-x;
     background-position: top left;
-    background-size: 130px 24px;
-    opacity: 0.8;
+    background-size: 185px 34px;
+    opacity: 0.85;
 }
 
 /* ── Page header ──────────────────────────────── */
@@ -117,16 +120,16 @@ body {
 }
 
 .logo-container {
-    width: 104px;
-    height: 104px;
+    width: 140px;
+    height: 140px;
     background: var(--bg-card);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.14);
     flex-shrink: 0;
-    border: 2px solid var(--secundario);
+    border: 3px solid var(--secundario);
 }
 
 .logo-container img {
@@ -136,7 +139,7 @@ body {
 }
 
 .page-title {
-    font-size: 1.7rem;
+    font-size: 2.3rem;
     font-weight: 900;
     color: var(--primario-dark);
     letter-spacing: -0.3px;
@@ -144,10 +147,19 @@ body {
 }
 
 .page-subtitle {
-    font-size: 0.82rem;
+    font-size: 1rem;
     font-weight: 600;
     color: var(--texto-suave);
     letter-spacing: 0.5px;
+}
+
+@media (max-width: 560px) {
+    .bandeirinhas { height: 60px; background-size: 204px 60px; }
+    .bandeirinhas-tier2 { height: 22px; background-size: 120px 22px; }
+    .page-header { padding: 10px 16px 14px; gap: 10px; }
+    .logo-container { width: 84px; height: 84px; }
+    .page-title { font-size: 1.5rem; }
+    .page-subtitle { font-size: 0.78rem; }
 }
 
 /* ── Buttons ──────────────────────────────────── */
