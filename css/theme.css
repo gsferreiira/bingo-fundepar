@@ -26,10 +26,17 @@
 
 body {
     font-family: 'Nunito', sans-serif;
-    background: var(--bg);
+    background:
+        repeating-linear-gradient(0deg,  rgba(25,113,194,0.04) 0 22px, transparent 22px 44px),
+        repeating-linear-gradient(90deg, rgba(25,113,194,0.04) 0 22px, transparent 22px 44px),
+        var(--bg);
     color: var(--texto);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
+}
+
+@media print {
+    body { background: #fff; }
 }
 
 /* ── Nav ──────────────────────────────────────── */
