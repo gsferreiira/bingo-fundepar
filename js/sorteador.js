@@ -320,11 +320,11 @@ function verifyWinner() {
     const tipoRodada = getRodadaTipo(rodadaRef);
     const won = checkWin(card, sorteadosRef, tipoRodada);
     const serialStr = String(serial).padStart(4, '0');
+    const thumbHTML = renderCardGridHTML(card, sorteadosRef);
     if (won) {
-        const thumbHTML = renderCardGridHTML(card, sorteadosRef);
         showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`, thumbHTML);
     } else {
-        showResult('❌', 'Ainda não!', `A cartela #${serialStr} ainda não completou todos os números.`);
+        showResult('❌', 'Ainda não!', `A cartela #${serialStr} ainda não completou todos os números.`, thumbHTML);
     }
 }
 
