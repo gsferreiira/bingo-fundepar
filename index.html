@@ -275,6 +275,15 @@
                         <button class="btn-draw tie-break-draw-btn" id="tieBreakDrawBtn">CLIQUE AQUI PARA SORTEAR</button>
                     </div>
                     <div class="tie-break-summary" id="tieBreakSummary">Nenhuma pedra sorteada ainda.</div>
+
+                    <div class="tie-break-winner-box" id="tieBreakWinnerBox" style="display:none;">
+                        <div class="tie-break-winner-label">🏅 Maior pedra: <strong id="tieBreakWinnerBall">-</strong></div>
+                        <div class="winner-name-box">
+                            <input type="text" id="tieBreakWinnerName" class="modal-input winner-name-input" placeholder="Nome do vencedor do desempate" maxlength="40">
+                            <button class="btn btn-primary btn-sm" id="tieBreakWinnerSave">Definir Vencedor</button>
+                        </div>
+                        <p class="tie-break-winner-status" id="tieBreakWinnerStatus" style="display:none;"></p>
+                    </div>
                 </div>
 
                 <div class="tie-break-camera">

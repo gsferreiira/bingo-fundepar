@@ -573,6 +573,20 @@ body.hide-sortear .draw-section { display: none; }
     pointer-events: none;
 }
 
+/* Faixa de bandeirinhas juninas separando o header escuro do conteúdo claro */
+.tie-break-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: top left;
+    background-size: 140px 22px;
+}
+
 .tie-break-icon {
     font-size: 2.4rem;
     line-height: 1;
@@ -603,7 +617,10 @@ body.hide-sortear .draw-section { display: none; }
 .tie-break-camera {
     border: 1px solid var(--borda);
     border-radius: 14px;
-    background: var(--bg);
+    background:
+        repeating-linear-gradient(0deg,  rgba(230,119,0,0.05) 0 18px, transparent 18px 36px),
+        repeating-linear-gradient(90deg, rgba(230,119,0,0.05) 0 18px, transparent 18px 36px),
+        var(--bg);
     padding: 18px;
 }
 
@@ -688,6 +705,47 @@ body.hide-sortear .draw-section { display: none; }
     color: #5C3D00;
     font-weight: 900;
     font-size: 1.03rem;
+}
+
+.tie-break-winner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: repeating-linear-gradient(135deg, #2E7D32 0px, #2E7D32 10px, #388E3C 10px, #388E3C 20px);
+    border: 2px dashed #FFD43B;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    transform: rotate(-0.6deg);
+}
+
+.tie-break-winner-label {
+    color: #fff;
+    font-size: 1.02rem;
+    font-weight: 800;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.tie-break-winner-label strong {
+    color: #FFE066;
+    font-size: 1.15rem;
+}
+
+.tie-break-winner-box .winner-name-box { margin-top: 0; }
+
+.tie-break-winner-box .winner-name-input {
+    background: #fff;
+}
+
+.tie-break-winner-status {
+    color: #FFE066;
+    font-weight: 900;
+    font-size: 0.97rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    margin: 0 !important;
 }
 
 .tie-break-camera {
@@ -934,6 +992,10 @@ body.hide-sortear .draw-section { display: none; }
     font-size: 0.85rem;
     color: var(--texto-suave);
     font-weight: 700;
+}
+
+.winners-rank-tiebreak {
+    color: #E67700;
 }
 
 /* ── Painel flutuante: ranking de vencedores ───── */
