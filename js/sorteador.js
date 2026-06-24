@@ -73,6 +73,9 @@ let rodadaAtual = 1;
 let sorteados = [];
 let available = [];
 let rodadaVisualizando = null;
+let tieBreakSorteados = [];
+let tieBreakAvailable = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+let tieBreakCameraStream = null;
 
 // ── LocalStorage ───────────────────────────────
 
@@ -374,6 +377,204 @@ function toggleManual(n) {
     }
 }
 
+// ── Desempate por pedra maior ───────────────────────────────────────────────
+
+function openTieBreakModal() {
+    renderTieBreak(null);
+    openModal('tieBreakModal');
+    startTieBreakWebcam();
+}
+
+function drawTieBreakNumber() {
+    if (tieBreakAvailable.length === 0) {
+        document.getElementById('tieBreakSummary').textContent =
+            `Todas as ${TOTAL_NUMBERS} pedras já foram sorteadas no desempate.`;
+        return;
+    }
+
+    const idx = Math.floor(Math.random() * tieBreakAvailable.length);
+    const n = tieBreakAvailable.splice(idx, 1)[0];
+    tieBreakSorteados.push(n);
+    animateTieBreakDraw(n, () => renderTieBreak(n));
+}
+
+function animateTieBreakDraw(finalNumber, onComplete) {
+    const ballEl   = document.getElementById('tieBreakBall');
+    const letterEl = document.getElementById('tieBreakBallLetter');
+    const numberEl = document.getElementById('tieBreakBallNumber');
+    const caption  = document.getElementById('tieBreakCaption');
+    const drawBtn  = document.getElementById('tieBreakDrawBtn');
+    const resetBtn = document.getElementById('tieBreakResetBtn');
+
+    drawBtn.disabled = true;
+    resetBtn.disabled = true;
+
+    delete ballEl.dataset.letter;
+    letterEl.textContent = '';
+
+    const countdown = [3, 2, 1];
+    let countdownIndex = 0;
+
+    function countdownTick() {
+        const value = countdown[countdownIndex];
+        ballEl.className = 'current-ball tie-break-countdown';
+        numberEl.textContent = value;
+        caption.textContent = `Sorteando em ${value}...`;
+        countdownIndex++;
+
+        if (countdownIndex < countdown.length) {
+            setTimeout(countdownTick, 820);
+            return;
+        }
+
+        setTimeout(startRolling, 820);
+    }
+
+    function startRolling() {
+        ballEl.className = 'current-ball spinning';
+        caption.textContent = 'Valendo!';
+        tick();
+    }
+
+    const TOTAL_MS = 1600;
+    let elapsed = 0;
+    let delay = 45;
+
+    function tick() {
+        const rand = Math.floor(Math.random() * TOTAL_NUMBERS) + 1;
+        const letter = getBingoLetter(rand);
+        letterEl.textContent = letter;
+        numberEl.textContent = rand;
+        ballEl.dataset.letter = letter;
+
+        elapsed += delay;
+        if (elapsed >= TOTAL_MS) {
+            ballEl.className = 'current-ball';
+            onComplete();
+            resetBtn.disabled = false;
+            return;
+        }
+
+        delay = Math.round(45 + (elapsed / TOTAL_MS) * 340);
+        setTimeout(tick, delay);
+    }
+
+    countdownTick();
+}
+
+function renderTieBreak(lastDrawn) {
+    const drawBtn = document.getElementById('tieBreakDrawBtn');
+    const resetBtn = document.getElementById('tieBreakResetBtn');
+    const ballEl = document.getElementById('tieBreakBall');
+    const letterEl = document.getElementById('tieBreakBallLetter');
+    const numberEl = document.getElementById('tieBreakBallNumber');
+    const caption = document.getElementById('tieBreakCaption');
+    const summary = document.getElementById('tieBreakSummary');
+
+    drawBtn.disabled = tieBreakAvailable.length === 0;
+    resetBtn.disabled = tieBreakSorteados.length === 0;
+
+    const last = lastDrawn !== null ? lastDrawn : tieBreakSorteados[tieBreakSorteados.length - 1];
+    if (last !== undefined) {
+        const letter = getBingoLetter(last);
+        letterEl.textContent = letter;
+        numberEl.textContent = last;
+        caption.textContent = `${tieBreakSorteados.length} pedra${tieBreakSorteados.length === 1 ? '' : 's'} sorteada${tieBreakSorteados.length === 1 ? '' : 's'} no desempate`;
+        ballEl.className = 'current-ball active';
+        ballEl.dataset.letter = letter;
+        if (lastDrawn !== null) {
+            void ballEl.offsetWidth;
+            ballEl.classList.add('animate');
+        }
+    } else {
+        letterEl.textContent = '';
+        numberEl.textContent = '?';
+        caption.textContent = 'Aguardando desempate';
+        ballEl.className = 'current-ball idle';
+        delete ballEl.dataset.letter;
+    }
+
+    renderTieBreakHistory();
+
+    if (tieBreakSorteados.length === 0) {
+        summary.textContent = 'Nenhuma pedra sorteada ainda.';
+        return;
+    }
+
+    const maior = Math.max(...tieBreakSorteados);
+    const pos = tieBreakSorteados.indexOf(maior) + 1;
+    summary.textContent = `Maior até agora: ${getBingoLetter(maior)}-${maior} (finalista ${pos}).`;
+}
+
+function renderTieBreakHistory() {
+    const histList = document.getElementById('tieBreakHistory');
+    histList.innerHTML = '';
+    if (tieBreakSorteados.length === 0) {
+        const empty = document.createElement('span');
+        empty.className = 'history-empty';
+        empty.textContent = 'Nenhuma pedra sorteada ainda';
+        histList.appendChild(empty);
+        return;
+    }
+
+    const maior = Math.max(...tieBreakSorteados);
+    tieBreakSorteados.forEach((n, i) => {
+        const letter = getBingoLetter(n);
+        const chip = document.createElement('span');
+        chip.className = 'history-chip tie-break-chip' + (n === maior ? ' tie-break-highest' : '');
+        chip.dataset.letter = letter;
+        chip.textContent = `${i + 1}º: ${letter}-${n}`;
+        histList.appendChild(chip);
+    });
+}
+
+function resetTieBreak() {
+    tieBreakSorteados = [];
+    tieBreakAvailable = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+    renderTieBreak(null);
+}
+
+async function startTieBreakWebcam() {
+    const video = document.getElementById('tieBreakWebcam');
+    const placeholder = document.getElementById('tieBreakCameraPlaceholder');
+    const status = document.getElementById('tieBreakCameraStatus');
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        status.textContent = 'Webcam não disponível neste navegador.';
+        placeholder.style.display = 'flex';
+        return;
+    }
+
+    if (tieBreakCameraStream && tieBreakCameraStream.active) {
+        video.srcObject = tieBreakCameraStream;
+        placeholder.style.display = 'none';
+        status.textContent = 'Webcam ativa para conferir as pedras.';
+        return;
+    }
+    status.textContent = 'Solicitando acesso à webcam...';
+    placeholder.style.display = 'flex';
+
+    try {
+        tieBreakCameraStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        video.srcObject = tieBreakCameraStream;
+        placeholder.style.display = 'none';
+        status.textContent = 'Webcam ativa para conferir as pedras.';
+    } catch (err) {
+        status.textContent = 'Não foi possível ativar a webcam. Verifique a permissão do navegador.';
+        placeholder.style.display = 'flex';
+    }
+}
+
+function stopTieBreakWebcam() {
+    if (tieBreakCameraStream) {
+        tieBreakCameraStream.getTracks().forEach(track => track.stop());
+        tieBreakCameraStream = null;
+    }
+
+    const video = document.getElementById('tieBreakWebcam');
+    if (video) video.srcObject = null;
+}
+
 // ── Verificar vencedor ─────────────────────────
 
 function verifyWinner() {
@@ -549,7 +750,7 @@ function flashWinTypeGridError(scopeSelector) {
 }
 
 function setControlsDisabled(disabled) {
-    ['drawBtn', 'undoBtn', 'verifyBtn', 'endRoundBtn'].forEach(id => {
+    ['drawBtn', 'undoBtn', 'verifyBtn', 'endRoundBtn', 'tieBreakBtn'].forEach(id => {
         document.getElementById(id).disabled = disabled;
     });
 }
@@ -596,7 +797,15 @@ function showResult(icon, title, message, cardThumbHTML, rodadaRef, serial) {
 }
 
 function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) {
+    document.getElementById(id).classList.remove('open');
+    if (id === 'tieBreakModal') {
+        const placeholder = document.getElementById('tieBreakCameraPlaceholder');
+        const status = document.getElementById('tieBreakCameraStatus');
+        if (placeholder) placeholder.style.display = 'flex';
+        if (status) status.textContent = 'A webcam será ativada ao abrir o desempate.';
+    }
+}
 
 // ── Init ───────────────────────────────────────
 
@@ -680,6 +889,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('drawBtn').addEventListener('click', drawNumber);
     document.getElementById('undoBtn').addEventListener('click', undoLast);
     document.getElementById('endRoundBtn').addEventListener('click', endRound);
+    document.getElementById('tieBreakBtn').addEventListener('click', openTieBreakModal);
+    document.getElementById('tieBreakDrawBtn').addEventListener('click', drawTieBreakNumber);
+    document.getElementById('tieBreakResetBtn').addEventListener('click', resetTieBreak);
+    document.getElementById('tieBreakCloseBtn').addEventListener('click', () => closeModal('tieBreakModal'));
     document.getElementById('restartBtn').addEventListener('click', restartAll);
     document.getElementById('returnBtn').addEventListener('click', returnToCurrentRound);
 
@@ -743,7 +956,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('.modal').forEach(modal => {
         modal.addEventListener('click', e => {
-            if (e.target === modal) modal.classList.remove('open');
+            if (e.target === modal) closeModal(modal.id);
         });
     });
 });
+
+window.addEventListener('beforeunload', stopTieBreakWebcam);
