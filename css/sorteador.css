@@ -899,6 +899,26 @@ body.hide-sortear .draw-section { display: none; }
     overflow-y: auto;
 }
 
+.winners-float-seeall {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--borda-suave);
+    padding-top: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.89rem;
+    font-weight: 800;
+    color: var(--primario);
+    cursor: pointer;
+    text-align: right;
+}
+
+.winners-float-seeall:hover { color: var(--primario-dark); }
+
+#allWinnersList { max-height: 360px; overflow-y: auto; margin: 14px 0; }
+
 .podium-list {
     display: flex;
     flex-direction: column;

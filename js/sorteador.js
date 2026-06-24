@@ -46,19 +46,35 @@ function renderWinnersRank(rodada) {
 
 const STORAGE_RANK_FLOAT_COLLAPSED = 'bingo-rank-float-collapsed';
 
-function renderWinnersPodium() {
+function podiumItemHTML(r, winners) {
+    const winnerHTML = winners.length
+        ? winners.map(w => escapeHTML(w.nome)).join(', ')
+        : '<span class="podium-pending">aguardando vencedor</span>';
+    return `
+        <div class="podium-item">
+            <span class="podium-round">Rodada ${r}</span>
+            <span class="podium-winner">${winnerHTML}</span>
+        </div>`;
+}
+
+// Mostra só as últimas 3 rodadas (mais recente primeiro) que já têm vencedor registrado.
+function renderWinnersMini() {
     const list = document.getElementById('winnersFloatList');
+    const items = [];
+    for (let r = rodadaAtual; r >= 1 && items.length < 3; r--) {
+        const winners = loadWinners(r);
+        if (winners.length) items.push(podiumItemHTML(r, winners));
+    }
+    list.innerHTML = items.length
+        ? items.join('')
+        : '<div class="podium-item"><span class="podium-winner podium-pending">aguardando vencedores</span></div>';
+}
+
+function renderAllWinnersModal() {
+    const list = document.getElementById('allWinnersList');
     let html = '';
     for (let r = 1; r <= rodadaAtual; r++) {
-        const winners = loadWinners(r);
-        const winnerHTML = winners.length
-            ? winners.map(w => escapeHTML(w.nome)).join(', ')
-            : '<span class="podium-pending">aguardando vencedor</span>';
-        html += `
-            <div class="podium-item">
-                <span class="podium-round">Rodada ${r}</span>
-                <span class="podium-winner">${winnerHTML}</span>
-            </div>`;
+        html += podiumItemHTML(r, loadWinners(r));
     }
     list.innerHTML = html;
 }
@@ -260,7 +276,7 @@ function confirmCreateRound() {
     saveState();
     closeModal('createRoundModal');
     render(null);
-    renderWinnersPodium();
+    renderWinnersMini();
 }
 
 function restartAll() {
@@ -287,7 +303,7 @@ function restartAll() {
             document.querySelectorAll('#startScreen .win-type-card').forEach((c, i) => {
                 c.classList.toggle('selected', i === 0);
             });
-            renderWinnersPodium();
+            renderWinnersMini();
         }
     );
 }
@@ -350,7 +366,7 @@ function renderViewMode() {
     setControlsDisabled(true);
 
     updateRoundBadges(r);
-    renderWinnersPodium();
+    renderWinnersMini();
 }
 
 // ── Toggle manual de pedra ─────────────────────
@@ -651,7 +667,7 @@ function render(lastDrawn) {
     renderBoardData(sorteados, false);
     renderHistoryData(sorteados);
     renderControls();
-    renderWinnersPodium();
+    renderWinnersMini();
 
     const prevBtn = document.getElementById('prevRoundBtn');
     const nextBtn = document.getElementById('nextRoundBtn');
@@ -787,7 +803,7 @@ function showResult(icon, title, message, cardThumbHTML, rodadaRef, serial) {
         nameBox.dataset.rodada = rodadaRef;
         nameBox.dataset.serial = serial;
         renderWinnersRank(rodadaRef);
-        renderWinnersPodium();
+        renderWinnersMini();
     } else {
         nameBox.style.display = 'none';
         document.getElementById('winnersRank').style.display = 'none';
@@ -884,6 +900,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const collapsed = winnersFloat.classList.toggle('collapsed');
         localStorage.setItem(STORAGE_RANK_FLOAT_COLLAPSED, collapsed);
     });
+    document.getElementById('winnersFloatSeeAll').addEventListener('click', () => {
+        renderAllWinnersModal();
+        openModal('allWinnersModal');
+    });
+    document.getElementById('allWinnersClose').addEventListener('click', () => closeModal('allWinnersModal'));
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
     document.getElementById('drawBtn').addEventListener('click', drawNumber);
@@ -941,7 +962,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveWinner(rodada, serial, nome);
         document.getElementById('winnerNameInput').value = '';
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
     });
     document.getElementById('winnerNameInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('winnerNameSave').click();
