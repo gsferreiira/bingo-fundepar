@@ -14,26 +14,16 @@
 
     <!-- Tela de entrada -->
     <div id="startScreen" class="start-screen">
-        <svg class="start-bands" viewBox="0 0 1200 62" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M-10,16 Q600,34 1210,16" stroke="#4A2912" stroke-width="1.8" fill="none"/>
-            <polygon points="26,16  54,16  40,50"   fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="96,20  124,20 110,54"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="166,23 194,23 180,57"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="236,25 264,25 250,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="306,27 334,27 320,61"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
-            <polygon points="376,28 404,28 390,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="446,29 474,29 460,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="516,30 544,30 530,62"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="586,30 614,30 600,62"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="656,30 684,30 670,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="726,29 754,29 740,62"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
-            <polygon points="796,28 824,28 810,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="866,27 894,27 880,61"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="936,25 964,25 950,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="1006,23 1034,23 1020,57" fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="1076,20 1104,20 1090,54" fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="1146,16 1174,16 1160,50" fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-        </svg>
+        <div class="start-bands" aria-hidden="true"></div>
+
+        <div class="start-hat" aria-hidden="true">
+            <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="60" cy="56" rx="58" ry="11" fill="#E0A85C" stroke="#9A6F32" stroke-width="2"/>
+                <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="#F0C27B" stroke="#9A6F32" stroke-width="2"/>
+                <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
+                <rect x="22" y="44" width="76" height="9" rx="3" fill="#1971C2" stroke="#0D4F8A" stroke-width="1"/>
+            </svg>
+        </div>
 
         <img class="start-fogueira start-fogueira-l" src="assets/3153859.png" aria-hidden="true">
         <img class="start-fogueira start-fogueira-r" src="assets/3153859.png" aria-hidden="true">
@@ -47,12 +37,7 @@
             <div class="start-sep">✦ &ensp; ✦ &ensp; ✦</div>
             <p class="start-choose">Escolha o tipo de vitória da 1ª rodada</p>
             <div class="win-type-grid">
-                <div class="win-type-card selected" data-tipo="diagonal">
-                    <div class="win-type-icon">╲╱</div>
-                    <div class="win-type-name">Diagonal</div>
-                    <div class="win-type-desc">Os 4 cantos + centro</div>
-                </div>
-                <div class="win-type-card" data-tipo="linha">
+                <div class="win-type-card selected" data-tipo="linha">
                     <div class="win-type-icon">☰</div>
                     <div class="win-type-name">Linha</div>
                     <div class="win-type-desc">Qualquer linha horizontal</div>
@@ -62,6 +47,16 @@
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B-O</div>
                 </div>
+                <div class="win-type-card" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro</div>
+                </div>
+                <div class="win-type-card" data-tipo="cantos">
+                    <div class="win-type-icon">◰</div>
+                    <div class="win-type-name">4 Cantos</div>
+                    <div class="win-type-desc">Os 4 cantos da cartela</div>
+                </div>
                 <div class="win-type-card" data-tipo="completa">
                     <div class="win-type-icon">⊞</div>
                     <div class="win-type-name">Cartela Cheia</div>
@@ -69,6 +64,8 @@
                 </div>
             </div>
             <button id="startGameBtn" class="start-btn">🎉 Iniciar Jogo</button>
+            <button id="startImportBtn" class="start-btn-secondary">📥 Importar cartelas</button>
+            <input type="file" id="startImportFile" accept=".json" style="display:none;">
         </div>
     </div>
 
@@ -76,32 +73,15 @@
         <nav class="site-nav">
             <a href="index.html" class="active">Sorteador</a>
             <a href="cartelas.html">Cartelas</a>
+            <button id="settingsBtn" class="btn-icon" aria-label="Configurações" title="Configurações">⚙️</button>
         </nav>
         <div class="nav-stripe"></div>
+        <div class="bandeirinhas-tier2" aria-hidden="true"></div>
     </header>
 
     <!-- Bandeirinhas + Cabeçalho da página -->
     <div class="page-hero">
-        <svg class="bandeirinhas" viewBox="0 0 1200 62" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M-10,16 Q600,34 1210,16" stroke="#4A2912" stroke-width="1.8" fill="none"/>
-            <polygon points="26,16  54,16  40,50"   fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="96,20  124,20 110,54"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="166,23 194,23 180,57"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="236,25 264,25 250,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="306,27 334,27 320,61"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
-            <polygon points="376,28 404,28 390,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="446,29 474,29 460,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="516,30 544,30 530,62"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="586,30 614,30 600,62"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="656,30 684,30 670,62"  fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="726,29 754,29 740,62"  fill="#1971C2" stroke="#0D4F8A" stroke-width="0.5"/>
-            <polygon points="796,28 824,28 810,62"  fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="866,27 894,27 880,61"  fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-            <polygon points="936,25 964,25 950,59"  fill="#7048E8" stroke="#4C32A8" stroke-width="0.5"/>
-            <polygon points="1006,23 1034,23 1020,57" fill="#E09200" stroke="#9A6400" stroke-width="0.5"/>
-            <polygon points="1076,20 1104,20 1090,54" fill="#E67700" stroke="#A04D00" stroke-width="0.5"/>
-            <polygon points="1146,16 1174,16 1160,50" fill="#2B8A3E" stroke="#1A5C29" stroke-width="0.5"/>
-        </svg>
+        <div class="bandeirinhas" aria-hidden="true"></div>
 
         <div class="page-header">
             <div class="logo-container">
@@ -133,18 +113,13 @@
                 <button class="btn btn-warning btn-sm" id="returnBtn" style="display:none;">▶ Voltar à Rodada Atual</button>
             </div>
 
-            <div style="text-align:center; margin: 4px 0 8px;">
-                <span id="roundTipoBadge" style="
-                    display:inline-block;
-                    background:rgba(255,255,255,0.12);
-                    color:#FFE066;
-                    font-size:0.78rem;
-                    font-weight:700;
-                    padding:4px 14px;
-                    border-radius:100px;
-                    border:1px solid rgba(255,255,255,0.2);
-                    letter-spacing:0.5px;
-                ">🏆 Diagonal</span>
+            <div style="text-align:center; margin: 1px 0 12px;">
+                <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
+            </div>
+
+            <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
+                <span class="round-premio-ticket-icon">🎁</span>
+                <span class="round-premio-ticket-text" id="roundPremioText"></span>
             </div>
 
             <div class="current-ball-wrapper">
@@ -160,8 +135,8 @@
             </div>
 
             <div class="controls-secondary">
-                <button class="btn btn-ghost btn-sm" id="undoBtn">↩ Desfazer</button>
-                <button class="btn btn-ghost btn-sm" id="verifyBtn">🏆 Verificar Vencedor</button>
+                <button class="btn" id="verifyBtn">🏆 Verificar Vencedor</button>
+                <button class="btn" id="undoBtn">↩ Desfazer</button>
             </div>
         </div>
 
@@ -183,6 +158,52 @@
         </div>
 
     </main>
+
+    <!-- Painel flutuante: pódio de vencedores de todas as rodadas -->
+    <div class="winners-float" id="winnersFloat">
+        <button class="winners-float-header" id="winnersFloatToggle">
+            <span>🏆 Pódio de Vencedores</span>
+            <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
+        </button>
+        <div class="winners-float-body" id="winnersFloatBody">
+            <div class="podium-list" id="winnersFloatList"></div>
+        </div>
+    </div>
+
+    <!-- Modal: configurações -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-box">
+            <h2>⚙️ Configurações</h2>
+            <p>Ajustes de exibição do sorteador</p>
+            <label class="settings-toggle">
+                <input type="checkbox" id="hideSortearToggle">
+                <span>Ocultar botão "Sortear" (sorteio com equipamento físico)</span>
+            </label>
+
+            <div class="settings-section">
+                <label for="premioInput">🎁 Prêmio da rodada <span id="premioRodadaLabel">1</span></label>
+                <div class="settings-row">
+                    <input type="text" id="premioInput" class="modal-input premio-input" placeholder="Ex: Caixa de paçoca" maxlength="60">
+                    <button class="btn btn-primary btn-sm" id="premioSave">Salvar</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <label>💾 Backup dos dados</label>
+                <p class="settings-hint">Exporte para levar os dados do evento para outro computador, ou importe um arquivo de backup.</p>
+                <div class="settings-row">
+                    <button class="btn btn-secondary btn-sm" id="exportBackupBtn">📤 Exportar dados</button>
+                    <button class="btn btn-secondary btn-sm" id="importBackupBtn">📥 Importar dados</button>
+                    <input type="file" id="importBackupFile" accept=".json" style="display:none;">
+                </div>
+                <p class="import-backup-error" id="importBackupError" style="display:none;"></p>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="settingsClose">Fechar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal: confirmação -->
     <div class="modal" id="confirmModal">
@@ -211,10 +232,19 @@
 
     <!-- Modal: resultado -->
     <div class="modal" id="resultModal">
-        <div class="modal-box">
+        <div class="modal-box result-modal-box">
             <div class="result-icon" id="resultIcon"></div>
             <h2 id="resultTitle"></h2>
             <p id="resultMessage"></p>
+            <div class="result-card-thumb" id="resultCardThumb" style="display:none;"></div>
+            <div class="winner-name-box" id="winnerNameBox" style="display:none;">
+                <input type="text" id="winnerNameInput" class="modal-input winner-name-input" placeholder="Nome do vencedor" maxlength="40">
+                <button class="btn btn-primary btn-sm" id="winnerNameSave">Salvar</button>
+            </div>
+            <div class="winners-rank" id="winnersRank" style="display:none;">
+                <div class="winners-rank-title">🏅 Vencedores da rodada</div>
+                <div class="winners-rank-list" id="winnersRankList"></div>
+            </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="resultClose">Fechar</button>
             </div>
@@ -231,11 +261,6 @@
             </div>
 
             <div class="win-type-grid">
-                <div class="win-type-card selected" data-tipo="diagonal">
-                    <div class="win-type-icon">╲╱</div>
-                    <div class="win-type-name">Diagonal</div>
-                    <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
-                </div>
                 <div class="win-type-card" data-tipo="linha">
                     <div class="win-type-icon">☰</div>
                     <div class="win-type-name">Linha</div>
@@ -245,6 +270,16 @@
                     <div class="win-type-icon">⋮⋮</div>
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
+                </div>
+                <div class="win-type-card" data-tipo="cantos">
+                    <div class="win-type-icon">◰</div>
+                    <div class="win-type-name">4 Cantos</div>
+                    <div class="win-type-desc">Os 4 cantos da cartela sorteados</div>
                 </div>
                 <div class="win-type-card" data-tipo="completa">
                     <div class="win-type-icon">⊞</div>
@@ -261,6 +296,7 @@
     </div>
 
     <script src="js/bingo-core.js"></script>
+    <script src="js/backup.js"></script>
     <script src="js/sorteador.js"></script>
 </body>
 </html>
