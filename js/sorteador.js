@@ -76,6 +76,7 @@ let rodadaVisualizando = null;
 let tieBreakSorteados = [];
 let tieBreakAvailable = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
 let tieBreakCameraStream = null;
+let tieBreakWebcamEnabled = true;
 
 // ── LocalStorage ───────────────────────────────
 
@@ -382,7 +383,15 @@ function toggleManual(n) {
 function openTieBreakModal() {
     renderTieBreak(null);
     openModal('tieBreakModal');
-    startTieBreakWebcam();
+    if (tieBreakWebcamEnabled) {
+        startTieBreakWebcam();
+    } else {
+        const placeholder = document.getElementById('tieBreakCameraPlaceholder');
+        const status = document.getElementById('tieBreakCameraStatus');
+        if (placeholder) placeholder.style.display = 'flex';
+        if (status) status.textContent = 'Webcam desligada manualmente.';
+        updateTieBreakCameraToggle();
+    }
 }
 
 function drawTieBreakNumber() {
@@ -534,14 +543,48 @@ function resetTieBreak() {
     renderTieBreak(null);
 }
 
+function updateTieBreakCameraToggle() {
+    const btn = document.getElementById('tieBreakCameraToggleBtn');
+    if (!btn) return;
+    const isOn = tieBreakWebcamEnabled && !!(tieBreakCameraStream && tieBreakCameraStream.active);
+    const label = btn.querySelector('.tie-break-toggle-label');
+    if (label) label.textContent = isOn ? 'Ligada' : 'Desligada';
+    btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
+    btn.classList.toggle('is-on', isOn);
+    btn.classList.toggle('is-off', !isOn);
+}
+
+function toggleTieBreakWebcam() {
+    if (tieBreakCameraStream && tieBreakCameraStream.active) {
+        tieBreakWebcamEnabled = false;
+        stopTieBreakWebcam();
+        const placeholder = document.getElementById('tieBreakCameraPlaceholder');
+        const status = document.getElementById('tieBreakCameraStatus');
+        if (placeholder) placeholder.style.display = 'flex';
+        if (status) status.textContent = 'Webcam desligada manualmente.';
+        return;
+    }
+
+    tieBreakWebcamEnabled = true;
+    startTieBreakWebcam();
+}
+
 async function startTieBreakWebcam() {
     const video = document.getElementById('tieBreakWebcam');
     const placeholder = document.getElementById('tieBreakCameraPlaceholder');
     const status = document.getElementById('tieBreakCameraStatus');
 
+    if (!tieBreakWebcamEnabled) {
+        if (placeholder) placeholder.style.display = 'flex';
+        if (status) status.textContent = 'Webcam desligada manualmente.';
+        updateTieBreakCameraToggle();
+        return;
+    }
+
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         status.textContent = 'Webcam não disponível neste navegador.';
         placeholder.style.display = 'flex';
+        updateTieBreakCameraToggle();
         return;
     }
 
@@ -549,6 +592,7 @@ async function startTieBreakWebcam() {
         video.srcObject = tieBreakCameraStream;
         placeholder.style.display = 'none';
         status.textContent = 'Webcam ativa para conferir as pedras.';
+        updateTieBreakCameraToggle();
         return;
     }
     status.textContent = 'Solicitando acesso à webcam...';
@@ -563,6 +607,7 @@ async function startTieBreakWebcam() {
         status.textContent = 'Não foi possível ativar a webcam. Verifique a permissão do navegador.';
         placeholder.style.display = 'flex';
     }
+    updateTieBreakCameraToggle();
 }
 
 function stopTieBreakWebcam() {
@@ -573,6 +618,7 @@ function stopTieBreakWebcam() {
 
     const video = document.getElementById('tieBreakWebcam');
     if (video) video.srcObject = null;
+    updateTieBreakCameraToggle();
 }
 
 // ── Verificar vencedor ─────────────────────────
@@ -891,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('endRoundBtn').addEventListener('click', endRound);
     document.getElementById('tieBreakBtn').addEventListener('click', openTieBreakModal);
     document.getElementById('tieBreakDrawBtn').addEventListener('click', drawTieBreakNumber);
+    document.getElementById('tieBreakCameraToggleBtn').addEventListener('click', toggleTieBreakWebcam);
     document.getElementById('tieBreakResetBtn').addEventListener('click', resetTieBreak);
     document.getElementById('tieBreakCloseBtn').addEventListener('click', () => closeModal('tieBreakModal'));
     document.getElementById('restartBtn').addEventListener('click', restartAll);
