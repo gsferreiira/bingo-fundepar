@@ -194,22 +194,40 @@ function savePremiosMapa(mapa) {
     localStorage.setItem(STORAGE_PREMIOS_MAPA, JSON.stringify(mapa));
 }
 
-function getRodadaPremio(r) {
+function getRodadaPremios(r) {
     const mapa = loadPremiosMapa();
-    if (mapa[r]) return mapa[r];
+    const v = mapa[r];
+    if (Array.isArray(v)) return v.map(p => (p || '').trim()).filter(Boolean);
+    if (typeof v === 'string' && v.trim()) return [v.trim()];
     const d = localStorage.getItem(storageKey(r));
-    if (!d) return '';
-    return JSON.parse(d).premio || '';
+    if (!d) return [];
+    const legacy = JSON.parse(d).premio;
+    return legacy ? [legacy] : [];
 }
 
-function setRodadaPremio(r, premio) {
+function setRodadaPremios(r, premios) {
     const mapa = loadPremiosMapa();
-    mapa[r] = premio.trim();
+    const clean = premios.map(p => (p || '').trim()).filter(Boolean);
+    mapa[r] = clean;
     savePremiosMapa(mapa);
 }
 
 function getTotalRodadasConfig() {
     return parseInt(localStorage.getItem('bingo-total-rodadas')) || 10;
+}
+
+function collectRoundPremiosFromDOM(r) {
+    const inputs = document.querySelectorAll(`.premio-items[data-rodada="${r}"] .premio-input`);
+    return Array.from(inputs).map(inp => inp.value);
+}
+
+function premioRowHTML(r, valor) {
+    return `
+        <div class="premio-row" data-rodada="${r}">
+            <input type="text" class="modal-input premio-input" data-rodada="${r}" value="${escapeHTML(valor)}" placeholder="Ex: Caixa de paçoca" maxlength="60">
+            <button class="btn-icon premio-row-remove" data-rodada="${r}" title="Remover prêmio" aria-label="Remover prêmio">🗑</button>
+        </div>
+    `;
 }
 
 function renderPremiosSettingsList() {
@@ -224,13 +242,19 @@ function renderPremiosSettingsList() {
         .sort((a, b) => a - b)
         .forEach(r => rounds.push(r));
 
-    container.innerHTML = rounds.map(r => `
-        <div class="premio-row" data-rodada="${r}">
-            <span class="premio-row-label">Rodada ${r}</span>
-            <input type="text" class="modal-input premio-input" data-rodada="${r}" value="${escapeHTML(mapa[r] || '')}" placeholder="Ex: Caixa de paçoca" maxlength="60">
-            <button class="btn-icon premio-row-remove" data-rodada="${r}" title="Remover prêmio" aria-label="Remover prêmio">🗑</button>
-        </div>
-    `).join('');
+    container.innerHTML = rounds.map(r => {
+        const premios = getRodadaPremios(r);
+        const items = premios.length ? premios : [''];
+        return `
+            <div class="premio-round-group" data-rodada="${r}">
+                <div class="premio-round-header">
+                    <span class="premio-row-label">Rodada ${r}</span>
+                    <button class="btn-icon premio-row-add" data-rodada="${r}" title="Adicionar outro prêmio" aria-label="Adicionar outro prêmio">➕</button>
+                </div>
+                <div class="premio-items" data-rodada="${r}">${items.map(p => premioRowHTML(r, p)).join('')}</div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ── Tela inicial ───────────────────────────────
@@ -900,10 +924,10 @@ function updateRoundBadges(rodada) {
     document.getElementById('roundTipoBadge').textContent = `🏆 ${badgeText}`;
     document.getElementById('roundTipoBadge').title = labels.join(', ');
 
-    const premio = getRodadaPremio(rodada);
+    const premios = getRodadaPremios(rodada);
     const premioTicket = document.getElementById('roundPremioTicket');
-    if (premio) {
-        document.getElementById('roundPremioText').textContent = premio;
+    if (premios.length) {
+        document.getElementById('roundPremioText').innerHTML = premios.map(p => escapeHTML(p)).join('<br>');
         premioTicket.style.display = 'flex';
     } else {
         premioTicket.style.display = 'none';
@@ -1008,22 +1032,33 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('premiosList').addEventListener('change', e => {
         if (!e.target.matches('.premio-input')) return;
         const r = e.target.dataset.rodada;
-        setRodadaPremio(r, e.target.value);
+        setRodadaPremios(r, collectRoundPremiosFromDOM(r));
         updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
     });
     document.getElementById('premiosList').addEventListener('click', e => {
-        const btn = e.target.closest('.premio-row-remove');
-        if (!btn) return;
-        setRodadaPremio(btn.dataset.rodada, '');
-        renderPremiosSettingsList();
-        updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+        const addBtn = e.target.closest('.premio-row-add');
+        if (addBtn) {
+            const r = addBtn.dataset.rodada;
+            const itemsContainer = document.querySelector(`.premio-items[data-rodada="${r}"]`);
+            itemsContainer.insertAdjacentHTML('beforeend', premioRowHTML(r, ''));
+            itemsContainer.lastElementChild.querySelector('.premio-input').focus();
+            return;
+        }
+        const removeBtn = e.target.closest('.premio-row-remove');
+        if (removeBtn) {
+            const r = removeBtn.dataset.rodada;
+            removeBtn.closest('.premio-row').remove();
+            setRodadaPremios(r, collectRoundPremiosFromDOM(r));
+            renderPremiosSettingsList();
+            updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+        }
     });
     document.getElementById('premioAddRoundBtn').addEventListener('click', () => {
         const input = document.getElementById('premioAddRoundInput');
         const r = parseInt(input.value);
         if (!r || r < 1) return;
         const mapa = loadPremiosMapa();
-        if (!(r in mapa)) mapa[r] = '';
+        if (!(r in mapa)) mapa[r] = [];
         savePremiosMapa(mapa);
         input.value = '';
         renderPremiosSettingsList();
@@ -1099,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const serial = row.querySelector('.manage-winners-serial').value;
         updateWinner(rodada, index, { serial, nome });
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
     });
     document.getElementById('manageWinnersList').addEventListener('click', e => {
         const btn = e.target.closest('.manage-winners-remove');
@@ -1108,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         removeWinner(rodada, parseInt(btn.dataset.index));
         renderManageWinnersList(rodada);
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
     });
     document.getElementById('manageWinnersAddBtn').addEventListener('click', () => {
         const rodada = currentManageWinnersRodada();
@@ -1120,7 +1155,7 @@ document.addEventListener('DOMContentLoaded', () => {
         nameInput.value = '';
         renderManageWinnersList(rodada);
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
     });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
@@ -1138,7 +1173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveWinner(rodada, null, nome);
         document.getElementById('tieBreakWinnerName').value = '';
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
         const status = document.getElementById('tieBreakWinnerStatus');
         status.textContent = `🎉 ${nome.trim() || 'Vencedor'} registrado no pódio da Rodada ${rodada}!`;
         status.style.display = 'block';
