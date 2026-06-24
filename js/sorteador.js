@@ -16,7 +16,8 @@ function loadWinners(rodada) {
 
 function saveWinner(rodada, serial, nome) {
     const winners = loadWinners(rodada);
-    winners.push({ serial, nome: nome.trim() || `Cartela #${String(serial).padStart(4, '0')}` });
+    const nomeFinal = nome.trim() || (serial != null ? `Cartela #${String(serial).padStart(4, '0')}` : 'Vencedor do desempate');
+    winners.push({ serial: serial != null ? serial : null, nome: nomeFinal });
     localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
     return winners;
 }
@@ -27,7 +28,9 @@ function winnersRankItemsHTML(winners) {
         <div class="winners-rank-item">
             <span class="winners-rank-pos">${medals[i] || (i + 1) + 'º'}</span>
             <span class="winners-rank-name">${escapeHTML(w.nome)}</span>
-            <span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>
+            ${w.serial != null
+                ? `<span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>`
+                : `<span class="winners-rank-serial winners-rank-tiebreak">🔥 desempate</span>`}
         </div>
     `).join('');
 }
@@ -436,6 +439,8 @@ function toggleManual(n) {
 // ── Desempate por pedra maior ───────────────────────────────────────────────
 
 function openTieBreakModal() {
+    document.getElementById('tieBreakWinnerStatus').style.display = 'none';
+    document.getElementById('tieBreakWinnerName').value = '';
     renderTieBreak(null);
     openModal('tieBreakModal');
     if (tieBreakWebcamEnabled) {
@@ -560,14 +565,20 @@ function renderTieBreak(lastDrawn) {
 
     renderTieBreakHistory();
 
+    const winnerBox = document.getElementById('tieBreakWinnerBox');
+
     if (tieBreakSorteados.length === 0) {
         summary.textContent = 'Nenhuma pedra sorteada ainda.';
+        winnerBox.style.display = 'none';
         return;
     }
 
     const maior = Math.max(...tieBreakSorteados);
     const pos = tieBreakSorteados.indexOf(maior) + 1;
     summary.textContent = `Maior até agora: ${getBingoLetter(maior)}-${maior} (finalista ${pos}).`;
+
+    document.getElementById('tieBreakWinnerBall').textContent = `${getBingoLetter(maior)}-${maior}`;
+    winnerBox.style.display = 'flex';
 }
 
 function renderTieBreakHistory() {
@@ -595,6 +606,8 @@ function renderTieBreakHistory() {
 function resetTieBreak() {
     tieBreakSorteados = [];
     tieBreakAvailable = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+    document.getElementById('tieBreakWinnerStatus').style.display = 'none';
+    document.getElementById('tieBreakWinnerName').value = '';
     renderTieBreak(null);
 }
 
@@ -1024,6 +1037,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tieBreakCameraToggleBtn').addEventListener('click', toggleTieBreakWebcam);
     document.getElementById('tieBreakResetBtn').addEventListener('click', resetTieBreak);
     document.getElementById('tieBreakCloseBtn').addEventListener('click', () => closeModal('tieBreakModal'));
+    document.getElementById('tieBreakWinnerSave').addEventListener('click', () => {
+        const rodada = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
+        const nome = document.getElementById('tieBreakWinnerName').value;
+        saveWinner(rodada, null, nome);
+        document.getElementById('tieBreakWinnerName').value = '';
+        renderWinnersRank(rodada);
+        renderWinnersPodium();
+        const status = document.getElementById('tieBreakWinnerStatus');
+        status.textContent = `🎉 ${nome.trim() || 'Vencedor'} registrado no pódio da Rodada ${rodada}!`;
+        status.style.display = 'block';
+    });
+    document.getElementById('tieBreakWinnerName').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('tieBreakWinnerSave').click();
+    });
     document.getElementById('restartBtn').addEventListener('click', restartAll);
     document.getElementById('returnBtn').addEventListener('click', returnToCurrentRound);
 
