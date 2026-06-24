@@ -229,7 +229,6 @@ function openCreateRoundModal() {
     const proxima = rodadaAtual + 1;
     document.getElementById('createRoundNumber').textContent = proxima;
     document.querySelectorAll('#createRoundModal .win-type-card').forEach(c => c.classList.remove('selected'));
-    document.querySelector('#createRoundModal .win-type-card[data-tipo="diagonal"]').classList.add('selected');
     openModal('createRoundModal');
 }
 
