@@ -54,7 +54,7 @@ body {
 .site-nav a {
     color: rgba(255,255,255,0.65);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 1.06rem;
     font-weight: 700;
     padding: 6px 18px;
     border-radius: 6px;
@@ -120,26 +120,22 @@ body {
 }
 
 .logo-container {
-    width: 140px;
-    height: 140px;
-    background: var(--bg-card);
-    border-radius: 50%;
+    width: 200px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.14);
     flex-shrink: 0;
-    border: 3px solid var(--secundario);
 }
 
 .logo-container img {
-    max-width: 72%;
-    max-height: 72%;
+    max-width: 100%;
+    max-height: 100%;
     object-fit: contain;
 }
 
 .page-title {
-    font-size: 2.3rem;
+    font-size: 3.2rem;
     font-weight: 900;
     color: var(--primario-dark);
     letter-spacing: -0.3px;
@@ -147,7 +143,7 @@ body {
 }
 
 .page-subtitle {
-    font-size: 1rem;
+    font-size: 1.6rem;
     font-weight: 600;
     color: var(--texto-suave);
     letter-spacing: 0.5px;
@@ -157,9 +153,9 @@ body {
     .bandeirinhas { height: 60px; background-size: 204px 60px; }
     .bandeirinhas-tier2 { height: 22px; background-size: 120px 22px; }
     .page-header { padding: 10px 16px 14px; gap: 10px; }
-    .logo-container { width: 84px; height: 84px; }
-    .page-title { font-size: 1.5rem; }
-    .page-subtitle { font-size: 0.78rem; }
+    .logo-container { width: 130px; height: 130px; }
+    .page-title { font-size: 2.4rem; }
+    .page-subtitle { font-size: 1.25rem; }
 }
 
 /* ── Buttons ──────────────────────────────────── */
@@ -171,7 +167,7 @@ body {
     gap: 6px;
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
-    font-size: 0.9rem;
+    font-size: 1.06rem;
     border: none;
     padding: 10px 20px;
     border-radius: 10px;
@@ -193,12 +189,12 @@ body {
 .btn-ghost     { background: rgba(255,255,255,0.12); color: #fff; border: 1px solid rgba(255,255,255,0.25);}
 .btn-ghost:hover { background: rgba(255,255,255,0.22); box-shadow: none; filter: none; }
 .btn-ghost:disabled { opacity: 0.3; }
-.btn-sm        { font-size: 0.8rem; padding: 11px 9px; border-radius: 8px;}
+.btn-sm        { font-size: 0.94rem; padding: 11px 9px; border-radius: 8px;}
 #verifyBtn {
     background: linear-gradient(135deg, #F59F00 0%, #E67700 100%);
     color: #1a0a00;
     border: none;
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     font-weight: 900;
     padding: 13px 26px;
     border-radius: 100px;
@@ -211,7 +207,7 @@ body {
     background: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.85);
     border: 1px solid rgba(255,255,255,0.25);
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 700;
     padding: 13px 22px;
     border-radius: 100px;
@@ -235,7 +231,7 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 200;
+    z-index: 950;
     justify-content: center;
     align-items: center;
     padding: 16px;
@@ -254,8 +250,8 @@ body {
     box-shadow: 0 24px 64px rgba(0,0,0,0.2);
 }
 
-.modal-box h2 { font-size: 1.25rem; font-weight: 800; color: var(--texto); margin-bottom: 10px; }
-.modal-box p  { color: var(--texto-suave); font-size: 0.875rem; line-height: 1.65; margin-bottom: 4px; }
+.modal-box h2 { font-size: 1.48rem; font-weight: 800; color: var(--texto); margin-bottom: 10px; }
+.modal-box p  { color: var(--texto-suave); font-size: 1.03rem; line-height: 1.65; margin-bottom: 4px; }
 .modal-box strong { color: var(--texto); }
 
 .modal-actions {
@@ -269,7 +265,7 @@ body {
 .modal-input {
     width: 100%;
     padding: 12px;
-    font-size: 1.6rem;
+    font-size: 1.89rem;
     font-weight: 800;
     border: 2px solid var(--borda);
     border-radius: 10px;

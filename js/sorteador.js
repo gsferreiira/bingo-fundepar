@@ -656,6 +656,20 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
+    document.getElementById('startImportBtn').addEventListener('click', () => {
+        document.getElementById('startImportFile').click();
+    });
+    document.getElementById('startImportFile').addEventListener('change', e => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        showConfirm(
+            'Importar backup?',
+            'Os dados do arquivo importado serão usados para este evento neste dispositivo.',
+            () => importBackup(file, msg => alert(msg))
+        );
+    });
+
     const winnersFloat = document.getElementById('winnersFloat');
     winnersFloat.classList.toggle('collapsed', localStorage.getItem(STORAGE_RANK_FLOAT_COLLAPSED) === 'true');
     document.getElementById('winnersFloatToggle').addEventListener('click', () => {

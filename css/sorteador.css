@@ -68,7 +68,7 @@
     display: inline-block;
     background: rgba(255,255,255,0.12);
     color: #fff;
-    font-size: 1rem;
+    font-size: 1.18rem;
     font-weight: 900;
     padding: 9px 28px;
     border-radius: 100px;
@@ -86,7 +86,7 @@
     padding: 8px 16px;
     border-radius: 8px;
     margin-bottom: 10px;
-    font-size: 0.82rem;
+    font-size: 0.97rem;
     font-weight: 700;
     border: 1px solid rgba(245,159,0,0.4);
 }
@@ -95,7 +95,7 @@
     display: inline-block;
     background: rgba(255,255,255,0.12);
     color: #FFE066;
-    font-size: 1.25rem;
+    font-size: 1.48rem;
     font-weight: 900;
     padding: 11px 20px;
     border-radius: 100px;
@@ -120,14 +120,14 @@
 }
 
 .round-premio-ticket-icon {
-    font-size: 1.4rem;
+    font-size: 1.65rem;
     flex-shrink: 0;
 }
 
 .round-premio-ticket-text {
     color: #fff;
     font-weight: 900;
-    font-size: 1.05rem;
+    font-size: 1.24rem;
     letter-spacing: 0.3px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
@@ -165,7 +165,7 @@
 .current-ball[data-letter="O"] { background: var(--cor-O); box-shadow: 0 0 0 4px rgba(25,113,194,0.3), 0 12px 40px rgba(25,113,194,0.4); }
 
 .ball-letter {
-    font-size: 1.5rem;
+    font-size: 1.77rem;
     font-weight: 900;
     color: rgba(255,255,255,0.7);
     line-height: 1;
@@ -184,7 +184,7 @@
 .current-ball.idle .ball-number { color: rgba(255,255,255,0.15); font-size: 3rem; }
 
 .ball-caption {
-    font-size: 0.78rem;
+    font-size: 0.92rem;
     color: rgba(255,255,255,0.45);
     font-weight: 600;
 }
@@ -197,18 +197,25 @@
 
 .current-ball.animate { animation: pulse-ball 0.5s ease-out; }
 
-/* Animação de roleta na hora do sorteio */
-@keyframes spin-roll {
-    0%   { transform: rotate(-12deg) scale(0.92); }
-    25%  { transform: rotate(12deg)  scale(1.07); }
-    50%  { transform: rotate(-8deg)  scale(0.95); }
-    75%  { transform: rotate(8deg)   scale(1.04); }
-    100% { transform: rotate(-12deg) scale(0.92); }
+/* Animação de "planeta girando" na hora do sorteio */
+.current-ball::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 28%, rgba(255,255,255,0.45), transparent 60%);
+    opacity: 0;
+    pointer-events: none;
 }
 
-.current-ball.spinning {
-    animation: spin-roll 0.16s ease-in-out infinite;
-    filter: blur(0.4px);
+@keyframes planet-spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+.current-ball.spinning::before {
+    opacity: 1;
+    animation: planet-spin 1s linear infinite;
 }
 
 /* ── Botão de configurações (engrenagem) ───────── */
@@ -220,7 +227,7 @@
     border-radius: 50%;
     width: 32px;
     height: 32px;
-    font-size: 1rem;
+    font-size: 1.18rem;
     line-height: 1;
     cursor: pointer;
     margin-left: 6px;
@@ -242,7 +249,7 @@
     border-radius: 10px;
     background: var(--borda-suave);
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: var(--texto);
     font-weight: 600;
 }
@@ -258,13 +265,13 @@
 }
 .settings-section > label {
     display: block;
-    font-size: 0.85rem;
+    font-size: 1rem;
     font-weight: 800;
     color: var(--texto);
     margin-bottom: 8px;
 }
 .settings-hint {
-    font-size: 0.75rem;
+    font-size: 0.89rem;
     color: var(--texto-suave);
     margin: 0 0 10px;
 }
@@ -275,7 +282,7 @@
 }
 .import-backup-error {
     margin-top: 8px;
-    font-size: 0.78rem;
+    font-size: 0.92rem;
     font-weight: 700;
     color: #D6336C;
 }
@@ -285,7 +292,7 @@
     width: auto;
     margin-top: 0;
     padding: 10px 12px;
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     letter-spacing: 0;
     text-align: left;
     border-radius: 8px;
@@ -303,7 +310,7 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .btn-draw {
-    font-size: 1.2rem;
+    font-size: 1.42rem;
     font-weight: 900;
     padding: 17px 52px;
     border-radius: 14px;
@@ -359,7 +366,7 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 1.65rem;
     font-weight: 900;
 }
 
@@ -378,8 +385,8 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.68rem;
-    font-weight: 700;
+    font-size: 2.2rem;
+    font-weight: 810;
     cursor: pointer;
     transition: all 0.14s;
     border: 1.5px solid transparent;
@@ -399,7 +406,7 @@ body.hide-sortear .draw-section { display: none; }
 .history-panel { margin: 12px 0; }
 
 .history-title {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-weight: 700;
     color: var(--texto-suave);
     text-transform: uppercase;
@@ -417,7 +424,7 @@ body.hide-sortear .draw-section { display: none; }
 .history-chip {
     padding: 3px 10px;
     border-radius: 100px;
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-weight: 700;
     letter-spacing: 0.5px;
     color: #fff;
@@ -429,7 +436,7 @@ body.hide-sortear .draw-section { display: none; }
 .history-chip[data-letter="G"] { background: var(--cor-G); }
 .history-chip[data-letter="O"] { background: var(--cor-O); }
 
-.history-empty { color: var(--texto-suave); font-size: 0.82rem; align-self: center; }
+.history-empty { color: var(--texto-suave); font-size: 0.97rem; align-self: center; }
 
 /* ── Encerrar / Reiniciar ─────────────────────── */
 
@@ -442,6 +449,9 @@ body.hide-sortear .draw-section { display: none; }
     padding-top: 20px;
     border-top: 1px dashed var(--borda);
 }
+
+#endRoundBtn { font-size: 1.3rem; padding: 14px 28px; }
+#restartBtn  { font-size: 1.05rem; }
 
 /* ── Modal resultado: miniatura da cartela vencedora ── */
 
@@ -464,7 +474,7 @@ body.hide-sortear .draw-section { display: none; }
 
 .result-card-letter {
     text-align: center;
-    font-size: 0.9rem;
+    font-size: 1.06rem;
     font-weight: 900;
     padding: 4px 0;
     color: #fff;
@@ -490,7 +500,7 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     font-weight: 900;
     min-height: 40px;
     border-right: 1px solid var(--borda-suave);
@@ -537,7 +547,7 @@ body.hide-sortear .draw-section { display: none; }
     width: auto;
     margin-top: 0;
     padding: 10px 12px;
-    font-size: 1rem;
+    font-size: 1.18rem;
     letter-spacing: 0;
     text-align: left;
     border-radius: 8px;
@@ -549,7 +559,7 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .winners-rank-title {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     font-weight: 800;
     color: var(--texto-suave);
     text-transform: uppercase;
@@ -570,7 +580,7 @@ body.hide-sortear .draw-section { display: none; }
     background: var(--borda-suave);
     border-radius: 8px;
     padding: 6px 10px;
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 .winners-rank-pos {
@@ -590,7 +600,7 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .winners-rank-serial {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     color: var(--texto-suave);
     font-weight: 700;
 }
@@ -621,7 +631,7 @@ body.hide-sortear .draw-section { display: none; }
     color: #fff;
     border: none;
     padding: 10px 14px;
-    font-size: 0.82rem;
+    font-size: 0.97rem;
     font-weight: 800;
     cursor: pointer;
     text-align: left;
@@ -651,7 +661,7 @@ body.hide-sortear .draw-section { display: none; }
     gap: 10px;
     padding: 7px 2px;
     border-bottom: 1px solid var(--borda-suave);
-    font-size: 0.82rem;
+    font-size: 0.97rem;
 }
 .podium-item:last-child { border-bottom: none; }
 
@@ -700,7 +710,7 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .create-round-header h2 {
-    font-size: 1.4rem;
+    font-size: 1.65rem;
     font-weight: 900;
     color: var(--texto);
     margin-bottom: 6px;
@@ -708,7 +718,7 @@ body.hide-sortear .draw-section { display: none; }
 
 .create-round-header p {
     color: var(--texto-suave);
-    font-size: 0.85rem;
+    font-size: 1rem;
 }
 
 .win-type-grid {
@@ -753,7 +763,7 @@ body.hide-sortear .draw-section { display: none; }
     border-radius: 50%;
     background: var(--primario);
     color: #fff;
-    font-size: 0.8rem;
+    font-size: 0.94rem;
     font-weight: 900;
     display: flex;
     align-items: center;
@@ -770,7 +780,7 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .win-type-icon {
-    font-size: 1.6rem;
+    font-size: 1.89rem;
     line-height: 1;
     margin-bottom: 8px;
     font-family: monospace;
@@ -783,14 +793,14 @@ body.hide-sortear .draw-section { display: none; }
 }
 
 .win-type-name {
-    font-size: 0.95rem;
+    font-size: 1.12rem;
     font-weight: 800;
     color: var(--texto);
     margin-bottom: 4px;
 }
 
 .win-type-desc {
-    font-size: 0.72rem;
+    font-size: 0.85rem;
     color: var(--texto-suave);
     line-height: 1.4;
 }
@@ -945,7 +955,7 @@ body.hide-sortear .draw-section { display: none; }
 
 /* Organização */
 .start-org {
-    font-size: 0.82rem; font-weight: 700;
+    font-size: 0.97rem; font-weight: 700;
     color: rgba(255,255,255,0.45);
     letter-spacing: 2px; text-transform: uppercase;
     margin-bottom: 14px;
@@ -953,14 +963,14 @@ body.hide-sortear .draw-section { display: none; }
 
 /* Separador */
 .start-sep {
-    color: #F59F00; font-size: 0.72rem;
+    color: #F59F00; font-size: 0.85rem;
     letter-spacing: 6px; opacity: 0.65;
     margin-bottom: 14px;
 }
 
 /* Label do tipo */
 .start-choose {
-    font-size: 0.75rem; font-weight: 700;
+    font-size: 0.89rem; font-weight: 700;
     color: rgba(255,255,255,0.55);
     text-transform: uppercase; letter-spacing: 0.8px;
     margin-bottom: 10px;
@@ -990,7 +1000,7 @@ body.hide-sortear .draw-section { display: none; }
 /* Botão Iniciar Jogo */
 .start-btn {
     font-family: 'Nunito', sans-serif;
-    font-weight: 900; font-size: 1.1rem;
+    font-weight: 900; font-size: 1.3rem;
     padding: 15px 44px;
     border-radius: 14px;
     background: linear-gradient(135deg, #F59F00 0%, #E67700 100%);
@@ -1009,6 +1019,30 @@ body.hide-sortear .draw-section { display: none; }
 .start-btn:active {
     transform: translateY(3px);
     box-shadow: 0 3px 0 #9A4200, 0 4px 12px rgba(245,159,0,0.3);
+}
+
+/* Botão secundário (importar dados) */
+.start-btn-secondary {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    padding: 11px 28px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.25);
+    cursor: pointer;
+    letter-spacing: 0.2px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.start-btn-secondary:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border-color: rgba(255,255,255,0.4);
 }
 
 @media (max-width: 500px) {
@@ -1040,8 +1074,8 @@ body.hide-sortear .draw-section { display: none; }
     .bandeirinhas-tier2 { display: none; }
     .page-header { padding: 6px 24px 8px; gap: 10px; }
     .logo-container { width: 52px; height: 52px; }
-    .page-title { font-size: 1.1rem; }
-    .page-subtitle { font-size: 0.7rem; }
+    .page-title { font-size: 1.3rem; }
+    .page-subtitle { font-size: 0.83rem; }
 
     .sorteador-main {
         flex: 1;
@@ -1071,13 +1105,13 @@ body.hide-sortear .draw-section { display: none; }
     .current-ball { width: 220px; height: 220px; }
     .ball-number  { font-size: 5.2rem; }
     .ball-letter  { font-size: 1.9rem; }
-    .btn-draw     { font-size: 1.4rem; padding: 20px 60px; }
+    .btn-draw     { font-size: 1.65rem; padding: 20px 60px; }
 
     .bingo-board { min-width: 0; }
-    .board-ball  { font-size: 0.95rem; }
+    .board-ball  { font-size: 1.77rem; }
 
     .history-list { gap: 6px; }
-    .history-chip { font-size: 0.9rem; padding: 5px 14px; }
+    .history-chip { font-size: 1.06rem; padding: 5px 14px; }
 }
 
 @media (min-width: 1280px) and (orientation: landscape) {
