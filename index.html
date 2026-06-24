@@ -162,14 +162,27 @@
 
     </main>
 
-    <!-- Painel flutuante: pódio de vencedores de todas as rodadas -->
+    <!-- Painel flutuante: últimos vencedores -->
     <div class="winners-float" id="winnersFloat">
         <button class="winners-float-header" id="winnersFloatToggle">
-            <span>🏆 Pódio de Vencedores</span>
+            <span>🏆 Últimos Vencedores</span>
             <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
         </button>
         <div class="winners-float-body" id="winnersFloatBody">
             <div class="podium-list" id="winnersFloatList"></div>
+            <button class="winners-float-seeall" id="winnersFloatSeeAll">Ver todos →</button>
+        </div>
+    </div>
+
+    <!-- Modal: pódio completo de vencedores -->
+    <div class="modal" id="allWinnersModal">
+        <div class="modal-box">
+            <h2>🏆 Pódio de Vencedores</h2>
+            <p>Vencedores de todas as rodadas</p>
+            <div class="podium-list" id="allWinnersList"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="allWinnersClose">Fechar</button>
+            </div>
         </div>
     </div>
 
