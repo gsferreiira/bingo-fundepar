@@ -1113,7 +1113,8 @@ body.hide-sortear .draw-section { display: none; }
     overflow-y: auto;
 }
 
-.winners-float-seeall {
+.winners-float-seeall,
+.winners-float-manage {
     display: block;
     width: 100%;
     margin-top: 6px;
@@ -1129,7 +1130,14 @@ body.hide-sortear .draw-section { display: none; }
     text-align: right;
 }
 
-.winners-float-seeall:hover { color: var(--primario-dark); }
+.winners-float-manage {
+    text-align: center;
+    margin-top: 4px;
+    border-top: none;
+}
+
+.winners-float-seeall:hover,
+.winners-float-manage:hover { color: var(--primario-dark); }
 
 #allWinnersList { max-height: 360px; overflow-y: auto; margin: 14px 0; }
 
@@ -1173,6 +1181,98 @@ body.hide-sortear .draw-section { display: none; }
     .winners-float { width: 220px; bottom: 10px; right: 10px; }
     .winners-float-body { max-height: 160px; }
 }
+
+/* ── Modal gerenciar vencedores ─────────────────── */
+
+.manage-winners-modal-box {
+    max-width: 480px !important;
+    text-align: left;
+}
+.manage-winners-modal-box h2,
+.manage-winners-modal-box p { text-align: center; }
+
+.manage-winners-round-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 10px;
+}
+.manage-winners-round-select label {
+    font-weight: 800;
+    color: var(--texto);
+    font-size: 0.97rem;
+}
+.manage-winners-round-select select {
+    flex: 1;
+    padding: 8px 10px;
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.manage-winners-list {
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-right: 2px;
+}
+
+.manage-winners-empty {
+    color: var(--texto-suave);
+    font-size: 0.94rem;
+    font-style: italic;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.manage-winners-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.manage-winners-input {
+    width: auto;
+    margin-top: 0;
+    padding: 9px 10px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: left;
+    border-radius: 8px;
+}
+.manage-winners-name { flex: 1.6; }
+.manage-winners-serial { flex: 1; }
+
+.manage-winners-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--texto-suave);
+    transition: background 0.15s, color 0.15s;
+}
+.manage-winners-remove:hover { background: rgba(214,51,108,0.12); color: #D6336C; }
+
+.manage-winners-add {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--borda-suave);
+}
+.manage-winners-add .manage-winners-name { flex: 1.6; }
+.manage-winners-add .manage-winners-serial { flex: 1; }
 
 /* ── Modal criar rodada ───────────────────────── */
 

@@ -22,6 +22,24 @@ function saveWinner(rodada, serial, nome) {
     return winners;
 }
 
+function updateWinner(rodada, index, { serial, nome }) {
+    const winners = loadWinners(rodada);
+    if (!winners[index]) return winners;
+    winners[index] = {
+        serial: serial != null && serial !== '' ? parseInt(serial) : null,
+        nome: (nome || '').trim() || winners[index].nome,
+    };
+    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
+    return winners;
+}
+
+function removeWinner(rodada, index) {
+    const winners = loadWinners(rodada);
+    winners.splice(index, 1);
+    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
+    return winners;
+}
+
 function winnersRankItemsHTML(winners) {
     const medals = ['🥇', '🥈', '🥉'];
     return winners.map((w, i) => `
@@ -87,6 +105,41 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// ── Gestão de vencedores (editar/adicionar/remover de rodadas passadas) ─────
+
+function renderManageWinnersRoundOptions() {
+    const select = document.getElementById('manageWinnersRodada');
+    const previous = select.value;
+    select.innerHTML = '';
+    for (let r = 1; r <= rodadaAtual; r++) {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = `Rodada ${r}`;
+        select.appendChild(opt);
+    }
+    select.value = previous && parseInt(previous) <= rodadaAtual ? previous : rodadaAtual;
+}
+
+function renderManageWinnersList(rodada) {
+    const container = document.getElementById('manageWinnersList');
+    const winners = loadWinners(rodada);
+    if (winners.length === 0) {
+        container.innerHTML = '<p class="manage-winners-empty">Nenhum vencedor registrado nesta rodada ainda.</p>';
+        return;
+    }
+    container.innerHTML = winners.map((w, i) => `
+        <div class="manage-winners-row" data-index="${i}">
+            <input type="text" class="modal-input manage-winners-input manage-winners-name" data-field="nome" value="${escapeHTML(w.nome)}" maxlength="40">
+            <input type="number" class="modal-input manage-winners-input manage-winners-serial" data-field="serial" value="${w.serial != null ? w.serial : ''}" min="1" max="500" placeholder="Nº cartela">
+            <button class="manage-winners-remove" data-index="${i}" title="Remover vencedor" aria-label="Remover vencedor">🗑</button>
+        </div>
+    `).join('');
+}
+
+function currentManageWinnersRodada() {
+    return parseInt(document.getElementById('manageWinnersRodada').value) || rodadaAtual;
 }
 
 let rodadaAtual = 1;
@@ -1026,6 +1079,48 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('historyToggle').addEventListener('click', () => {
         const collapsed = historyList.classList.toggle('collapsed');
         localStorage.setItem(STORAGE_HISTORY_COLLAPSED, collapsed);
+    });
+
+    document.getElementById('winnersFloatManageBtn').addEventListener('click', () => {
+        renderManageWinnersRoundOptions();
+        renderManageWinnersList(currentManageWinnersRodada());
+        openModal('manageWinnersModal');
+    });
+    document.getElementById('manageWinnersClose').addEventListener('click', () => closeModal('manageWinnersModal'));
+    document.getElementById('manageWinnersRodada').addEventListener('change', () => {
+        renderManageWinnersList(currentManageWinnersRodada());
+    });
+    document.getElementById('manageWinnersList').addEventListener('change', e => {
+        const row = e.target.closest('.manage-winners-row');
+        if (!row) return;
+        const index = parseInt(row.dataset.index);
+        const rodada = currentManageWinnersRodada();
+        const nome = row.querySelector('.manage-winners-name').value;
+        const serial = row.querySelector('.manage-winners-serial').value;
+        updateWinner(rodada, index, { serial, nome });
+        renderWinnersRank(rodada);
+        renderWinnersPodium();
+    });
+    document.getElementById('manageWinnersList').addEventListener('click', e => {
+        const btn = e.target.closest('.manage-winners-remove');
+        if (!btn) return;
+        const rodada = currentManageWinnersRodada();
+        removeWinner(rodada, parseInt(btn.dataset.index));
+        renderManageWinnersList(rodada);
+        renderWinnersRank(rodada);
+        renderWinnersPodium();
+    });
+    document.getElementById('manageWinnersAddBtn').addEventListener('click', () => {
+        const rodada = currentManageWinnersRodada();
+        const serialInput = document.getElementById('manageWinnersAddSerial');
+        const nameInput = document.getElementById('manageWinnersAddName');
+        const serial = serialInput.value ? parseInt(serialInput.value) : null;
+        saveWinner(rodada, serial, nameInput.value);
+        serialInput.value = '';
+        nameInput.value = '';
+        renderManageWinnersList(rodada);
+        renderWinnersRank(rodada);
+        renderWinnersPodium();
     });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);

@@ -171,6 +171,7 @@
         <div class="winners-float-body" id="winnersFloatBody">
             <div class="podium-list" id="winnersFloatList"></div>
             <button class="winners-float-seeall" id="winnersFloatSeeAll">Ver todos →</button>
+            <button class="winners-float-manage" id="winnersFloatManageBtn">✏️ Editar vencedores</button>
         </div>
     </div>
 
@@ -182,6 +183,31 @@
             <div class="podium-list" id="allWinnersList"></div>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="allWinnersClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: gerenciar vencedores de qualquer rodada -->
+    <div class="modal" id="manageWinnersModal">
+        <div class="modal-box manage-winners-modal-box">
+            <h2>✏️ Gerenciar Vencedores</h2>
+            <p>Edite, adicione ou remova vencedores de qualquer rodada já criada — útil quando esquecem de registrar na hora.</p>
+
+            <div class="manage-winners-round-select">
+                <label for="manageWinnersRodada">Rodada</label>
+                <select id="manageWinnersRodada"></select>
+            </div>
+
+            <div class="manage-winners-list" id="manageWinnersList"></div>
+
+            <div class="manage-winners-add">
+                <input type="text" id="manageWinnersAddName" class="modal-input manage-winners-input manage-winners-name" placeholder="Nome do vencedor" maxlength="40">
+                <input type="number" id="manageWinnersAddSerial" class="modal-input manage-winners-input manage-winners-serial" placeholder="Nº cartela (opcional)" min="1" max="500">
+                <button class="btn btn-primary btn-sm" id="manageWinnersAddBtn">+ Adicionar</button>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="manageWinnersClose">Fechar</button>
             </div>
         </div>
     </div>
