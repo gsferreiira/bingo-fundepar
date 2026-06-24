@@ -45,6 +45,7 @@ function renderWinnersRank(rodada) {
 }
 
 const STORAGE_RANK_FLOAT_COLLAPSED = 'bingo-rank-float-collapsed';
+const STORAGE_HISTORY_COLLAPSED = 'bingo-history-collapsed';
 
 function renderWinnersPodium() {
     const list = document.getElementById('winnersFloatList');
@@ -751,16 +752,17 @@ function renderHistoryData(list) {
         empty.className = 'history-empty';
         empty.textContent = 'Nenhuma pedra sorteada ainda';
         histList.appendChild(empty);
-        return;
+    } else {
+        list.forEach(n => {
+            const letter = getBingoLetter(n);
+            const chip = document.createElement('span');
+            chip.className = 'history-chip';
+            chip.dataset.letter = letter;
+            chip.textContent = `${letter}-${n}`;
+            histList.appendChild(chip);
+        });
     }
-    list.forEach(n => {
-        const letter = getBingoLetter(n);
-        const chip = document.createElement('span');
-        chip.className = 'history-chip';
-        chip.dataset.letter = letter;
-        chip.textContent = `${letter}-${n}`;
-        histList.appendChild(chip);
-    });
+    document.getElementById('historyToggle').textContent = `👁 Ver pedras sorteadas (${list.length})`;
 }
 
 function renderControls() {
@@ -929,6 +931,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('winnersFloatToggle').addEventListener('click', () => {
         const collapsed = winnersFloat.classList.toggle('collapsed');
         localStorage.setItem(STORAGE_RANK_FLOAT_COLLAPSED, collapsed);
+    });
+
+    const historyList = document.getElementById('historyList');
+    historyList.classList.toggle('collapsed', localStorage.getItem(STORAGE_HISTORY_COLLAPSED) !== 'false');
+    document.getElementById('historyToggle').addEventListener('click', () => {
+        const collapsed = historyList.classList.toggle('collapsed');
+        localStorage.setItem(STORAGE_HISTORY_COLLAPSED, collapsed);
     });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
