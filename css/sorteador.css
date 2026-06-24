@@ -298,6 +298,53 @@
     border-radius: 8px;
 }
 
+.premios-list {
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-right: 2px;
+}
+.premio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.premio-row-label {
+    flex-shrink: 0;
+    width: 84px;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+}
+.premio-row-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--texto-suave);
+    transition: background 0.15s, color 0.15s;
+}
+.premio-row-remove:hover { background: rgba(214,51,108,0.12); color: #D6336C; }
+
+.premio-add-row { margin-top: 4px; }
+.premio-add-input {
+    flex: 0 0 120px;
+    width: auto;
+    margin-top: 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: left;
+    border-radius: 8px;
+}
+
 /* Modo "sorteio físico": esconde só o botão de sortear, mantém o resto do palco */
 body.hide-sortear .draw-section { display: none; }
 

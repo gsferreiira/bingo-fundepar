@@ -127,16 +127,54 @@ function getRodadaTipo(r) {
     return Array.isArray(tipo) ? tipo : [tipo];
 }
 
+const STORAGE_PREMIOS_MAPA = 'bingo-premios-mapa';
+
+function loadPremiosMapa() {
+    const saved = localStorage.getItem(STORAGE_PREMIOS_MAPA);
+    return saved ? JSON.parse(saved) : {};
+}
+
+function savePremiosMapa(mapa) {
+    localStorage.setItem(STORAGE_PREMIOS_MAPA, JSON.stringify(mapa));
+}
+
 function getRodadaPremio(r) {
+    const mapa = loadPremiosMapa();
+    if (mapa[r]) return mapa[r];
     const d = localStorage.getItem(storageKey(r));
     if (!d) return '';
     return JSON.parse(d).premio || '';
 }
 
 function setRodadaPremio(r, premio) {
-    const data = JSON.parse(localStorage.getItem(storageKey(r))) || {};
-    data.premio = premio.trim();
-    localStorage.setItem(storageKey(r), JSON.stringify(data));
+    const mapa = loadPremiosMapa();
+    mapa[r] = premio.trim();
+    savePremiosMapa(mapa);
+}
+
+function getTotalRodadasConfig() {
+    return parseInt(localStorage.getItem('bingo-total-rodadas')) || 10;
+}
+
+function renderPremiosSettingsList() {
+    const container = document.getElementById('premiosList');
+    const mapa = loadPremiosMapa();
+    const total = getTotalRodadasConfig();
+    const rounds = [];
+    for (let r = 1; r <= total; r++) rounds.push(r);
+    Object.keys(mapa)
+        .map(Number)
+        .filter(r => r > total)
+        .sort((a, b) => a - b)
+        .forEach(r => rounds.push(r));
+
+    container.innerHTML = rounds.map(r => `
+        <div class="premio-row" data-rodada="${r}">
+            <span class="premio-row-label">Rodada ${r}</span>
+            <input type="text" class="modal-input premio-input" data-rodada="${r}" value="${escapeHTML(mapa[r] || '')}" placeholder="Ex: Caixa de paçoca" maxlength="60">
+            <button class="btn-icon premio-row-remove" data-rodada="${r}" title="Remover prêmio" aria-label="Remover prêmio">🗑</button>
+        </div>
+    `).join('');
 }
 
 // ── Tela inicial ───────────────────────────────
@@ -891,9 +929,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('hide-sortear', hideSortear);
 
     document.getElementById('settingsBtn').addEventListener('click', () => {
-        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
-        document.getElementById('premioRodadaLabel').textContent = rodadaRef;
-        document.getElementById('premioInput').value = getRodadaPremio(rodadaRef);
+        renderPremiosSettingsList();
         document.getElementById('importBackupError').style.display = 'none';
         openModal('settingsModal');
     });
@@ -903,10 +939,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.toggle('hide-sortear', e.target.checked);
     });
 
-    document.getElementById('premioSave').addEventListener('click', () => {
-        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
-        setRodadaPremio(rodadaRef, document.getElementById('premioInput').value);
-        updateRoundBadges(rodadaRef);
+    document.getElementById('premiosList').addEventListener('change', e => {
+        if (!e.target.matches('.premio-input')) return;
+        const r = e.target.dataset.rodada;
+        setRodadaPremio(r, e.target.value);
+        updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+    });
+    document.getElementById('premiosList').addEventListener('click', e => {
+        const btn = e.target.closest('.premio-row-remove');
+        if (!btn) return;
+        setRodadaPremio(btn.dataset.rodada, '');
+        renderPremiosSettingsList();
+        updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+    });
+    document.getElementById('premioAddRoundBtn').addEventListener('click', () => {
+        const input = document.getElementById('premioAddRoundInput');
+        const r = parseInt(input.value);
+        if (!r || r < 1) return;
+        const mapa = loadPremiosMapa();
+        if (!(r in mapa)) mapa[r] = '';
+        savePremiosMapa(mapa);
+        input.value = '';
+        renderPremiosSettingsList();
     });
 
     document.getElementById('exportBackupBtn').addEventListener('click', () => exportBackup());
