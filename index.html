@@ -184,10 +184,12 @@
             </label>
 
             <div class="settings-section">
-                <label for="premioInput">🎁 Prêmio da rodada <span id="premioRodadaLabel">1</span></label>
-                <div class="settings-row">
-                    <input type="text" id="premioInput" class="modal-input premio-input" placeholder="Ex: Caixa de paçoca" maxlength="60">
-                    <button class="btn btn-primary btn-sm" id="premioSave">Salvar</button>
+                <label>🎁 Prêmios por rodada</label>
+                <p class="settings-hint">Defina o prêmio de cada rodada com antecedência, mesmo antes dela começar. Edite, adicione ou remova quando quiser.</p>
+                <div class="premios-list" id="premiosList"></div>
+                <div class="settings-row premio-add-row">
+                    <input type="number" id="premioAddRoundInput" class="modal-input premio-add-input" min="1" placeholder="Nº da rodada">
+                    <button class="btn btn-secondary btn-sm" id="premioAddRoundBtn">+ Adicionar rodada</button>
                 </div>
             </div>
 
