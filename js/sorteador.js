@@ -169,7 +169,7 @@ function animateDraw(finalNumber, onComplete) {
     delete ballEl.dataset.letter;
     caption.textContent = 'Sorteando...';
 
-    const TOTAL_MS = 2400;
+    const TOTAL_MS = 3500;
     let elapsed = 0;
     let delay = 45;
 
