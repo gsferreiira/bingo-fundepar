@@ -21,6 +21,17 @@ function saveWinner(rodada, serial, nome) {
     return winners;
 }
 
+function winnersRankItemsHTML(winners) {
+    const medals = ['🥇', '🥈', '🥉'];
+    return winners.map((w, i) => `
+        <div class="winners-rank-item">
+            <span class="winners-rank-pos">${medals[i] || (i + 1) + 'º'}</span>
+            <span class="winners-rank-name">${escapeHTML(w.nome)}</span>
+            <span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>
+        </div>
+    `).join('');
+}
+
 function renderWinnersRank(rodada) {
     const winners = loadWinners(rodada);
     const box = document.getElementById('winnersRank');
@@ -29,15 +40,27 @@ function renderWinnersRank(rodada) {
         box.style.display = 'none';
         return;
     }
-    const medals = ['🥇', '🥈', '🥉'];
-    list.innerHTML = winners.map((w, i) => `
-        <div class="winners-rank-item">
-            <span class="winners-rank-pos">${medals[i] || (i + 1) + 'º'}</span>
-            <span class="winners-rank-name">${escapeHTML(w.nome)}</span>
-            <span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>
-        </div>
-    `).join('');
+    list.innerHTML = winnersRankItemsHTML(winners);
     box.style.display = 'block';
+}
+
+const STORAGE_RANK_FLOAT_COLLAPSED = 'bingo-rank-float-collapsed';
+
+function renderWinnersPodium() {
+    const list = document.getElementById('winnersFloatList');
+    let html = '';
+    for (let r = 1; r <= rodadaAtual; r++) {
+        const winners = loadWinners(r);
+        const winnerHTML = winners.length
+            ? winners.map(w => escapeHTML(w.nome)).join(', ')
+            : '<span class="podium-pending">aguardando vencedor</span>';
+        html += `
+            <div class="podium-item">
+                <span class="podium-round">Rodada ${r}</span>
+                <span class="podium-winner">${winnerHTML}</span>
+            </div>`;
+    }
+    list.innerHTML = html;
 }
 
 function escapeHTML(str) {
@@ -83,6 +106,18 @@ function getRodadaTipo(r) {
     return Array.isArray(tipo) ? tipo : [tipo];
 }
 
+function getRodadaPremio(r) {
+    const d = localStorage.getItem(storageKey(r));
+    if (!d) return '';
+    return JSON.parse(d).premio || '';
+}
+
+function setRodadaPremio(r, premio) {
+    const data = JSON.parse(localStorage.getItem(storageKey(r))) || {};
+    data.premio = premio.trim();
+    localStorage.setItem(storageKey(r), JSON.stringify(data));
+}
+
 // ── Tela inicial ───────────────────────────────
 
 function startGame() {
@@ -94,7 +129,7 @@ function startGame() {
     }
 
     localStorage.setItem(storageKey(1), JSON.stringify({
-        sorteados: [], tipo, encerrada: false,
+        sorteados: [], tipo, encerrada: false, premio: '',
     }));
 
     const screen = document.getElementById('startScreen');
@@ -212,6 +247,7 @@ function confirmCreateRound() {
         sorteados: [],
         tipo,
         encerrada: false,
+        premio: '',
     }));
 
     rodadaAtual = proxima;
@@ -222,6 +258,7 @@ function confirmCreateRound() {
     saveState();
     closeModal('createRoundModal');
     render(null);
+    renderWinnersPodium();
 }
 
 function restartAll() {
@@ -248,6 +285,7 @@ function restartAll() {
             document.querySelectorAll('#startScreen .win-type-card').forEach((c, i) => {
                 c.classList.toggle('selected', i === 0);
             });
+            renderWinnersPodium();
         }
     );
 }
@@ -308,6 +346,9 @@ function renderViewMode() {
 
     // Controles desabilitados
     setControlsDisabled(true);
+
+    updateRoundBadges(r);
+    renderWinnersPodium();
 }
 
 // ── Toggle manual de pedra ─────────────────────
@@ -364,7 +405,8 @@ function verifyWinner() {
     const tipoRodada = getRodadaTipo(rodadaRef);
     const won = checkWin(card, sorteadosRef, tipoRodada);
     const serialStr = String(serial).padStart(4, '0');
-    const thumbHTML = renderCardGridHTML(card, sorteadosRef);
+    const winningCells = won ? getWinningPatternCells(card, sorteadosRef, tipoRodada) : null;
+    const thumbHTML = renderCardGridHTML(card, sorteadosRef, winningCells);
     if (won) {
         showResult('🏆', 'BINGO!', `A cartela #${serialStr} da Rodada ${rodadaRef} é vencedora!`, thumbHTML, rodadaRef, serial);
     } else {
@@ -409,6 +451,7 @@ function render(lastDrawn) {
     renderBoardData(sorteados, false);
     renderHistoryData(sorteados);
     renderControls();
+    renderWinnersPodium();
 
     const prevBtn = document.getElementById('prevRoundBtn');
     const nextBtn = document.getElementById('nextRoundBtn');
@@ -477,13 +520,26 @@ function renderHistoryData(list) {
 function renderControls() {
     document.getElementById('undoBtn').disabled = sorteados.length === 0;
     document.getElementById('drawBtn').disabled = available.length === 0;
-    const tipos = getRodadaTipo(rodadaAtual);
-    const labels = tipos.map(t => WIN_TYPES[t] || t);
-    const badgeText = labels.length <= 2 ? labels.join(' + ') : `${labels.length} tipos de vitória`;
     document.getElementById('endRoundBtn').textContent =
         `Encerrar Rodada ${rodadaAtual} e Criar Próxima ▶`;
+    updateRoundBadges(rodadaAtual);
+}
+
+function updateRoundBadges(rodada) {
+    const tipos = getRodadaTipo(rodada);
+    const labels = tipos.map(t => WIN_TYPES[t] || t);
+    const badgeText = labels.length <= 2 ? labels.join(' + ') : `${labels.length} tipos de vitória`;
     document.getElementById('roundTipoBadge').textContent = `🏆 ${badgeText}`;
     document.getElementById('roundTipoBadge').title = labels.join(', ');
+
+    const premio = getRodadaPremio(rodada);
+    const premioTicket = document.getElementById('roundPremioTicket');
+    if (premio) {
+        document.getElementById('roundPremioText').textContent = premio;
+        premioTicket.style.display = 'flex';
+    } else {
+        premioTicket.style.display = 'none';
+    }
 }
 
 function flashWinTypeGridError(scopeSelector) {
@@ -531,6 +587,7 @@ function showResult(icon, title, message, cardThumbHTML, rodadaRef, serial) {
         nameBox.dataset.rodada = rodadaRef;
         nameBox.dataset.serial = serial;
         renderWinnersRank(rodadaRef);
+        renderWinnersPodium();
     } else {
         nameBox.style.display = 'none';
         document.getElementById('winnersRank').style.display = 'none';
@@ -561,11 +618,49 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('hideSortearToggle').checked = hideSortear;
     document.body.classList.toggle('hide-sortear', hideSortear);
 
-    document.getElementById('settingsBtn').addEventListener('click', () => openModal('settingsModal'));
+    document.getElementById('settingsBtn').addEventListener('click', () => {
+        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
+        document.getElementById('premioRodadaLabel').textContent = rodadaRef;
+        document.getElementById('premioInput').value = getRodadaPremio(rodadaRef);
+        document.getElementById('importBackupError').style.display = 'none';
+        openModal('settingsModal');
+    });
     document.getElementById('settingsClose').addEventListener('click', () => closeModal('settingsModal'));
     document.getElementById('hideSortearToggle').addEventListener('change', e => {
         localStorage.setItem(STORAGE_HIDE_SORTEAR, e.target.checked);
         document.body.classList.toggle('hide-sortear', e.target.checked);
+    });
+
+    document.getElementById('premioSave').addEventListener('click', () => {
+        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
+        setRodadaPremio(rodadaRef, document.getElementById('premioInput').value);
+        updateRoundBadges(rodadaRef);
+    });
+
+    document.getElementById('exportBackupBtn').addEventListener('click', () => exportBackup());
+    document.getElementById('importBackupBtn').addEventListener('click', () => {
+        document.getElementById('importBackupFile').click();
+    });
+    document.getElementById('importBackupFile').addEventListener('change', e => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        showConfirm(
+            'Importar backup?',
+            'Todos os dados atuais do evento neste dispositivo serão substituídos pelos dados do arquivo importado.',
+            () => importBackup(file, msg => {
+                const err = document.getElementById('importBackupError');
+                err.textContent = msg;
+                err.style.display = 'block';
+            })
+        );
+    });
+
+    const winnersFloat = document.getElementById('winnersFloat');
+    winnersFloat.classList.toggle('collapsed', localStorage.getItem(STORAGE_RANK_FLOAT_COLLAPSED) === 'true');
+    document.getElementById('winnersFloatToggle').addEventListener('click', () => {
+        const collapsed = winnersFloat.classList.toggle('collapsed');
+        localStorage.setItem(STORAGE_RANK_FLOAT_COLLAPSED, collapsed);
     });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
@@ -620,6 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
         saveWinner(rodada, serial, nome);
         document.getElementById('winnerNameInput').value = '';
         renderWinnersRank(rodada);
+        renderWinnersPodium();
     });
     document.getElementById('winnerNameInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('winnerNameSave').click();

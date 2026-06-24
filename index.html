@@ -111,18 +111,13 @@
                 <button class="btn btn-warning btn-sm" id="returnBtn" style="display:none;">▶ Voltar à Rodada Atual</button>
             </div>
 
-            <div style="text-align:center; margin: 1px 0 18px;">
-                <span id="roundTipoBadge" style="
-                    display:inline-block;
-                    background:rgba(255,255,255,0.12);
-                    color:#FFE066;
-                    font-size:1.25rem;
-                    font-weight:900;
-                    padding:11px 20px;
-                    border-radius:100px;
-                    border:1px solid rgba(255,255,255,0.2);
-                    letter-spacing:0.5px;
-                ">🏆 Diagonal</span>
+            <div style="text-align:center; margin: 1px 0 12px;">
+                <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
+            </div>
+
+            <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
+                <span class="round-premio-ticket-icon">🎁</span>
+                <span class="round-premio-ticket-text" id="roundPremioText"></span>
             </div>
 
             <div class="current-ball-wrapper">
@@ -162,6 +157,17 @@
 
     </main>
 
+    <!-- Painel flutuante: pódio de vencedores de todas as rodadas -->
+    <div class="winners-float" id="winnersFloat">
+        <button class="winners-float-header" id="winnersFloatToggle">
+            <span>🏆 Pódio de Vencedores</span>
+            <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
+        </button>
+        <div class="winners-float-body" id="winnersFloatBody">
+            <div class="podium-list" id="winnersFloatList"></div>
+        </div>
+    </div>
+
     <!-- Modal: configurações -->
     <div class="modal" id="settingsModal">
         <div class="modal-box">
@@ -171,6 +177,26 @@
                 <input type="checkbox" id="hideSortearToggle">
                 <span>Ocultar botão "Sortear" (sorteio com equipamento físico)</span>
             </label>
+
+            <div class="settings-section">
+                <label for="premioInput">🎁 Prêmio da rodada <span id="premioRodadaLabel">1</span></label>
+                <div class="settings-row">
+                    <input type="text" id="premioInput" class="modal-input premio-input" placeholder="Ex: Caixa de paçoca" maxlength="60">
+                    <button class="btn btn-primary btn-sm" id="premioSave">Salvar</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <label>💾 Backup dos dados</label>
+                <p class="settings-hint">Exporte para levar os dados do evento para outro computador, ou importe um arquivo de backup.</p>
+                <div class="settings-row">
+                    <button class="btn btn-secondary btn-sm" id="exportBackupBtn">📤 Exportar dados</button>
+                    <button class="btn btn-secondary btn-sm" id="importBackupBtn">📥 Importar dados</button>
+                    <input type="file" id="importBackupFile" accept=".json" style="display:none;">
+                </div>
+                <p class="import-backup-error" id="importBackupError" style="display:none;"></p>
+            </div>
+
             <div class="modal-actions">
                 <button class="btn btn-primary" id="settingsClose">Fechar</button>
             </div>
@@ -268,6 +294,7 @@
     </div>
 
     <script src="js/bingo-core.js"></script>
+    <script src="js/backup.js"></script>
     <script src="js/sorteador.js"></script>
 </body>
 </html>

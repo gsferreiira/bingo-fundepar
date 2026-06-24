@@ -146,7 +146,8 @@ function checkDiagonal(card, sorteados) {
 }
 
 // Gera o grid 5x5 de uma cartela com números sorteados marcados (para exibição, não impressão).
-function renderCardGridHTML(card, sorteados) {
+// winningCells (opcional): Set de chaves "letter-row" das células que compõem o padrão vencedor, para destaque extra.
+function renderCardGridHTML(card, sorteados, winningCells) {
     const drawn = new Set(sorteados);
     const letters = ['B', 'I', 'N', 'G', 'O'];
     let cellsHTML = '';
@@ -157,10 +158,59 @@ function renderCardGridHTML(card, sorteados) {
             } else {
                 const n = card[letter][row];
                 const isDrawn = drawn.has(n);
-                cellsHTML += `<div class="result-card-cell${isDrawn ? ' is-drawn' : ''}" data-letter="${letter}">${n}</div>`;
+                const isWinCell = winningCells && winningCells.has(`${letter}-${row}`);
+                const cls = ['result-card-cell', isDrawn ? 'is-drawn' : '', isWinCell ? 'is-win-pattern' : ''].filter(Boolean).join(' ');
+                cellsHTML += `<div class="${cls}" data-letter="${letter}">${n}</div>`;
             }
         }
     }
     return `<div class="result-card-letters">${letters.map(l => `<div class="result-card-letter" data-letter="${l}">${l}</div>`).join('')}</div>
         <div class="result-card-grid">${cellsHTML}</div>`;
+}
+
+// Retorna um Set de chaves "letter-row" com as células do padrão vencedor que já fechou,
+// considerando todos os tipos configurados na rodada (pode haver mais de um padrão fechado).
+function getWinningPatternCells(card, sorteados, tipos) {
+    const s = new Set(sorteados);
+    const letters = ['B', 'I', 'N', 'G', 'O'];
+    const cells = new Set();
+    const lista = Array.isArray(tipos) ? tipos : [tipos];
+
+    const isFree = (letter, row) => letter === 'N' && row === 2;
+    const isDrawnAt = (letter, row) => isFree(letter, row) || s.has(card[letter][row]);
+
+    for (const tipo of lista) {
+        if (tipo === 'cantos' && checkCorners(card, sorteados)) {
+            cells.add('B-0').add('O-0').add('B-4').add('O-4');
+        } else if (tipo === 'linha') {
+            for (let row = 0; row < 5; row++) {
+                if (letters.every(letter => isDrawnAt(letter, row))) {
+                    letters.forEach(letter => cells.add(`${letter}-${row}`));
+                }
+            }
+        } else if (tipo === 'coluna') {
+            for (const letter of letters) {
+                let complete = true;
+                for (let row = 0; row < 5; row++) {
+                    if (!isDrawnAt(letter, row)) { complete = false; break; }
+                }
+                if (complete) {
+                    for (let row = 0; row < 5; row++) cells.add(`${letter}-${row}`);
+                }
+            }
+        } else if (tipo === 'diagonal') {
+            let diagonal1 = true, diagonal2 = true;
+            for (let i = 0; i < 5; i++) {
+                if (!isDrawnAt(letters[i], i)) diagonal1 = false;
+                if (!isDrawnAt(letters[4 - i], i)) diagonal2 = false;
+            }
+            if (diagonal1) for (let i = 0; i < 5; i++) cells.add(`${letters[i]}-${i}`);
+            if (diagonal2) for (let i = 0; i < 5; i++) cells.add(`${letters[4 - i]}-${i}`);
+        } else if (tipo === 'completa' && checkFullCard(card, sorteados)) {
+            for (let row = 0; row < 5; row++) {
+                for (const letter of letters) cells.add(`${letter}-${row}`);
+            }
+        }
+    }
+    return cells;
 }
