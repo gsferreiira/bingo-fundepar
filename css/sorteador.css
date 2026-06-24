@@ -465,12 +465,12 @@ body.hide-sortear .draw-section { display: none; }
 /* ── Modal resultado: miniatura da cartela vencedora ── */
 
 .result-modal-box {
-    max-width: 400px !important;
+    max-width: 520px !important;
 }
 
 .result-card-thumb {
     margin: 14px 0 4px;
-    max-width: 260px;
+    max-width: 380px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -483,9 +483,9 @@ body.hide-sortear .draw-section { display: none; }
 
 .result-card-letter {
     text-align: center;
-    font-size: 1.06rem;
+    font-size: 1.5rem;
     font-weight: 900;
-    padding: 4px 0;
+    padding: 6px 0;
     color: #fff;
     border-radius: 6px 6px 0 0;
 }
@@ -509,9 +509,9 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.12rem;
+    font-size: 1.6rem;
     font-weight: 900;
-    min-height: 40px;
+    min-height: 58px;
     border-right: 1px solid var(--borda-suave);
     border-bottom: 1px solid var(--borda-suave);
     color: var(--texto-suave);
@@ -1367,5 +1367,5 @@ body.hide-sortear .draw-section { display: none; }
     .start-card { max-width: 640px; }
     .win-type-grid { grid-template-columns: repeat(5, 1fr); }
     .create-round-modal-box { max-width: 760px !important; }
-    .result-modal-box { max-width: 440px !important; }
+    .result-modal-box { max-width: 560px !important; }
 }
