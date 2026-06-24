@@ -153,7 +153,10 @@
 
         <!-- Encerrar rodada -->
         <div class="end-round-section">
-            <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+            <div class="end-round-actions">
+                <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+                <button class="btn btn-orange" id="tieBreakBtn">Desempate por Pedra Maior</button>
+            </div>
             <button class="btn btn-secondary btn-sm" id="restartBtn" style="margin-top:10px;">🗑️ Reiniciar Evento do Zero</button>
         </div>
 
@@ -247,6 +250,52 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="resultClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: desempate por pedra maior -->
+    <div class="modal" id="tieBreakModal">
+        <div class="modal-box tie-break-modal-box">
+            <div class="tie-break-header">
+                <div class="tie-break-icon">🔥</div>
+                <h2>Desempate por Pedra Maior</h2>
+                <p>Sorteie uma pedra para cada finalista. A maior pedra vence o desempate.</p>
+            </div>
+
+            <div class="tie-break-content">
+                <div class="tie-break-stage">
+                    <div class="tie-break-callout">Clique no botão abaixo para iniciar o desempate</div>
+                    <div class="current-ball idle" id="tieBreakBall">
+                        <span class="ball-letter" id="tieBreakBallLetter"></span>
+                        <span class="ball-number" id="tieBreakBallNumber">?</span>
+                    </div>
+                    <p class="ball-caption" id="tieBreakCaption">Aguardando desempate</p>
+                    <div class="draw-section tie-break-draw-section">
+                        <button class="btn-draw tie-break-draw-btn" id="tieBreakDrawBtn">CLIQUE AQUI PARA SORTEAR</button>
+                    </div>
+                    <div class="tie-break-summary" id="tieBreakSummary">Nenhuma pedra sorteada ainda.</div>
+                </div>
+
+                <div class="tie-break-camera">
+                    <div class="tie-break-camera-frame">
+                        <video id="tieBreakWebcam" autoplay muted playsinline></video>
+                        <div class="tie-break-camera-placeholder" id="tieBreakCameraPlaceholder">
+                            Espelho da webcam
+                        </div>
+                    </div>
+                    <p class="tie-break-camera-status" id="tieBreakCameraStatus">A webcam será ativada ao abrir o desempate.</p>
+                </div>
+            </div>
+
+            <div class="history-panel tie-break-history">
+                <p class="history-title">Pedras do desempate — maior vence</p>
+                <div class="history-list" id="tieBreakHistory"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="tieBreakResetBtn">Limpar Desempate</button>
+                <button class="btn btn-primary" id="tieBreakCloseBtn">Fechar</button>
             </div>
         </div>
     </div>
