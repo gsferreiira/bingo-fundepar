@@ -40,7 +40,7 @@
 .stage-fire {
     position: absolute;
     bottom: 10px;
-    max-height: 4.5rem;
+    max-height: 6rem;
     animation: fogueira 1.2s ease-in-out infinite alternate;
     pointer-events: none;
     user-select: none;
@@ -1418,7 +1418,7 @@ body.hide-sortear .draw-section { display: none; }
 
 @media (min-width: 1280px) and (orientation: landscape) {
     .start-card { max-width: 640px; }
-    .win-type-grid { grid-template-columns: repeat(5, 1fr); }
+    .win-type-grid { grid-template-columns: repeat(3, 1fr); }
     .create-round-modal-box { max-width: 760px !important; }
     .result-modal-box { max-width: 440px !important; }
 }
