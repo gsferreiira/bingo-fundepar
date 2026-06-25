@@ -114,6 +114,31 @@
 
     <main class="sorteador-main">
         <!-- Palco noturno: navegação + bola + sortear -->
+        <div class="hero-stage-wrap">
+            <div class="stage-hat" aria-hidden="true">
+                <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="60" cy="60" rx="58" ry="11" fill="url(#sh-grad3)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="url(#sh-grad1)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
+                    <path d="M22,52 Q60,62 98,52 Q96,30 90,30 Q50,45 24,35" fill="url(#sh-grad2)" stroke="#0D4F8A" stroke-width="1"/>
+                    <defs>
+                        <radialGradient id="sh-grad1" cx="0" cy="0" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#ffeba3"/>
+                            <stop offset="100%" stop-color="#b57b2b"/>
+                        </radialGradient>
+                        <linearGradient id="sh-grad2" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="#1971C2"/>
+                            <stop offset="25%" stop-color="#71cff5"/>
+                            <stop offset="50%" stop-color="#1971C2"/>
+                            <stop offset="100%" stop-color="#400982"/>
+                        </linearGradient>
+                        <radialGradient id="sh-grad3" cx="60%" cy="5%" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#b57b2b"/>
+                            <stop offset="100%" stop-color="#fac47a"/>
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </div>
         <div class="hero-stage">
             <img class="stage-fire fire-left" src="assets/3153859.png">
             <img class="stage-fire fire-right" src="assets/3153859.png">
@@ -131,7 +156,7 @@
             </div>
 
             <div style="text-align:center; margin: 1px 0 12px;">
-                <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
+                <button id="roundTipoBadge" class="round-tipo-badge" type="button" title="Clique para alterar o tipo de vitória">🏆 Diagonal</button>
             </div>
 
             <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
@@ -155,6 +180,7 @@
                 <button class="btn" id="verifyBtn">🏆 Verificar Vencedor</button>
                 <button class="btn" id="undoBtn">↩ Desfazer</button>
             </div>
+        </div>
         </div>
 
         <!-- Tabuleiro -->
@@ -416,6 +442,50 @@
             <div class="modal-actions">
                 <button class="btn btn-primary" id="createRoundConfirm">🚀 Iniciar Rodada</button>
                 <button class="btn btn-secondary" id="createRoundCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: alterar tipo de vitória da rodada atual -->
+    <div class="modal" id="changeTipoModal">
+        <div class="modal-box create-round-modal-box">
+            <div class="create-round-header">
+                <div class="create-round-icon">✏️</div>
+                <h2>Alterar Tipo de Vitória</h2>
+                <p>Vale a partir do próximo sorteio desta rodada</p>
+            </div>
+
+            <div class="win-type-grid">
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="coluna">
+                    <div class="win-type-icon">⋮⋮</div>
+                    <div class="win-type-name">Coluna</div>
+                    <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
+                </div>
+                <div class="win-type-card" data-tipo="cantos">
+                    <div class="win-type-icon">◰</div>
+                    <div class="win-type-name">4 Cantos</div>
+                    <div class="win-type-desc">Os 4 cantos da cartela sorteados</div>
+                </div>
+                <div class="win-type-card" data-tipo="completa">
+                    <div class="win-type-icon">⊞</div>
+                    <div class="win-type-name">Cartela Cheia</div>
+                    <div class="win-type-desc">Todos os 24 números da cartela sorteados</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="changeTipoConfirm">✅ Salvar</button>
+                <button class="btn btn-secondary" id="changeTipoCancel">Cancelar</button>
             </div>
         </div>
     </div>

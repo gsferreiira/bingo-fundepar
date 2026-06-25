@@ -934,6 +934,28 @@ function updateRoundBadges(rodada) {
     }
 }
 
+function openChangeTipoModal() {
+    const tiposAtuais = getRodadaTipo(rodadaAtual);
+    document.querySelectorAll('#changeTipoModal .win-type-card').forEach(c => {
+        c.classList.toggle('selected', tiposAtuais.includes(c.dataset.tipo));
+    });
+    openModal('changeTipoModal');
+}
+
+function confirmChangeTipo() {
+    const selected = document.querySelectorAll('#changeTipoModal .win-type-card.selected');
+    const tipo = Array.from(selected).map(c => c.dataset.tipo);
+    if (tipo.length === 0) {
+        flashWinTypeGridError('#changeTipoModal');
+        return;
+    }
+    const data = JSON.parse(localStorage.getItem(storageKey(rodadaAtual))) || {};
+    data.tipo = tipo;
+    localStorage.setItem(storageKey(rodadaAtual), JSON.stringify(data));
+    closeModal('changeTipoModal');
+    renderControls();
+}
+
 function flashWinTypeGridError(scopeSelector) {
     const grid = document.querySelector(`${scopeSelector} .win-type-grid`);
     if (!grid) return;
@@ -1237,6 +1259,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('createRoundConfirm').addEventListener('click', confirmCreateRound);
     document.getElementById('createRoundCancel').addEventListener('click', () => closeModal('createRoundModal'));
+
+    document.getElementById('roundTipoBadge').addEventListener('click', () => {
+        if (rodadaVisualizando !== null) return;
+        openChangeTipoModal();
+    });
+    document.getElementById('changeTipoConfirm').addEventListener('click', confirmChangeTipo);
+    document.getElementById('changeTipoCancel').addEventListener('click', () => closeModal('changeTipoModal'));
 
     document.querySelectorAll('.win-type-card').forEach(card => {
         card.addEventListener('click', () => card.classList.toggle('selected'));

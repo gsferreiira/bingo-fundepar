@@ -19,6 +19,7 @@
     padding: 24px 20px 28px;
     margin: 16px 0;
     position: relative;
+    z-index: 1;
     overflow: hidden;
     box-shadow: 0px 25px 40px rgba(0,0,0,0.4);
 }
@@ -102,7 +103,11 @@
     border-radius: 100px;
     border: 1px solid rgba(255,255,255,0.2);
     letter-spacing: 0.5px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
 }
+.round-tipo-badge:hover { background: rgba(255,255,255,0.2); transform: scale(1.03); }
 
 /* Ticket de prêmio da rodada — visualmente separado do tipo de vitória */
 .round-premio-ticket {
@@ -1493,6 +1498,22 @@ body.hide-sortear .draw-section { display: none; }
     width: 128px;
     z-index: 3;
     filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
+}
+
+.hero-stage-wrap {
+    position: relative;
+    z-index: 5;
+}
+
+.stage-hat {
+    position: absolute;
+    top: -50px;
+    left: -80px;
+    width: 160px;
+    rotate: -40deg;
+    z-index:100;
+    filter: drop-shadow(0 6px 14px rgba(0,0,0,0.5));
+    pointer-events: none;
 }
 
 /* Fogueiras */
