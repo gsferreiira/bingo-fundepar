@@ -107,10 +107,10 @@
 /* Ticket de prêmio da rodada — visualmente separado do tipo de vitória */
 .round-premio-ticket {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     gap: 10px;
-    max-width: 360px;
+    max-width: 460px;
     margin: 0 auto 18px;
     background: repeating-linear-gradient(135deg, #2E7D32 0px, #2E7D32 10px, #388E3C 10px, #388E3C 20px);
     border: 2px dashed #FFD43B;
@@ -123,14 +123,18 @@
 .round-premio-ticket-icon {
     font-size: 1.65rem;
     flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .round-premio-ticket-text {
+    display: block;
     color: #fff;
     font-weight: 900;
     font-size: 1.24rem;
+    line-height: 1.4;
     letter-spacing: 0.3px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    text-align: left;
 }
 
 /* ── Bola atual ───────────────────────────────── */
@@ -299,6 +303,84 @@
     border-radius: 8px;
 }
 
+.premios-list {
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+    padding-right: 2px;
+}
+.premio-round-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--borda-suave);
+}
+.premio-round-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+.premio-row-label {
+    flex-shrink: 0;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+}
+.premio-row-add {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: var(--primario);
+    transition: background 0.15s, color 0.15s;
+}
+.premio-row-add:hover { background: rgba(84,63,219,0.12); color: var(--primario-dark); }
+
+.premio-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.premio-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.premio-row-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--texto-suave);
+    transition: background 0.15s, color 0.15s;
+}
+.premio-row-remove:hover { background: rgba(214,51,108,0.12); color: #D6336C; }
+
+.premio-add-row { margin-top: 4px; }
+.premio-add-input {
+    flex: 0 0 120px;
+    width: auto;
+    margin-top: 0;
+    padding: 10px 12px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: left;
+    border-radius: 8px;
+}
+
 /* Modo "sorteio físico": esconde só o botão de sortear, mantém o resto do palco */
 body.hide-sortear .draw-section { display: none; }
 
@@ -415,12 +497,37 @@ body.hide-sortear .draw-section { display: none; }
     margin-bottom: 10px;
 }
 
+.history-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--texto-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.history-toggle:hover { color: var(--primario-dark); }
+
 .history-list {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
     min-height: 24px;
+    max-height: 180px;
+    overflow-y: auto;
 }
+
+.history-list.collapsed { display: none; }
 
 .history-chip {
     padding: 3px 10px;
@@ -466,12 +573,12 @@ body.hide-sortear .draw-section { display: none; }
 /* ── Modal resultado: miniatura da cartela vencedora ── */
 
 .result-modal-box {
-    max-width: 400px !important;
+    max-width: 520px !important;
 }
 
 .result-card-thumb {
     margin: 14px 0 4px;
-    max-width: 260px;
+    max-width: 380px;
     margin-left: auto;
     margin-right: auto;
 }
@@ -484,9 +591,9 @@ body.hide-sortear .draw-section { display: none; }
 
 .result-card-letter {
     text-align: center;
-    font-size: 1.06rem;
+    font-size: 1.5rem;
     font-weight: 900;
-    padding: 4px 0;
+    padding: 6px 0;
     color: #fff;
     border-radius: 6px 6px 0 0;
 }
@@ -510,9 +617,9 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.12rem;
+    font-size: 1.6rem;
     font-weight: 900;
-    min-height: 40px;
+    min-height: 58px;
     border-right: 1px solid var(--borda-suave);
     border-bottom: 1px solid var(--borda-suave);
     color: var(--texto-suave);
@@ -574,6 +681,20 @@ body.hide-sortear .draw-section { display: none; }
     pointer-events: none;
 }
 
+/* Faixa de bandeirinhas juninas separando o header escuro do conteúdo claro */
+.tie-break-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 22px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3C/svg%3E");
+    background-repeat: repeat-x;
+    background-position: top left;
+    background-size: 140px 22px;
+}
+
 .tie-break-icon {
     font-size: 2.4rem;
     line-height: 1;
@@ -604,7 +725,10 @@ body.hide-sortear .draw-section { display: none; }
 .tie-break-camera {
     border: 1px solid var(--borda);
     border-radius: 14px;
-    background: var(--bg);
+    background:
+        repeating-linear-gradient(0deg,  rgba(230,119,0,0.05) 0 18px, transparent 18px 36px),
+        repeating-linear-gradient(90deg, rgba(230,119,0,0.05) 0 18px, transparent 18px 36px),
+        var(--bg);
     padding: 18px;
 }
 
@@ -689,6 +813,54 @@ body.hide-sortear .draw-section { display: none; }
     color: #5C3D00;
     font-weight: 900;
     font-size: 1.03rem;
+}
+
+.tie-break-winner-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    width: 100%;
+    margin-top: 18px;
+    padding: 14px 16px;
+    background: repeating-linear-gradient(135deg, #2E7D32 0px, #2E7D32 10px, #388E3C 10px, #388E3C 20px);
+    border: 2px dashed #FFD43B;
+    border-radius: 14px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+    transform: rotate(-0.6deg);
+}
+
+.tie-break-winner-label {
+    color: #fff;
+    font-size: 1.02rem;
+    font-weight: 800;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+.tie-break-winner-label strong {
+    color: #FFE066;
+    font-size: 1.15rem;
+}
+
+.tie-break-winner-box .winner-name-box { margin-top: 0; align-items: center; }
+
+.tie-break-winner-box .winner-name-input {
+    background: #fff;
+}
+
+.tie-break-winner-box #tieBreakWinnerSave {
+    align-self: center;
+    flex-shrink: 0;
+    padding: 9px 14px;
+    font-size: 0.88rem;
+}
+
+.tie-break-winner-status {
+    color: #FFE066;
+    font-weight: 900;
+    font-size: 0.97rem;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    margin: 0 !important;
 }
 
 .tie-break-camera {
@@ -937,6 +1109,10 @@ body.hide-sortear .draw-section { display: none; }
     font-weight: 700;
 }
 
+.winners-rank-tiebreak {
+    color: #E67700;
+}
+
 /* ── Painel flutuante: ranking de vencedores ───── */
 
 .winners-float {
@@ -982,6 +1158,34 @@ body.hide-sortear .draw-section { display: none; }
     overflow-y: auto;
 }
 
+.winners-float-seeall,
+.winners-float-manage {
+    display: block;
+    width: 100%;
+    margin-top: 6px;
+    background: none;
+    border: none;
+    border-top: 1px solid var(--borda-suave);
+    padding-top: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.89rem;
+    font-weight: 800;
+    color: var(--primario);
+    cursor: pointer;
+    text-align: right;
+}
+
+.winners-float-manage {
+    text-align: center;
+    margin-top: 4px;
+    border-top: none;
+}
+
+.winners-float-seeall:hover,
+.winners-float-manage:hover { color: var(--primario-dark); }
+
+#allWinnersList { max-height: 360px; overflow-y: auto; margin: 14px 0; }
+
 .podium-list {
     display: flex;
     flex-direction: column;
@@ -1022,6 +1226,98 @@ body.hide-sortear .draw-section { display: none; }
     .winners-float { width: 220px; bottom: 10px; right: 10px; }
     .winners-float-body { max-height: 160px; }
 }
+
+/* ── Modal gerenciar vencedores ─────────────────── */
+
+.manage-winners-modal-box {
+    max-width: 480px !important;
+    text-align: left;
+}
+.manage-winners-modal-box h2,
+.manage-winners-modal-box p { text-align: center; }
+
+.manage-winners-round-select {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 14px 0 10px;
+}
+.manage-winners-round-select label {
+    font-weight: 800;
+    color: var(--texto);
+    font-size: 0.97rem;
+}
+.manage-winners-round-select select {
+    flex: 1;
+    padding: 8px 10px;
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--texto);
+}
+
+.manage-winners-list {
+    max-height: 260px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-right: 2px;
+}
+
+.manage-winners-empty {
+    color: var(--texto-suave);
+    font-size: 0.94rem;
+    font-style: italic;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.manage-winners-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.manage-winners-input {
+    width: auto;
+    margin-top: 0;
+    padding: 9px 10px;
+    font-size: 1rem;
+    letter-spacing: 0;
+    text-align: left;
+    border-radius: 8px;
+}
+.manage-winners-name { flex: 1.6; }
+.manage-winners-serial { flex: 1; }
+
+.manage-winners-remove {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--texto-suave);
+    transition: background 0.15s, color 0.15s;
+}
+.manage-winners-remove:hover { background: rgba(214,51,108,0.12); color: #D6336C; }
+
+.manage-winners-add {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    padding-top: 12px;
+    border-top: 1px solid var(--borda-suave);
+}
+.manage-winners-add .manage-winners-name { flex: 1.6; }
+.manage-winners-add .manage-winners-serial { flex: 1; }
 
 /* ── Modal criar rodada ───────────────────────── */
 
@@ -1420,5 +1716,5 @@ body.hide-sortear .draw-section { display: none; }
     .start-card { max-width: 640px; }
     .win-type-grid { grid-template-columns: repeat(3, 1fr); }
     .create-round-modal-box { max-width: 760px !important; }
-    .result-modal-box { max-width: 440px !important; }
+    .result-modal-box { max-width: 560px !important; }
 }
