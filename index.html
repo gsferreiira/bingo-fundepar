@@ -14,21 +14,38 @@
 
     <!-- Tela de entrada -->
     <div id="startScreen" class="start-screen">
-        <div class="start-bands" aria-hidden="true"></div>
-
-        <div class="start-hat" aria-hidden="true">
-            <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="60" cy="56" rx="58" ry="11" fill="#E0A85C" stroke="#9A6F32" stroke-width="2"/>
-                <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="#F0C27B" stroke="#9A6F32" stroke-width="2"/>
-                <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
-                <rect x="22" y="44" width="76" height="9" rx="3" fill="#1971C2" stroke="#0D4F8A" stroke-width="1"/>
-            </svg>
+        <div class="bandeirinhas-container">
+            <div class="bandeirinhas" aria-hidden="true"></div>
         </div>
 
         <img class="start-fogueira start-fogueira-l" src="assets/3153859.png" aria-hidden="true">
         <img class="start-fogueira start-fogueira-r" src="assets/3153859.png" aria-hidden="true">
 
         <div class="start-card">
+            <div class="start-hat" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="60" cy="60" rx="58" ry="11" fill="url(#grad3)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="url(#grad1)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
+                    <path d="M22,52 Q60,62 98,52 Q96,30 90,30 Q50,45 24,35" fill="url(#grad2)" stroke="#0D4F8A" stroke-width="1"/>
+                    <defs>
+                        <radialGradient id="grad1" cx="0" cy="0" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#ffeba3"/>
+                            <stop offset="100%" stop-color="#b57b2b"/>
+                        </radialGradient>
+                        <linearGradient id="grad2" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="#1971C2" />
+                            <stop offset="25%" stop-color="#71cff5" />
+                            <stop offset="50%" stop-color="#1971C2" />
+                            <stop offset="100%" stop-color="#400982" />
+                        </linearGradient>
+                        <radialGradient id="grad3" cx="60%" cy="5%" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#b57b2b"/>
+                            <stop offset="100%" stop-color="#fac47a"/>
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </div>
             <div class="start-logo-ring">
                 <img src="assets/logo_fundepar.png" alt="Logo Fundepar">
             </div>
@@ -76,13 +93,14 @@
             <button id="settingsBtn" class="btn-icon" aria-label="Configurações" title="Configurações">⚙️</button>
         </nav>
         <div class="nav-stripe"></div>
-        <div class="bandeirinhas-tier2" aria-hidden="true"></div>
     </header>
+
+    <div class="bandeirinhas-container">
+        <div class="bandeirinhas" aria-hidden="true"></div>
+    </div>
 
     <!-- Bandeirinhas + Cabeçalho da página -->
     <div class="page-hero">
-        <div class="bandeirinhas" aria-hidden="true"></div>
-
         <div class="page-header">
             <div class="logo-container">
                 <img src="assets/logo_fundepar.png" alt="Logo FUNDEPAR">
@@ -95,7 +113,6 @@
     </div>
 
     <main class="sorteador-main">
-
         <!-- Palco noturno: navegação + bola + sortear -->
         <div class="hero-stage">
             <img class="stage-fire fire-left" src="assets/3153859.png">

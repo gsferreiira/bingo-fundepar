@@ -1,16 +1,20 @@
 /* ── Layout ───────────────────────────────────── */
 
-main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; }
+main { max-width: 1200px; margin: 0 auto; padding: 0 16px 56px; z-index: 2; }
 
 /* ── Painel de controles ──────────────────────── */
 
-.controls-panel { margin: 16px 0; }
+.controls-panel { 
+    margin: 16px 0;
+    z-index: 2;
+}
 
 .control-row {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     align-items: flex-end;
+    z-index: 2;
 }
 
 .control-group {

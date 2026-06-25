@@ -4,6 +4,7 @@
     max-width: 860px;
     margin: 0 auto;
     padding: 0 16px 64px;
+    z-index: 2;
 }
 
 /* ═══════════════════════════════════════════════
@@ -19,7 +20,7 @@
     margin: 16px 0;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+    box-shadow: 0px 25px 40px rgba(0,0,0,0.4);
 }
 
 /* Estrelas estáticas no fundo */
@@ -1441,7 +1442,7 @@ body.hide-sortear .draw-section { display: none; }
     position: fixed;
     inset: 0;
     z-index: 900;
-    background: linear-gradient(180deg, #060615 0%, #0d0d2b 45%, #071a06 100%);
+    background: linear-gradient(180deg, #190722 0%, #0d0d2b 45%, #071a06 100%);
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -1464,58 +1465,34 @@ body.hide-sortear .draw-section { display: none; }
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(1.5px 1.5px at  8%  8%, rgba(255,255,255,0.8) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 22% 14%, rgba(255,255,220,0.6) 50%, transparent 50%),
-        radial-gradient(2px   2px   at 35%  6%, rgba(255,255,200,0.7) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 48% 11%, rgba(255,255,255,0.5) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 60%  4%, rgba(255,255,200,0.8) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 74% 16%, rgba(255,255,255,0.6) 50%, transparent 50%),
-        radial-gradient(2px   2px   at 88%  9%, rgba(255,255,220,0.7) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 15% 28%, rgba(255,255,255,0.4) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 30% 32%, rgba(255,255,200,0.5) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 55% 24%, rgba(255,255,255,0.4) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 78% 30%, rgba(255,255,220,0.5) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 92% 22%, rgba(255,255,255,0.6) 50%, transparent 50%),
-        radial-gradient(1px   1px   at  5% 42%, rgba(255,255,255,0.3) 50%, transparent 50%),
-        radial-gradient(1px   1px   at 42% 45%, rgba(255,255,200,0.4) 50%, transparent 50%),
-        radial-gradient(1.5px 1.5px at 68% 40%, rgba(255,255,255,0.4) 50%, transparent 50%);
+        radial-gradient(3px 3px at  8%  8%, rgba(255,255,255,0.8) 50%, transparent 50%),
+        radial-gradient(2px 2px at 22% 14%, rgba(255,255,220,0.6) 50%, transparent 50%),
+        radial-gradient(4px 4px at 35%  6%, rgba(255,255,200,0.7) 50%, transparent 50%),
+        radial-gradient(2px 2px at 48% 11%, rgba(255,255,255,0.5) 50%, transparent 50%),
+        radial-gradient(3px 3px at 60%  4%, rgba(255,255,200,0.8) 50%, transparent 50%),
+        radial-gradient(2px 2px at 74% 16%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(4px 4px at 88%  9%, rgba(255,255,220,0.7) 50%, transparent 50%),
+        radial-gradient(2px 2px at 15% 28%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(3px 3px at 30% 32%, rgba(255,255,200,0.5) 50%, transparent 50%),
+        radial-gradient(2px 2px at 55% 24%, rgba(255,255,255,0.4) 50%, transparent 50%),
+        radial-gradient(2px 2px at 78% 30%, rgba(255,255,220,0.5) 50%, transparent 50%),
+        radial-gradient(3px 3px at 92% 22%, rgba(255,255,255,0.6) 50%, transparent 50%),
+        radial-gradient(2px 2px at  5% 42%, rgba(255,255,255,0.3) 50%, transparent 50%),
+        radial-gradient(2px 2px at 42% 45%, rgba(255,255,200,0.4) 50%, transparent 50%),
+        radial-gradient(3px 3px at 68% 40%, rgba(255,255,255,0.4) 50%, transparent 50%);
     pointer-events: none;
     z-index: 0;
-}
-
-/* Bandeirinhas */
-.start-bands {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    width: 100%; height: 62px;
-    z-index: 1;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 62'%3E%3Cpath d='M0,16 Q35,9 70,16 Q105,23 140,16 Q175,9 210,16 Q245,23 280,16 Q315,9 350,16 Q385,23 420,16' stroke='%234A2912' stroke-width='1.8' fill='none'/%3E%3Cpolygon points='21,14 49,14 35,50' fill='%23E09200' stroke='%239A6400' stroke-width='0.5'/%3E%3Cpolygon points='91,14 119,14 105,50' fill='%23E67700' stroke='%23A04D00' stroke-width='0.5'/%3E%3Cpolygon points='161,14 189,14 175,50' fill='%232B8A3E' stroke='%231A5C29' stroke-width='0.5'/%3E%3Cpolygon points='231,14 259,14 245,50' fill='%237048E8' stroke='%234C32A8' stroke-width='0.5'/%3E%3Cpolygon points='301,14 329,14 315,50' fill='%231971C2' stroke='%230D4F8A' stroke-width='0.5'/%3E%3Cpolygon points='371,14 399,14 385,50' fill='%230a8cad' stroke='%2306647d' stroke-width='0.5'/%3E%3C/svg%3E");
-    background-repeat: repeat-x;
-    background-position: bottom left;
-    background-size: 210px 62px;
 }
 
 /* Chapéu de palha decorativo na tela inicial */
 .start-hat {
     position: absolute;
-    top: 70px;
-    right: 6%;
-    width: 90px;
+    left: 45%;
+    rotate: 45deg;
+    top: 0;
+    width: 128px;
     z-index: 3;
-    opacity: 0.85;
     filter: drop-shadow(0 6px 14px rgba(0,0,0,0.4));
-    animation: hat-sway 3.2s ease-in-out infinite alternate;
-    pointer-events: none;
-}
-.start-hat svg { width: 100%; display: block; }
-
-@keyframes hat-sway {
-    from { transform: rotate(-4deg); }
-    to   { transform: rotate(4deg); }
-}
-
-@media (max-width: 700px) {
-    .start-hat { display: none; }
 }
 
 /* Fogueiras */
@@ -1554,7 +1531,7 @@ body.hide-sortear .draw-section { display: none; }
 
 /* Logo */
 .start-logo-ring {
-    width: 80px; height: 80px;
+    width: 128px; height: 128px;
     border-radius: 50%;
     background: rgba(255,255,255,0.95);
     display: flex; align-items: center; justify-content: center;
@@ -1563,7 +1540,7 @@ body.hide-sortear .draw-section { display: none; }
     box-shadow: 0 0 28px rgba(245,159,0,0.5), 0 4px 16px rgba(0,0,0,0.5);
     flex-shrink: 0;
 }
-.start-logo-ring img { width: 62%; height: 62%; object-fit: contain; }
+.start-logo-ring img { width: 80%; height: 80%; object-fit: contain; }
 
 /* Título */
 .start-title {
@@ -1697,12 +1674,6 @@ body.hide-sortear .draw-section { display: none; }
         flex-shrink: 0;
         padding-bottom: 0;
     }
-    .bandeirinhas { height: 28px; margin-bottom: -4px; background-size: 95px 28px; }
-    .bandeirinhas-tier2 { display: none; }
-    .page-header { padding: 6px 24px 8px; gap: 10px; }
-    .logo-container { width: 52px; height: 52px; }
-    .page-title { font-size: 1.3rem; }
-    .page-subtitle { font-size: 0.83rem; }
 
     .sorteador-main {
         flex: 1;
