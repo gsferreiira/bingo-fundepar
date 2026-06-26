@@ -41,7 +41,7 @@
 .stage-fire {
     position: absolute;
     bottom: 10px;
-    max-height: 4.5rem;
+    max-height: 6rem;
     animation: fogueira 1.2s ease-in-out infinite alternate;
     pointer-events: none;
     user-select: none;
@@ -108,39 +108,6 @@
     transition: background 0.15s, transform 0.15s;
 }
 .round-tipo-badge:hover { background: rgba(255,255,255,0.2); transform: scale(1.03); }
-
-/* Ticket de prêmio da rodada — visualmente separado do tipo de vitória */
-.round-premio-ticket {
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    gap: 10px;
-    max-width: 460px;
-    margin: 0 auto 18px;
-    background: repeating-linear-gradient(135deg, #2E7D32 0px, #2E7D32 10px, #388E3C 10px, #388E3C 20px);
-    border: 2px dashed #FFD43B;
-    border-radius: 14px;
-    padding: 10px 18px;
-    box-shadow: 0 4px 14px rgba(0,0,0,0.35);
-    transform: rotate(-1deg);
-}
-
-.round-premio-ticket-icon {
-    font-size: 1.65rem;
-    flex-shrink: 0;
-    margin-top: 1px;
-}
-
-.round-premio-ticket-text {
-    display: block;
-    color: #fff;
-    font-weight: 900;
-    font-size: 1.24rem;
-    line-height: 1.4;
-    letter-spacing: 0.3px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
-    text-align: left;
-}
 
 /* ── Bola atual ───────────────────────────────── */
 
@@ -490,6 +457,24 @@ body.hide-sortear .draw-section { display: none; }
 .board-ball.drawn[data-letter="O"] { background: var(--cor-O); color: #fff; transform: scale(0.9); border-color: transparent; }
 
 /* ── Histórico ────────────────────────────────── */
+
+/* ── Pódio fixo e histórico de pedras ─────────── */
+
+.podium-panel {
+    margin: 12px 0;
+}
+
+.podium-title {
+    font-size: 1.08rem;
+    font-weight: 900;
+    color: var(--primario-dark);
+    margin-bottom: 10px;
+}
+
+/* Mantido porque o histórico também é usado no modal de desempate */
+.history-panel {
+    margin: 12px 0;
+}
 
 .history-panel { margin: 12px 0; }
 
@@ -1118,47 +1103,71 @@ body.hide-sortear .draw-section { display: none; }
     color: #E67700;
 }
 
-/* ── Painel flutuante: ranking de vencedores ───── */
+/* ── Histórico flutuante e recolhível ──────────── */
 
-.winners-float {
+.history-float {
     position: fixed;
     right: 16px;
     bottom: 16px;
     z-index: 50;
-    width: 260px;
+
+    width: 330px;
     max-width: calc(100vw - 32px);
-    background: var(--bg);
+
+    background: var(--bg-card);
     border: 1px solid var(--borda);
     border-radius: 12px;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
     overflow: hidden;
 }
 
-.winners-float-header {
+.history-float-header {
     width: 100%;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
+
     background: var(--primario);
     color: #fff;
+
     border: none;
     padding: 10px 14px;
+
+    font-family: 'Nunito', sans-serif;
     font-size: 0.97rem;
     font-weight: 800;
+
     cursor: pointer;
     text-align: left;
 }
 
-.winners-float-arrow {
+.history-float-header:hover {
+    filter: brightness(1.08);
+}
+
+.history-float-count {
+    color: rgba(255, 255, 255, 0.72);
+    font-size: 0.88rem;
+}
+
+.history-float-arrow {
+    flex-shrink: 0;
     transition: transform 0.2s;
 }
 
-.winners-float.collapsed .winners-float-arrow { transform: rotate(-90deg); }
-.winners-float.collapsed .winners-float-body { display: none; }
+.history-float.collapsed .history-float-arrow {
+    transform: rotate(-90deg);
+}
 
-.winners-float-body {
-    padding: 10px 12px;
+.history-float.collapsed .history-float-body {
+    display: none;
+}
+
+.history-float-body {
+    padding: 12px;
     max-height: 240px;
     overflow-y: auto;
 }
@@ -1200,21 +1209,28 @@ body.hide-sortear .draw-section { display: none; }
     display: flex;
     align-items: baseline;
     gap: 10px;
-    padding: 7px 2px;
+
+    padding: 9px 2px;
     border-bottom: 1px solid var(--borda-suave);
+
     font-size: 0.97rem;
 }
-.podium-item:last-child { border-bottom: none; }
+
+.podium-item:last-child {
+    border-bottom: none;
+}
 
 .podium-round {
+    flex-shrink: 0;
+
     font-weight: 900;
     color: var(--primario-dark);
-    flex-shrink: 0;
     white-space: nowrap;
 }
 
 .podium-winner {
     flex: 1;
+
     font-weight: 700;
     color: var(--texto);
     text-align: right;
@@ -1227,9 +1243,47 @@ body.hide-sortear .draw-section { display: none; }
     font-style: italic;
 }
 
+.podium-winner-content {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+}
+
+.podium-winner-name {
+    font-weight: 800;
+    color: var(--texto);
+}
+
+.podium-prize {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 4px 10px;
+    border-radius: 100px;
+
+    background: linear-gradient(135deg, #FFF3BF 0%, #FFD43B 100%);
+    border: 1px solid #F59F00;
+
+    color: #5C3D00;
+    font-size: 0.88rem;
+    font-weight: 900;
+    line-height: 1.2;
+
+    box-shadow: 0 2px 5px rgba(240, 140, 0, 0.2);
+}
+
 @media (max-width: 700px) {
-    .winners-float { width: 220px; bottom: 10px; right: 10px; }
-    .winners-float-body { max-height: 160px; }
+    .history-float {
+        width: min(330px, calc(100vw - 20px));
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .history-float-body {
+        max-height: 180px;
+    }
 }
 
 /* ── Modal gerenciar vencedores ─────────────────── */
@@ -1703,22 +1757,73 @@ body.hide-sortear .draw-section { display: none; }
         width: 100%;
         margin: 0 auto;
         padding: 16px 32px 20px;
+
         display: grid;
-        grid-template-columns: minmax(420px, 38%) 1fr;
-        grid-template-rows: 1fr auto auto;
+        grid-template-columns: minmax(420px, 38%) minmax(0, 1fr);
+
+        /*
+        * O tabuleiro ocupa o espaço disponível.
+        * O pódio possui altura limitada e rolagem própria.
+        */
+        grid-template-rows:
+            minmax(0, 1fr)
+            minmax(110px, 220px)
+            auto;
+
         grid-template-areas:
             "stage board"
-            "stage history"
+            "stage podium"
             "stage end";
+
         gap: 18px;
-        align-items: start;
+        align-items: stretch;
         box-sizing: border-box;
         overflow: hidden;
     }
 
     .hero-stage   { grid-area: stage;   margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-    .bingo-board-wrapper { grid-area: board;   margin: 0; }
-    .history-panel       { grid-area: history; margin: 0; }
+    .bingo-board-wrapper {
+        grid-area: board;
+        margin: 0;
+
+        min-width: 0;
+        min-height: 0;
+        overflow: auto;
+
+        position: relative;
+        z-index: 1;
+    }
+
+    .podium-panel {
+        grid-area: podium;
+        margin: 0;
+
+        min-width: 0;
+        min-height: 0;
+        max-height: 220px;
+
+        display: flex;
+        flex-direction: column;
+
+        overflow: hidden;
+
+        position: relative;
+        z-index: 1;
+    }
+
+    .podium-panel .podium-title {
+        flex-shrink: 0;
+    }
+
+    .podium-panel .podium-list {
+        flex: 1;
+        min-height: 0;
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        padding-right: 6px;
+    }
     .end-round-section   { grid-area: end;     margin-top: 0; padding-top: 16px; }
 
     .current-ball { width: 220px; height: 220px; }
@@ -1729,13 +1834,228 @@ body.hide-sortear .draw-section { display: none; }
     .bingo-board { min-width: 0; }
     .board-ball  { font-size: 1.77rem; }
 
-    .history-list { gap: 6px; }
-    .history-chip { font-size: 1.06rem; padding: 5px 14px; }
+    .history-float .history-list {
+        gap: 6px;
+    }
+
+    .history-float .history-chip {
+        font-size: 0.95rem;
+        padding: 4px 12px;
+    }
 }
 
 @media (min-width: 1280px) and (orientation: landscape) {
     .start-card { max-width: 640px; }
-    .win-type-grid { grid-template-columns: repeat(5, 1fr); }
+    .win-type-grid { grid-template-columns: repeat(3, 1fr); }
     .create-round-modal-box { max-width: 760px !important; }
     .result-modal-box { max-width: 560px !important; }
+}
+
+/* ── Cadastro de vários prêmios ─────────────── */
+
+.premios-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.premios-empty {
+    color: var(--texto-suave);
+    font-size: 0.92rem;
+    font-style: italic;
+    padding: 6px 0;
+}
+
+.premio-settings-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: var(--bg-card);
+    border: 1px solid var(--borda);
+    border-radius: 9px;
+
+    padding: 7px 9px;
+}
+
+.premio-settings-number {
+    color: var(--primario-dark);
+    font-size: 0.85rem;
+    font-weight: 900;
+}
+
+.premio-settings-name {
+    flex: 1;
+    color: var(--texto);
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* ── Seleção de prêmio do vencedor ──────────── */
+
+.winner-name-box {
+    align-items: stretch;
+    flex-wrap: wrap;
+}
+
+.winner-prize-select {
+    flex: 1;
+    min-width: 190px;
+
+    padding: 10px 12px;
+
+    background: var(--bg-card);
+    color: var(--texto);
+
+    border: 2px solid var(--borda);
+    border-radius: 8px;
+
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.winner-prize-select:focus {
+    outline: none;
+    border-color: var(--verde);
+}
+
+/* ── Ranking dentro do modal ────────────────── */
+
+.winners-rank-item {
+    flex-wrap: wrap;
+}
+
+.winners-rank-prize {
+    width: 100%;
+    margin-left: 2.2rem;
+
+    color: #5c3d00;
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.winners-rank-no-prize {
+    width: 100%;
+    margin-left: 2.2rem;
+
+    color: var(--texto-suave);
+    font-size: 0.82rem;
+    font-style: italic;
+}
+
+/* ── Pódio com vários vencedores ────────────── */
+
+.podium-item {
+    display: block;
+    padding: 12px 0;
+}
+
+.podium-round {
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+
+.podium-winners-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.podium-winner-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 8px 10px;
+
+    background: var(--borda-suave);
+    border-radius: 9px;
+}
+
+.podium-position {
+    flex-shrink: 0;
+
+    color: var(--primario-dark);
+    font-weight: 900;
+}
+
+.podium-winner-info {
+    flex: 1;
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    text-align: left;
+}
+
+.podium-winner-name {
+    color: var(--texto);
+    overflow-wrap: anywhere;
+}
+
+.podium-winner-serial {
+    color: var(--texto-suave);
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.podium-prize {
+    flex-shrink: 0;
+
+    display: inline-flex;
+    align-items: center;
+
+    max-width: 45%;
+    padding: 5px 10px;
+
+    background: linear-gradient(
+        135deg,
+        #fff3bf 0%,
+        #ffd43b 100%
+    );
+
+    border: 1px solid #f59f00;
+    border-radius: 100px;
+
+    color: #5c3d00;
+    font-size: 0.86rem;
+    font-weight: 900;
+
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.podium-no-prize {
+    flex-shrink: 0;
+
+    color: var(--texto-suave);
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+@media (max-width: 560px) {
+    .winner-name-box {
+        flex-direction: column;
+    }
+
+    .winner-prize-select {
+        width: 100%;
+    }
+
+    .podium-winner-row {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .podium-prize,
+    .podium-no-prize {
+        width: 100%;
+        max-width: none;
+        margin-left: 28px;
+    }
 }

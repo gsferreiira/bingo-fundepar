@@ -54,25 +54,30 @@
             <div class="start-sep">✦ &ensp; ✦ &ensp; ✦</div>
             <p class="start-choose">Escolha o tipo de vitória da 1ª rodada</p>
             <div class="win-type-grid">
-                <div class="win-type-card selected" data-tipo="linha">
-                    <div class="win-type-icon">☰</div>
-                    <div class="win-type-name">Linha</div>
-                    <div class="win-type-desc">Qualquer linha horizontal</div>
-                </div>
-                <div class="win-type-card" data-tipo="coluna">
+                <div class="win-type-card selected" data-tipo="coluna">
                     <div class="win-type-icon">⋮⋮</div>
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B-O</div>
                 </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal</div>
+                </div>
                 <div class="win-type-card" data-tipo="diagonal">
                     <div class="win-type-icon">╲╱</div>
                     <div class="win-type-name">Diagonal</div>
-                    <div class="win-type-desc">Os 4 cantos + centro</div>
+                    <div class="win-type-desc">Qualquer diagonal</div>
                 </div>
                 <div class="win-type-card" data-tipo="cantos">
                     <div class="win-type-icon">◰</div>
                     <div class="win-type-name">4 Cantos</div>
                     <div class="win-type-desc">Os 4 cantos da cartela</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonaisX">
+                    <div class="win-type-icon">X</div>
+                    <div class="win-type-name">Diagonais em X</div>
+                    <div class="win-type-desc">Ambas as diagonais</div>
                 </div>
                 <div class="win-type-card" data-tipo="completa">
                     <div class="win-type-icon">⊞</div>
@@ -136,11 +141,6 @@
                 <button id="roundTipoBadge" class="round-tipo-badge" type="button" title="Clique para alterar o tipo de vitória">🏆 Diagonal</button>
             </div>
 
-            <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
-                <span class="round-premio-ticket-icon">🎁</span>
-                <span class="round-premio-ticket-text" id="roundPremioText"></span>
-            </div>
-
             <div class="current-ball-wrapper">
                 <div class="current-ball idle" id="currentBall">
                     <span class="ball-letter" id="ballLetter"></span>
@@ -165,11 +165,11 @@
             <div class="bingo-board" id="bingoBoard"></div>
         </div>
 
-        <!-- Histórico -->
-        <div class="history-panel card-panel">
-            <button class="history-toggle" id="historyToggle">👁 Ver pedras sorteadas (0)</button>
-            <div class="history-list collapsed" id="historyList"></div>
-        </div>
+        <!-- Pódio fixo no fluxo da página -->
+        <section class="podium-panel card-panel" aria-labelledby="podiumTitle">
+            <p class="podium-title" id="podiumTitle">🏆 Pódio de Vencedores</p>
+            <div class="podium-list" id="winnersPodiumList"></div>
+        </section>
 
         <!-- Encerrar rodada -->
         <div class="end-round-section">
@@ -182,6 +182,25 @@
 
     </main>
 
+    <!-- Painel flutuante e recolhível: histórico de pedras -->
+    <aside class="history-float" id="historyFloat">
+        <button
+            class="history-float-header"
+            id="historyFloatToggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="historyFloatBody"
+        >
+            <span>
+                🎱 Pedras sorteadas
+                <span class="history-float-count" id="historyFloatCount">(0)</span>
+            </span>
+
+            <span class="history-float-arrow" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="history-float-body" id="historyFloatBody">
+            <div class="history-list" id="historyList"></div>
     <!-- Painel flutuante: últimos vencedores -->
     <div class="winners-float" id="winnersFloat">
         <button class="winners-float-header" id="winnersFloatToggle">
@@ -230,7 +249,7 @@
                 <button class="btn btn-primary" id="manageWinnersClose">Fechar</button>
             </div>
         </div>
-    </div>
+    </aside>
 
     <!-- Modal: configurações -->
     <div class="modal" id="settingsModal">
@@ -243,12 +262,32 @@
             </label>
 
             <div class="settings-section">
-                <label>🎁 Prêmios por rodada</label>
-                <p class="settings-hint">Defina o prêmio de cada rodada com antecedência, mesmo antes dela começar. Edite, adicione ou remova quando quiser.</p>
+                <label>
+                    🎁 Prêmios da rodada <span id="premioRodadaLabel">1</span>
+                </label>
+
+                <p class="settings-hint">
+                    Cadastre todos os prêmios que serão entregues nesta rodada.
+                </p>
+
                 <div class="premios-list" id="premiosList"></div>
+
                 <div class="settings-row premio-add-row">
-                    <input type="number" id="premioAddRoundInput" class="modal-input premio-add-input" min="1" placeholder="Nº da rodada">
-                    <button class="btn btn-secondary btn-sm" id="premioAddRoundBtn">+ Adicionar rodada</button>
+                    <input
+                        type="text"
+                        id="premioInput"
+                        class="modal-input premio-input"
+                        placeholder="Ex: Caixa de paçoca"
+                        maxlength="60"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="premioAdd"
+                    >
+                        + Adicionar
+                    </button>
                 </div>
             </div>
 
@@ -302,8 +341,29 @@
             <p id="resultMessage"></p>
             <div class="result-card-thumb" id="resultCardThumb" style="display:none;"></div>
             <div class="winner-name-box" id="winnerNameBox" style="display:none;">
-                <input type="text" id="winnerNameInput" class="modal-input winner-name-input" placeholder="Nome do vencedor" maxlength="40">
-                <button class="btn btn-primary btn-sm" id="winnerNameSave">Salvar</button>
+                <input
+                    type="text"
+                    id="winnerNameInput"
+                    class="modal-input winner-name-input"
+                    placeholder="Nome do vencedor"
+                    maxlength="40"
+                >
+
+                <select
+                    id="winnerPrizeSelect"
+                    class="winner-prize-select"
+                    aria-label="Prêmio do vencedor"
+                >
+                    <option value="">Sem prêmio associado</option>
+                </select>
+
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    id="winnerNameSave"
+                >
+                    Salvar vencedor
+                </button>
             </div>
             <div class="winners-rank" id="winnersRank" style="display:none;">
                 <div class="winners-rank-title">🏅 Vencedores da rodada</div>
@@ -389,15 +449,15 @@
             </div>
 
             <div class="win-type-grid">
-                <div class="win-type-card" data-tipo="linha">
-                    <div class="win-type-icon">☰</div>
-                    <div class="win-type-name">Linha</div>
-                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
-                </div>
                 <div class="win-type-card" data-tipo="coluna">
                     <div class="win-type-icon">⋮⋮</div>
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
                 </div>
                 <div class="win-type-card" data-tipo="diagonal">
                     <div class="win-type-icon">╲╱</div>
@@ -413,6 +473,11 @@
                     <div class="win-type-icon">⊞</div>
                     <div class="win-type-name">Cartela Cheia</div>
                     <div class="win-type-desc">Todos os 24 números da cartela sorteados</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonaisX">
+                    <div class="win-type-icon">X</div>
+                    <div class="win-type-name">Diagonais em X</div>
+                    <div class="win-type-desc">Ambas as diagonais</div>
                 </div>
             </div>
 
