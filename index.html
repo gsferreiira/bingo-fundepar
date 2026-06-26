@@ -119,6 +119,8 @@
 
     <main class="sorteador-main">
         <!-- Palco noturno: navegação + bola + sortear -->
+        <div class="hero-stage-wrap">
+            
         <div class="hero-stage">
             <img class="stage-fire fire-left" src="assets/3153859.png">
             <img class="stage-fire fire-right" src="assets/3153859.png">
@@ -136,7 +138,7 @@
             </div>
 
             <div style="text-align:center; margin: 1px 0 12px;">
-                <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
+                <button id="roundTipoBadge" class="round-tipo-badge" type="button" title="Clique para alterar o tipo de vitória">🏆 Diagonal</button>
             </div>
 
             <div class="current-ball-wrapper">
@@ -155,6 +157,7 @@
                 <button class="btn" id="verifyBtn">🏆 Verificar Vencedor</button>
                 <button class="btn" id="undoBtn">↩ Desfazer</button>
             </div>
+        </div>
         </div>
 
         <!-- Tabuleiro -->
@@ -198,6 +201,53 @@
 
         <div class="history-float-body" id="historyFloatBody">
             <div class="history-list" id="historyList"></div>
+    <!-- Painel flutuante: últimos vencedores -->
+    <div class="winners-float" id="winnersFloat">
+        <button class="winners-float-header" id="winnersFloatToggle">
+            <span>🏆 Últimos Vencedores</span>
+            <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
+        </button>
+        <div class="winners-float-body" id="winnersFloatBody">
+            <div class="podium-list" id="winnersFloatList"></div>
+            <button class="winners-float-seeall" id="winnersFloatSeeAll">Ver todos →</button>
+            <button class="winners-float-manage" id="winnersFloatManageBtn">✏️ Editar vencedores</button>
+        </div>
+    </div>
+
+    <!-- Modal: pódio completo de vencedores -->
+    <div class="modal" id="allWinnersModal">
+        <div class="modal-box">
+            <h2>🏆 Pódio de Vencedores</h2>
+            <p>Vencedores de todas as rodadas</p>
+            <div class="podium-list" id="allWinnersList"></div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="allWinnersClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: gerenciar vencedores de qualquer rodada -->
+    <div class="modal" id="manageWinnersModal">
+        <div class="modal-box manage-winners-modal-box">
+            <h2>✏️ Gerenciar Vencedores</h2>
+            <p>Edite, adicione ou remova vencedores de qualquer rodada já criada — útil quando esquecem de registrar na hora.</p>
+
+            <div class="manage-winners-round-select">
+                <label for="manageWinnersRodada">Rodada</label>
+                <select id="manageWinnersRodada"></select>
+            </div>
+
+            <div class="manage-winners-list" id="manageWinnersList"></div>
+
+            <div class="manage-winners-add">
+                <input type="text" id="manageWinnersAddName" class="modal-input manage-winners-input manage-winners-name" placeholder="Nome do vencedor" maxlength="40">
+                <input type="number" id="manageWinnersAddSerial" class="modal-input manage-winners-input manage-winners-serial" placeholder="Nº cartela (opcional)" min="1" max="500">
+                <button class="btn btn-primary btn-sm" id="manageWinnersAddBtn">+ Adicionar</button>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="manageWinnersClose">Fechar</button>
+            </div>
         </div>
     </aside>
 
@@ -346,6 +396,15 @@
                         <button class="btn-draw tie-break-draw-btn" id="tieBreakDrawBtn">CLIQUE AQUI PARA SORTEAR</button>
                     </div>
                     <div class="tie-break-summary" id="tieBreakSummary">Nenhuma pedra sorteada ainda.</div>
+
+                    <div class="tie-break-winner-box" id="tieBreakWinnerBox" style="display:none;">
+                        <div class="tie-break-winner-label">🏅 Maior pedra: <strong id="tieBreakWinnerBall">-</strong></div>
+                        <div class="winner-name-box">
+                            <input type="text" id="tieBreakWinnerName" class="modal-input winner-name-input" placeholder="Nome do vencedor do desempate" maxlength="40">
+                            <button class="btn btn-primary btn-sm" id="tieBreakWinnerSave">Definir Vencedor</button>
+                        </div>
+                        <p class="tie-break-winner-status" id="tieBreakWinnerStatus" style="display:none;"></p>
+                    </div>
                 </div>
 
                 <div class="tie-break-camera">
@@ -425,6 +484,50 @@
             <div class="modal-actions">
                 <button class="btn btn-primary" id="createRoundConfirm">🚀 Iniciar Rodada</button>
                 <button class="btn btn-secondary" id="createRoundCancel">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: alterar tipo de vitória da rodada atual -->
+    <div class="modal" id="changeTipoModal">
+        <div class="modal-box create-round-modal-box">
+            <div class="create-round-header">
+                <div class="create-round-icon">✏️</div>
+                <h2>Alterar Tipo de Vitória</h2>
+                <p>Vale a partir do próximo sorteio desta rodada</p>
+            </div>
+
+            <div class="win-type-grid">
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="coluna">
+                    <div class="win-type-icon">⋮⋮</div>
+                    <div class="win-type-name">Coluna</div>
+                    <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonal">
+                    <div class="win-type-icon">╲╱</div>
+                    <div class="win-type-name">Diagonal</div>
+                    <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
+                </div>
+                <div class="win-type-card" data-tipo="cantos">
+                    <div class="win-type-icon">◰</div>
+                    <div class="win-type-name">4 Cantos</div>
+                    <div class="win-type-desc">Os 4 cantos da cartela sorteados</div>
+                </div>
+                <div class="win-type-card" data-tipo="completa">
+                    <div class="win-type-icon">⊞</div>
+                    <div class="win-type-name">Cartela Cheia</div>
+                    <div class="win-type-desc">Todos os 24 números da cartela sorteados</div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" id="changeTipoConfirm">✅ Salvar</button>
+                <button class="btn btn-secondary" id="changeTipoCancel">Cancelar</button>
             </div>
         </div>
     </div>

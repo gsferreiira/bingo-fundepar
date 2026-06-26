@@ -29,6 +29,27 @@ function saveWinner(rodada, serial, nome, premio = '') {
         JSON.stringify(winners)
     );
 
+    const nomeFinal = nome.trim() || (serial != null ? `Cartela #${String(serial).padStart(4, '0')}` : 'Vencedor do desempate');
+    winners.push({ serial: serial != null ? serial : null, nome: nomeFinal });
+    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
+    return winners;
+}
+
+function updateWinner(rodada, index, { serial, nome }) {
+    const winners = loadWinners(rodada);
+    if (!winners[index]) return winners;
+    winners[index] = {
+        serial: serial != null && serial !== '' ? parseInt(serial) : null,
+        nome: (nome || '').trim() || winners[index].nome,
+    };
+    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
+    return winners;
+}
+
+function removeWinner(rodada, index) {
+    const winners = loadWinners(rodada);
+    winners.splice(index, 1);
+    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
     return winners;
 }
 
@@ -66,6 +87,15 @@ function winnersRankItemsHTML(winners) {
             </div>
         `;
     }).join('');
+    return winners.map((w, i) => `
+        <div class="winners-rank-item">
+            <span class="winners-rank-pos">${medals[i] || (i + 1) + 'º'}</span>
+            <span class="winners-rank-name">${escapeHTML(w.nome)}</span>
+            ${w.serial != null
+                ? `<span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>`
+                : `<span class="winners-rank-serial winners-rank-tiebreak">🔥 desempate</span>`}
+        </div>
+    `).join('');
 }
 
 function renderWinnersRank(rodada) {
@@ -149,6 +179,38 @@ function renderWinnersPodium() {
                 </div>
             </div>
         `;
+const STORAGE_RANK_FLOAT_COLLAPSED = 'bingo-rank-float-collapsed';
+const STORAGE_HISTORY_COLLAPSED = 'bingo-history-collapsed';
+
+function podiumItemHTML(r, winners) {
+    const winnerHTML = winners.length
+        ? winners.map(w => escapeHTML(w.nome)).join(', ')
+        : '<span class="podium-pending">aguardando vencedor</span>';
+    return `
+        <div class="podium-item">
+            <span class="podium-round">Rodada ${r}</span>
+            <span class="podium-winner">${winnerHTML}</span>
+        </div>`;
+}
+
+// Mostra só as últimas 3 rodadas (mais recente primeiro) que já têm vencedor registrado.
+function renderWinnersMini() {
+    const list = document.getElementById('winnersFloatList');
+    const items = [];
+    for (let r = rodadaAtual; r >= 1 && items.length < 3; r--) {
+        const winners = loadWinners(r);
+        if (winners.length) items.push(podiumItemHTML(r, winners));
+    }
+    list.innerHTML = items.length
+        ? items.join('')
+        : '<div class="podium-item"><span class="podium-winner podium-pending">aguardando vencedores</span></div>';
+}
+
+function renderAllWinnersModal() {
+    const list = document.getElementById('allWinnersList');
+    let html = '';
+    for (let r = 1; r <= rodadaAtual; r++) {
+        html += podiumItemHTML(r, loadWinners(r));
     }
 
     list.innerHTML = html;
@@ -158,6 +220,41 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
+}
+
+// ── Gestão de vencedores (editar/adicionar/remover de rodadas passadas) ─────
+
+function renderManageWinnersRoundOptions() {
+    const select = document.getElementById('manageWinnersRodada');
+    const previous = select.value;
+    select.innerHTML = '';
+    for (let r = 1; r <= rodadaAtual; r++) {
+        const opt = document.createElement('option');
+        opt.value = r;
+        opt.textContent = `Rodada ${r}`;
+        select.appendChild(opt);
+    }
+    select.value = previous && parseInt(previous) <= rodadaAtual ? previous : rodadaAtual;
+}
+
+function renderManageWinnersList(rodada) {
+    const container = document.getElementById('manageWinnersList');
+    const winners = loadWinners(rodada);
+    if (winners.length === 0) {
+        container.innerHTML = '<p class="manage-winners-empty">Nenhum vencedor registrado nesta rodada ainda.</p>';
+        return;
+    }
+    container.innerHTML = winners.map((w, i) => `
+        <div class="manage-winners-row" data-index="${i}">
+            <input type="text" class="modal-input manage-winners-input manage-winners-name" data-field="nome" value="${escapeHTML(w.nome)}" maxlength="40">
+            <input type="number" class="modal-input manage-winners-input manage-winners-serial" data-field="serial" value="${w.serial != null ? w.serial : ''}" min="1" max="500" placeholder="Nº cartela">
+            <button class="manage-winners-remove" data-index="${i}" title="Remover vencedor" aria-label="Remover vencedor">🗑</button>
+        </div>
+    `).join('');
+}
+
+function currentManageWinnersRodada() {
+    return parseInt(document.getElementById('manageWinnersRodada').value) || rodadaAtual;
 }
 
 let rodadaAtual = 1;
@@ -392,6 +489,78 @@ function renderPremiosSettings(rodada) {
                 renderWinnersPodium();
             });
         });
+const STORAGE_PREMIOS_MAPA = 'bingo-premios-mapa';
+
+function loadPremiosMapa() {
+    const saved = localStorage.getItem(STORAGE_PREMIOS_MAPA);
+    return saved ? JSON.parse(saved) : {};
+}
+
+function savePremiosMapa(mapa) {
+    localStorage.setItem(STORAGE_PREMIOS_MAPA, JSON.stringify(mapa));
+}
+
+function getRodadaPremios(r) {
+    const mapa = loadPremiosMapa();
+    const v = mapa[r];
+    if (Array.isArray(v)) return v.map(p => (p || '').trim()).filter(Boolean);
+    if (typeof v === 'string' && v.trim()) return [v.trim()];
+    const d = localStorage.getItem(storageKey(r));
+    if (!d) return [];
+    const legacy = JSON.parse(d).premio;
+    return legacy ? [legacy] : [];
+}
+
+function setRodadaPremios(r, premios) {
+    const mapa = loadPremiosMapa();
+    const clean = premios.map(p => (p || '').trim()).filter(Boolean);
+    mapa[r] = clean;
+    savePremiosMapa(mapa);
+}
+
+function getTotalRodadasConfig() {
+    return parseInt(localStorage.getItem('bingo-total-rodadas')) || 10;
+}
+
+function collectRoundPremiosFromDOM(r) {
+    const inputs = document.querySelectorAll(`.premio-items[data-rodada="${r}"] .premio-input`);
+    return Array.from(inputs).map(inp => inp.value);
+}
+
+function premioRowHTML(r, valor) {
+    return `
+        <div class="premio-row" data-rodada="${r}">
+            <input type="text" class="modal-input premio-input" data-rodada="${r}" value="${escapeHTML(valor)}" placeholder="Ex: Caixa de paçoca" maxlength="60">
+            <button class="btn-icon premio-row-remove" data-rodada="${r}" title="Remover prêmio" aria-label="Remover prêmio">🗑</button>
+        </div>
+    `;
+}
+
+function renderPremiosSettingsList() {
+    const container = document.getElementById('premiosList');
+    const mapa = loadPremiosMapa();
+    const total = getTotalRodadasConfig();
+    const rounds = [];
+    for (let r = 1; r <= total; r++) rounds.push(r);
+    Object.keys(mapa)
+        .map(Number)
+        .filter(r => r > total)
+        .sort((a, b) => a - b)
+        .forEach(r => rounds.push(r));
+
+    container.innerHTML = rounds.map(r => {
+        const premios = getRodadaPremios(r);
+        const items = premios.length ? premios : [''];
+        return `
+            <div class="premio-round-group" data-rodada="${r}">
+                <div class="premio-round-header">
+                    <span class="premio-row-label">Rodada ${r}</span>
+                    <button class="btn-icon premio-row-add" data-rodada="${r}" title="Adicionar outro prêmio" aria-label="Adicionar outro prêmio">➕</button>
+                </div>
+                <div class="premio-items" data-rodada="${r}">${items.map(p => premioRowHTML(r, p)).join('')}</div>
+            </div>
+        `;
+    }).join('');
 }
 
 // ── Tela inicial ───────────────────────────────
@@ -533,7 +702,7 @@ function confirmCreateRound() {
     saveState();
     closeModal('createRoundModal');
     render(null);
-    renderWinnersPodium();
+    renderWinnersMini();
 }
 
 function restartAll() {
@@ -560,7 +729,7 @@ function restartAll() {
             document.querySelectorAll('#startScreen .win-type-card').forEach((c, i) => {
                 c.classList.toggle('selected', i === 0);
             });
-            renderWinnersPodium();
+            renderWinnersMini();
         }
     );
 }
@@ -623,7 +792,7 @@ function renderViewMode() {
     setControlsDisabled(true);
 
     updateRoundBadges(r);
-    renderWinnersPodium();
+    renderWinnersMini();
 }
 
 // ── Toggle manual de pedra ─────────────────────
@@ -653,6 +822,8 @@ function toggleManual(n) {
 // ── Desempate por pedra maior ───────────────────────────────────────────────
 
 function openTieBreakModal() {
+    document.getElementById('tieBreakWinnerStatus').style.display = 'none';
+    document.getElementById('tieBreakWinnerName').value = '';
     renderTieBreak(null);
     openModal('tieBreakModal');
     if (tieBreakWebcamEnabled) {
@@ -777,14 +948,20 @@ function renderTieBreak(lastDrawn) {
 
     renderTieBreakHistory();
 
+    const winnerBox = document.getElementById('tieBreakWinnerBox');
+
     if (tieBreakSorteados.length === 0) {
         summary.textContent = 'Nenhuma pedra sorteada ainda.';
+        winnerBox.style.display = 'none';
         return;
     }
 
     const maior = Math.max(...tieBreakSorteados);
     const pos = tieBreakSorteados.indexOf(maior) + 1;
     summary.textContent = `Maior até agora: ${getBingoLetter(maior)}-${maior} (finalista ${pos}).`;
+
+    document.getElementById('tieBreakWinnerBall').textContent = `${getBingoLetter(maior)}-${maior}`;
+    winnerBox.style.display = 'flex';
 }
 
 function renderTieBreakHistory() {
@@ -812,6 +989,8 @@ function renderTieBreakHistory() {
 function resetTieBreak() {
     tieBreakSorteados = [];
     tieBreakAvailable = Array.from({ length: TOTAL_NUMBERS }, (_, i) => i + 1);
+    document.getElementById('tieBreakWinnerStatus').style.display = 'none';
+    document.getElementById('tieBreakWinnerName').value = '';
     renderTieBreak(null);
 }
 
@@ -969,7 +1148,7 @@ function render(lastDrawn) {
     renderBoardData(sorteados, false);
     renderHistoryData(sorteados);
     renderControls();
-    renderWinnersPodium();
+    renderWinnersMini();
 
     const prevBtn = document.getElementById('prevRoundBtn');
     const nextBtn = document.getElementById('nextRoundBtn');
@@ -1030,7 +1209,15 @@ function renderHistoryData(list) {
         empty.className = 'history-empty';
         empty.textContent = 'Nenhuma pedra sorteada ainda';
         histList.appendChild(empty);
-        return;
+    } else {
+        list.forEach(n => {
+            const letter = getBingoLetter(n);
+            const chip = document.createElement('span');
+            chip.className = 'history-chip';
+            chip.dataset.letter = letter;
+            chip.textContent = `${letter}-${n}`;
+            histList.appendChild(chip);
+        });
     }
 
     list.forEach(n => {
@@ -1043,6 +1230,7 @@ function renderHistoryData(list) {
 
         histList.appendChild(chip);
     });
+    document.getElementById('historyToggle').textContent = `👁 Ver pedras sorteadas (${list.length})`;
 }
 
 function renderControls() {
@@ -1065,6 +1253,41 @@ function updateRoundBadges(rodada) {
 
     badge.textContent = `🏆 ${badgeText}`;
     badge.title = labels.join(', ');
+    const labels = tipos.map(t => WIN_TYPES[t] || t);
+    const badgeText = labels.length <= 2 ? labels.join(' + ') : `${labels.length} tipos de vitória`;
+    document.getElementById('roundTipoBadge').textContent = `🏆 ${badgeText}`;
+    document.getElementById('roundTipoBadge').title = labels.join(', ');
+
+    const premios = getRodadaPremios(rodada);
+    const premioTicket = document.getElementById('roundPremioTicket');
+    if (premios.length) {
+        document.getElementById('roundPremioText').innerHTML = premios.map(p => escapeHTML(p)).join('<br>');
+        premioTicket.style.display = 'flex';
+    } else {
+        premioTicket.style.display = 'none';
+    }
+}
+
+function openChangeTipoModal() {
+    const tiposAtuais = getRodadaTipo(rodadaAtual);
+    document.querySelectorAll('#changeTipoModal .win-type-card').forEach(c => {
+        c.classList.toggle('selected', tiposAtuais.includes(c.dataset.tipo));
+    });
+    openModal('changeTipoModal');
+}
+
+function confirmChangeTipo() {
+    const selected = document.querySelectorAll('#changeTipoModal .win-type-card.selected');
+    const tipo = Array.from(selected).map(c => c.dataset.tipo);
+    if (tipo.length === 0) {
+        flashWinTypeGridError('#changeTipoModal');
+        return;
+    }
+    const data = JSON.parse(localStorage.getItem(storageKey(rodadaAtual))) || {};
+    data.tipo = tipo;
+    localStorage.setItem(storageKey(rodadaAtual), JSON.stringify(data));
+    closeModal('changeTipoModal');
+    renderControls();
 }
 
 function flashWinTypeGridError(scopeSelector) {
@@ -1115,7 +1338,7 @@ function showResult(icon, title, message, cardThumbHTML, rodadaRef, serial) {
 
         populateWinnerPrizeSelect(rodadaRef);
         renderWinnersRank(rodadaRef);
-        renderWinnersPodium();
+        renderWinnersMini();
     } else {
         nameBox.style.display = 'none';
         document.getElementById('winnersRank').style.display = 'none';
@@ -1197,12 +1420,49 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPremiosSettings(rodadaRef);
         document.getElementById('importBackupError').style.display =
             'none';
+        renderPremiosSettingsList();
+        document.getElementById('importBackupError').style.display = 'none';
         openModal('settingsModal');
     });
     document.getElementById('settingsClose').addEventListener('click', () => closeModal('settingsModal'));
     document.getElementById('hideSortearToggle').addEventListener('change', e => {
         localStorage.setItem(STORAGE_HIDE_SORTEAR, e.target.checked);
         document.body.classList.toggle('hide-sortear', e.target.checked);
+    });
+
+    document.getElementById('premiosList').addEventListener('change', e => {
+        if (!e.target.matches('.premio-input')) return;
+        const r = e.target.dataset.rodada;
+        setRodadaPremios(r, collectRoundPremiosFromDOM(r));
+        updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+    });
+    document.getElementById('premiosList').addEventListener('click', e => {
+        const addBtn = e.target.closest('.premio-row-add');
+        if (addBtn) {
+            const r = addBtn.dataset.rodada;
+            const itemsContainer = document.querySelector(`.premio-items[data-rodada="${r}"]`);
+            itemsContainer.insertAdjacentHTML('beforeend', premioRowHTML(r, ''));
+            itemsContainer.lastElementChild.querySelector('.premio-input').focus();
+            return;
+        }
+        const removeBtn = e.target.closest('.premio-row-remove');
+        if (removeBtn) {
+            const r = removeBtn.dataset.rodada;
+            removeBtn.closest('.premio-row').remove();
+            setRodadaPremios(r, collectRoundPremiosFromDOM(r));
+            renderPremiosSettingsList();
+            updateRoundBadges(rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual);
+        }
+    });
+    document.getElementById('premioAddRoundBtn').addEventListener('click', () => {
+        const input = document.getElementById('premioAddRoundInput');
+        const r = parseInt(input.value);
+        if (!r || r < 1) return;
+        const mapa = loadPremiosMapa();
+        if (!(r in mapa)) mapa[r] = [];
+        savePremiosMapa(mapa);
+        input.value = '';
+        renderPremiosSettingsList();
     });
 
     document.getElementById('exportBackupBtn').addEventListener('click', () => exportBackup());
@@ -1264,6 +1524,60 @@ document.addEventListener('DOMContentLoaded', () => {
             String(collapsed)
         );
     });
+    document.getElementById('winnersFloatSeeAll').addEventListener('click', () => {
+        renderAllWinnersModal();
+        openModal('allWinnersModal');
+    });
+    document.getElementById('allWinnersClose').addEventListener('click', () => closeModal('allWinnersModal'));
+
+    const historyList = document.getElementById('historyList');
+    historyList.classList.toggle('collapsed', localStorage.getItem(STORAGE_HISTORY_COLLAPSED) !== 'false');
+    document.getElementById('historyToggle').addEventListener('click', () => {
+        const collapsed = historyList.classList.toggle('collapsed');
+        localStorage.setItem(STORAGE_HISTORY_COLLAPSED, collapsed);
+    });
+
+    document.getElementById('winnersFloatManageBtn').addEventListener('click', () => {
+        renderManageWinnersRoundOptions();
+        renderManageWinnersList(currentManageWinnersRodada());
+        openModal('manageWinnersModal');
+    });
+    document.getElementById('manageWinnersClose').addEventListener('click', () => closeModal('manageWinnersModal'));
+    document.getElementById('manageWinnersRodada').addEventListener('change', () => {
+        renderManageWinnersList(currentManageWinnersRodada());
+    });
+    document.getElementById('manageWinnersList').addEventListener('change', e => {
+        const row = e.target.closest('.manage-winners-row');
+        if (!row) return;
+        const index = parseInt(row.dataset.index);
+        const rodada = currentManageWinnersRodada();
+        const nome = row.querySelector('.manage-winners-name').value;
+        const serial = row.querySelector('.manage-winners-serial').value;
+        updateWinner(rodada, index, { serial, nome });
+        renderWinnersRank(rodada);
+        renderWinnersMini();
+    });
+    document.getElementById('manageWinnersList').addEventListener('click', e => {
+        const btn = e.target.closest('.manage-winners-remove');
+        if (!btn) return;
+        const rodada = currentManageWinnersRodada();
+        removeWinner(rodada, parseInt(btn.dataset.index));
+        renderManageWinnersList(rodada);
+        renderWinnersRank(rodada);
+        renderWinnersMini();
+    });
+    document.getElementById('manageWinnersAddBtn').addEventListener('click', () => {
+        const rodada = currentManageWinnersRodada();
+        const serialInput = document.getElementById('manageWinnersAddSerial');
+        const nameInput = document.getElementById('manageWinnersAddName');
+        const serial = serialInput.value ? parseInt(serialInput.value) : null;
+        saveWinner(rodada, serial, nameInput.value);
+        serialInput.value = '';
+        nameInput.value = '';
+        renderManageWinnersList(rodada);
+        renderWinnersRank(rodada);
+        renderWinnersMini();
+    });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
     document.getElementById('drawBtn').addEventListener('click', drawNumber);
@@ -1274,6 +1588,20 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('tieBreakCameraToggleBtn').addEventListener('click', toggleTieBreakWebcam);
     document.getElementById('tieBreakResetBtn').addEventListener('click', resetTieBreak);
     document.getElementById('tieBreakCloseBtn').addEventListener('click', () => closeModal('tieBreakModal'));
+    document.getElementById('tieBreakWinnerSave').addEventListener('click', () => {
+        const rodada = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
+        const nome = document.getElementById('tieBreakWinnerName').value;
+        saveWinner(rodada, null, nome);
+        document.getElementById('tieBreakWinnerName').value = '';
+        renderWinnersRank(rodada);
+        renderWinnersMini();
+        const status = document.getElementById('tieBreakWinnerStatus');
+        status.textContent = `🎉 ${nome.trim() || 'Vencedor'} registrado no pódio da Rodada ${rodada}!`;
+        status.style.display = 'block';
+    });
+    document.getElementById('tieBreakWinnerName').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('tieBreakWinnerSave').click();
+    });
     document.getElementById('restartBtn').addEventListener('click', restartAll);
     document.getElementById('returnBtn').addEventListener('click', returnToCurrentRound);
 
@@ -1339,7 +1667,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         populateWinnerPrizeSelect(rodada);
         renderWinnersRank(rodada);
-        renderWinnersPodium();
+        renderWinnersMini();
     });
     document.getElementById('winnerNameInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('winnerNameSave').click();
@@ -1347,6 +1675,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('createRoundConfirm').addEventListener('click', confirmCreateRound);
     document.getElementById('createRoundCancel').addEventListener('click', () => closeModal('createRoundModal'));
+
+    document.getElementById('roundTipoBadge').addEventListener('click', () => {
+        if (rodadaVisualizando !== null) return;
+        openChangeTipoModal();
+    });
+    document.getElementById('changeTipoConfirm').addEventListener('click', confirmChangeTipo);
+    document.getElementById('changeTipoCancel').addEventListener('click', () => closeModal('changeTipoModal'));
 
     document.querySelectorAll('.win-type-card').forEach(card => {
         card.addEventListener('click', () => card.classList.toggle('selected'));
