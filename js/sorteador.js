@@ -216,6 +216,68 @@ function getTotalRodadasConfig() {
     return parseInt(localStorage.getItem('bingo-total-rodadas')) || 10;
 }
 
+const WIN_TYPES_LABELS = {
+    diagonal: 'Diagonal',
+    x:        'X',
+    linha:    'Linha',
+    coluna:   'Coluna',
+    cantos:   '4 Cantos',
+    completa: 'Cartela Completa',
+};
+const WIN_TYPES_ORDER = ['diagonal', 'x', 'linha', 'coluna', 'cantos', 'completa'];
+
+function setRodadaTipoFromSettings(r, tipos) {
+    const key = storageKey(r);
+    const existing = JSON.parse(localStorage.getItem(key) || '{}');
+    existing.tipo = tipos;
+    localStorage.setItem(key, JSON.stringify(existing));
+}
+
+function formatImportDate(isoStr) {
+    const d = new Date(isoStr);
+    return d.toLocaleDateString('pt-BR') + ' às ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+}
+
+function renderImportNotices() {
+    const configRaw = localStorage.getItem('bingo-config-importado');
+    const backupRaw = localStorage.getItem('bingo-backup-importado');
+
+    const configEl = document.getElementById('configImportNotice');
+    if (configEl) {
+        if (configRaw) {
+            const { arquivo, em } = JSON.parse(configRaw);
+            configEl.innerHTML = `<div class="import-notice">✅ <strong>${escapeHTML(arquivo)}</strong> importado em ${formatImportDate(em)}</div>`;
+        } else {
+            configEl.innerHTML = '';
+        }
+    }
+
+    const backupEl = document.getElementById('backupImportNotice');
+    if (backupEl) {
+        if (backupRaw) {
+            const { arquivo, em } = JSON.parse(backupRaw);
+            backupEl.innerHTML = `<div class="import-notice">✅ <strong>${escapeHTML(arquivo)}</strong> importado em ${formatImportDate(em)}</div>`;
+        } else {
+            backupEl.innerHTML = '';
+        }
+    }
+}
+
+function renderTiposSettingsList() {
+    const container = document.getElementById('tiposList');
+    const total = getTotalRodadasConfig();
+    const rows = [];
+    for (let r = 1; r <= total; r++) {
+        const tipos = getRodadaTipo(r);
+        const chips = WIN_TYPES_ORDER.map(t => {
+            const active = tipos.includes(t) ? ' tipo-chip-active' : '';
+            return `<button class="tipo-chip${active}" data-rodada="${r}" data-tipo="${t}">${WIN_TYPES_LABELS[t]}</button>`;
+        }).join('');
+        rows.push(`<div class="tipo-round-row"><span class="premio-row-label">Rodada ${r}</span><div class="tipo-chips">${chips}</div></div>`);
+    }
+    container.innerHTML = rows.join('');
+}
+
 function collectRoundPremiosFromDOM(r) {
     const inputs = document.querySelectorAll(`.premio-items[data-rodada="${r}"] .premio-input`);
     return Array.from(inputs).map(inp => inp.value);
@@ -897,7 +959,7 @@ function renderHistoryData(list) {
         empty.textContent = 'Nenhuma pedra sorteada ainda';
         histList.appendChild(empty);
     } else {
-        list.forEach(n => {
+        [...list].reverse().forEach(n => {
             const letter = getBingoLetter(n);
             const chip = document.createElement('span');
             chip.className = 'history-chip';
@@ -927,9 +989,19 @@ function updateRoundBadges(rodada) {
     const premios = getRodadaPremios(rodada);
     const premioTicket = document.getElementById('roundPremioTicket');
     if (premios.length) {
-        document.getElementById('roundPremioText').innerHTML = premios.map(p => escapeHTML(p)).join('<br>');
+        const medals = ['🥇', '🥈', '🥉'];
+        if (premios.length === 1) {
+            premioTicket.classList.remove('round-premio-ticket--multi');
+            document.getElementById('roundPremioText').innerHTML = escapeHTML(premios[0]);
+        } else {
+            premioTicket.classList.add('round-premio-ticket--multi');
+            document.getElementById('roundPremioText').innerHTML = premios.map((p, i) =>
+                `<span class="premio-multi-item"><span class="premio-multi-medal">${medals[i] || (i + 1) + '°'}</span><span class="premio-multi-nome">${escapeHTML(p)}</span></span>`
+            ).join('');
+        }
         premioTicket.style.display = 'flex';
     } else {
+        premioTicket.classList.remove('round-premio-ticket--multi');
         premioTicket.style.display = 'none';
     }
 }
@@ -1042,7 +1114,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('settingsBtn').addEventListener('click', () => {
         renderPremiosSettingsList();
+        renderTiposSettingsList();
+        renderImportNotices();
         document.getElementById('importBackupError').style.display = 'none';
+        document.getElementById('importConfigError').style.display = 'none';
         openModal('settingsModal');
     });
     document.getElementById('settingsClose').addEventListener('click', () => closeModal('settingsModal'));
@@ -1086,6 +1161,43 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPremiosSettingsList();
     });
 
+    document.getElementById('tiposList').addEventListener('click', e => {
+        const chip = e.target.closest('.tipo-chip');
+        if (!chip) return;
+        const r = parseInt(chip.dataset.rodada);
+        const tipo = chip.dataset.tipo;
+        const tipos = getRodadaTipo(r);
+        const idx = tipos.indexOf(tipo);
+        if (idx >= 0) {
+            if (tipos.length === 1) return;
+            tipos.splice(idx, 1);
+        } else {
+            tipos.push(tipo);
+        }
+        setRodadaTipoFromSettings(r, tipos);
+        renderTiposSettingsList();
+        if (r === rodadaAtual) updateRoundBadges(rodadaAtual);
+    });
+
+    document.getElementById('exportConfigBtn').addEventListener('click', () => exportConfig());
+    document.getElementById('importConfigBtn').addEventListener('click', () => {
+        document.getElementById('importConfigFile').click();
+    });
+    document.getElementById('importConfigFile').addEventListener('change', e => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        showConfirm(
+            'Importar configurações?',
+            'Os prêmios e tipos de verificação por rodada serão substituídos pelos dados do arquivo. Cartelas e sorteios existentes não serão apagados.',
+            () => importConfig(file, msg => {
+                const err = document.getElementById('importConfigError');
+                err.textContent = msg;
+                err.style.display = 'block';
+            })
+        );
+    });
+
     document.getElementById('exportBackupBtn').addEventListener('click', () => exportBackup());
     document.getElementById('importBackupBtn').addEventListener('click', () => {
         document.getElementById('importBackupFile').click();
@@ -1116,6 +1228,20 @@ document.addEventListener('DOMContentLoaded', () => {
             'Importar backup?',
             'Os dados do arquivo importado serão usados para este evento neste dispositivo.',
             () => importBackup(file, msg => alert(msg))
+        );
+    });
+
+    document.getElementById('startImportConfigBtn').addEventListener('click', () => {
+        document.getElementById('startImportConfigFile').click();
+    });
+    document.getElementById('startImportConfigFile').addEventListener('change', e => {
+        const file = e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        showConfirm(
+            'Importar configurações?',
+            'Os prêmios e tipos de verificação por rodada serão substituídos pelos dados do arquivo. Cartelas e sorteios existentes não serão apagados.',
+            () => importConfig(file, msg => alert(msg))
         );
     });
 

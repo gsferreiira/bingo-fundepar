@@ -102,6 +102,7 @@ function checkCorners(card, sorteados) {
 // ── Despachante de verificação ─────────────────
 const WIN_TYPES = {
     diagonal: 'Diagonal',
+    x:        'X',
     linha:    'Linha',
     coluna:   'Coluna',
     completa: 'Cartela Completa',
@@ -117,6 +118,7 @@ function checkWin(card, sorteados, tipos) {
             case 'completa': return checkFullCard(card, sorteados);
             case 'diagonal': return checkDiagonal(card, sorteados);
             case 'cantos':   return checkCorners(card, sorteados);
+            case 'x':        return checkX(card, sorteados);
             default:         return false;
         }
     });
@@ -143,6 +145,17 @@ function checkDiagonal(card, sorteados) {
         }
     }
     return diagonal1 || diagonal2;
+}
+
+// Retorna true se as duas diagonais estiverem completas ao mesmo tempo (padrão X).
+function checkX(card, sorteados) {
+    const s = new Set(sorteados);
+    const letters = ['B', 'I', 'N', 'G', 'O'];
+    for (let i = 0; i < 5; i++) {
+        if (!(letters[i] === 'N' && i === 2) && !s.has(card[letters[i]][i])) return false;
+        if (!(letters[4 - i] === 'N' && i === 2) && !s.has(card[letters[4 - i]][i])) return false;
+    }
+    return true;
 }
 
 // Gera o grid 5x5 de uma cartela com números sorteados marcados (para exibição, não impressão).
@@ -206,6 +219,11 @@ function getWinningPatternCells(card, sorteados, tipos) {
             }
             if (diagonal1) for (let i = 0; i < 5; i++) cells.add(`${letters[i]}-${i}`);
             if (diagonal2) for (let i = 0; i < 5; i++) cells.add(`${letters[4 - i]}-${i}`);
+        } else if (tipo === 'x' && checkX(card, sorteados)) {
+            for (let i = 0; i < 5; i++) {
+                cells.add(`${letters[i]}-${i}`);
+                cells.add(`${letters[4 - i]}-${i}`);
+            }
         } else if (tipo === 'completa' && checkFullCard(card, sorteados)) {
             for (let row = 0; row < 5; row++) {
                 for (const letter of letters) cells.add(`${letter}-${row}`);

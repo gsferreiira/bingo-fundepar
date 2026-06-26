@@ -69,6 +69,11 @@
                     <div class="win-type-name">Diagonal</div>
                     <div class="win-type-desc">Os 4 cantos + centro</div>
                 </div>
+                <div class="win-type-card" data-tipo="x">
+                    <div class="win-type-icon">╳</div>
+                    <div class="win-type-name">X</div>
+                    <div class="win-type-desc">As duas diagonais ao mesmo tempo</div>
+                </div>
                 <div class="win-type-card" data-tipo="cantos">
                     <div class="win-type-icon">◰</div>
                     <div class="win-type-name">4 Cantos</div>
@@ -83,6 +88,8 @@
             <button id="startGameBtn" class="start-btn">🎉 Iniciar Jogo</button>
             <button id="startImportBtn" class="start-btn-secondary">📥 Importar cartelas</button>
             <input type="file" id="startImportFile" accept=".json" style="display:none;">
+            <button id="startImportConfigBtn" class="start-btn-secondary">📋 Importar configurações</button>
+            <input type="file" id="startImportConfigFile" accept=".json" style="display:none;">
         </div>
     </div>
 
@@ -160,6 +167,7 @@
         </div>
         </div>
 
+        <div class="right-col">
         <!-- Tabuleiro -->
         <div class="bingo-board-wrapper">
             <div class="bingo-board" id="bingoBoard"></div>
@@ -178,6 +186,7 @@
                 <button class="btn btn-orange" id="tieBreakBtn">Desempate por Pedra Maior</button>
             </div>
             <button class="btn btn-secondary btn-sm" id="restartBtn" style="margin-top:10px;">🗑️ Reiniciar Evento do Zero</button>
+        </div>
         </div>
 
     </main>
@@ -253,7 +262,25 @@
             </div>
 
             <div class="settings-section">
-                <label>💾 Backup dos dados</label>
+                <label>🎯 Tipo de verificação por rodada</label>
+                <p class="settings-hint">Defina o tipo de vitória de cada rodada com antecedência. Clique nos chips para selecionar (pode escolher mais de um por rodada).</p>
+                <div class="tipos-list" id="tiposList"></div>
+            </div>
+
+            <div class="settings-section">
+                <label>📋 Configurações do evento</label>
+                <p class="settings-hint">Exporte apenas prêmios e tipos de verificação para importar no dia do jogo, sem sobrescrever cartelas ou sorteios.</p>
+                <div class="settings-row">
+                    <button class="btn btn-secondary btn-sm" id="exportConfigBtn">📤 Exportar configurações</button>
+                    <button class="btn btn-secondary btn-sm" id="importConfigBtn">📥 Importar configurações</button>
+                    <input type="file" id="importConfigFile" accept=".json" style="display:none;">
+                </div>
+                <p class="import-backup-error" id="importConfigError" style="display:none;"></p>
+                <div id="configImportNotice"></div>
+            </div>
+
+            <div class="settings-section">
+                <label>💾 Backup das cartelas para verificação</label>
                 <p class="settings-hint">Exporte para levar os dados do evento para outro computador, ou importe um arquivo de backup.</p>
                 <div class="settings-row">
                     <button class="btn btn-secondary btn-sm" id="exportBackupBtn">📤 Exportar dados</button>
@@ -261,6 +288,7 @@
                     <input type="file" id="importBackupFile" accept=".json" style="display:none;">
                 </div>
                 <p class="import-backup-error" id="importBackupError" style="display:none;"></p>
+                <div id="backupImportNotice"></div>
             </div>
 
             <div class="modal-actions">
@@ -404,6 +432,11 @@
                     <div class="win-type-name">Diagonal</div>
                     <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
                 </div>
+                <div class="win-type-card" data-tipo="x">
+                    <div class="win-type-icon">╳</div>
+                    <div class="win-type-name">X</div>
+                    <div class="win-type-desc">As duas diagonais completas ao mesmo tempo</div>
+                </div>
                 <div class="win-type-card" data-tipo="cantos">
                     <div class="win-type-icon">◰</div>
                     <div class="win-type-name">4 Cantos</div>
@@ -447,6 +480,11 @@
                     <div class="win-type-icon">╲╱</div>
                     <div class="win-type-name">Diagonal</div>
                     <div class="win-type-desc">Os 4 cantos + centro formam uma diagonal</div>
+                </div>
+                <div class="win-type-card" data-tipo="x">
+                    <div class="win-type-icon">╳</div>
+                    <div class="win-type-name">X</div>
+                    <div class="win-type-desc">As duas diagonais completas ao mesmo tempo</div>
                 </div>
                 <div class="win-type-card" data-tipo="cantos">
                     <div class="win-type-icon">◰</div>

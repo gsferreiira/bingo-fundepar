@@ -142,6 +142,40 @@
     text-align: left;
 }
 
+/* Ticket com múltiplos prêmios */
+.round-premio-ticket--multi {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 10px 14px;
+}
+.round-premio-ticket--multi .round-premio-ticket-icon {
+    display: none;
+}
+.round-premio-ticket--multi .round-premio-ticket-text {
+    font-size: 1.05rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.premio-multi-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+}
+.premio-multi-item + .premio-multi-item {
+    border-top: 1px solid rgba(255, 212, 59, 0.25);
+}
+.premio-multi-medal {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+.premio-multi-nome {
+    flex: 1;
+}
+
 /* ── Bola atual ───────────────────────────────── */
 
 .current-ball-wrapper {
@@ -373,6 +407,70 @@
     transition: background 0.15s, color 0.15s;
 }
 .premio-row-remove:hover { background: rgba(214,51,108,0.12); color: #D6336C; }
+
+.import-notice {
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #065f46;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+#settingsModal .modal-box {
+    max-width: 720px;
+    max-height: 88vh;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.tipos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 260px;
+    overflow-y: auto;
+    margin-bottom: 4px;
+    padding-right: 2px;
+}
+
+.tipo-round-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.tipo-chips {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.tipo-chip {
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1.5px solid var(--borda);
+    background: var(--bg-card);
+    color: var(--texto-suave);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.14s, color 0.14s, border-color 0.14s;
+}
+
+.tipo-chip:hover { border-color: var(--primario); color: var(--primario); }
+
+.tipo-chip-active {
+    background: var(--primario);
+    border-color: var(--primario);
+    color: #fff;
+}
+
+.tipo-chip-active:hover { background: var(--primario-dark); border-color: var(--primario-dark); color: #fff; }
 
 .premio-add-row { margin-top: 4px; }
 .premio-add-input {
@@ -1705,21 +1803,30 @@ body.hide-sortear .draw-section { display: none; }
         padding: 16px 32px 20px;
         display: grid;
         grid-template-columns: minmax(420px, 38%) 1fr;
-        grid-template-rows: 1fr auto auto;
-        grid-template-areas:
-            "stage board"
-            "stage history"
-            "stage end";
+        grid-template-rows: 1fr;
+        grid-template-areas: "stage right";
         gap: 18px;
         align-items: start;
         box-sizing: border-box;
-        overflow: hidden;
+        overflow: visible;
     }
 
-    .hero-stage   { grid-area: stage;   margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-    .bingo-board-wrapper { grid-area: board;   margin: 0; }
-    .history-panel       { grid-area: history; margin: 0; }
-    .end-round-section   { grid-area: end;     margin-top: 0; padding-top: 16px; }
+    .hero-stage { grid-area: stage; margin: 0; height: 100%; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+
+    .right-col {
+        grid-area: right;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        overflow-y: auto;
+        min-height: 0;
+        height: 100%;
+        padding-bottom: 4px;
+    }
+
+    .bingo-board-wrapper { margin: 0; }
+    .history-panel       { margin: 0; }
+    .end-round-section   { margin-top: 0; padding-top: 16px; }
 
     .current-ball { width: 220px; height: 220px; }
     .ball-number  { font-size: 5.2rem; }
