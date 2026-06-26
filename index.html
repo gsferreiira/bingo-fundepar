@@ -14,21 +14,38 @@
 
     <!-- Tela de entrada -->
     <div id="startScreen" class="start-screen">
-        <div class="start-bands" aria-hidden="true"></div>
-
-        <div class="start-hat" aria-hidden="true">
-            <svg viewBox="0 0 120 70" xmlns="http://www.w3.org/2000/svg">
-                <ellipse cx="60" cy="56" rx="58" ry="11" fill="#E0A85C" stroke="#9A6F32" stroke-width="2"/>
-                <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="#F0C27B" stroke="#9A6F32" stroke-width="2"/>
-                <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
-                <rect x="22" y="44" width="76" height="9" rx="3" fill="#1971C2" stroke="#0D4F8A" stroke-width="1"/>
-            </svg>
+        <div class="bandeirinhas-container">
+            <div class="bandeirinhas" aria-hidden="true"></div>
         </div>
 
         <img class="start-fogueira start-fogueira-l" src="assets/3153859.png" aria-hidden="true">
         <img class="start-fogueira start-fogueira-r" src="assets/3153859.png" aria-hidden="true">
 
         <div class="start-card">
+            <div class="start-hat" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="60" cy="60" rx="58" ry="11" fill="url(#grad3)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q26,14 60,10 Q94,14 98,52 Z" fill="url(#grad1)" stroke="#9A6F32" stroke-width="2"/>
+                    <path d="M22,52 Q60,62 98,52" fill="none" stroke="#9A6F32" stroke-width="2" opacity="0.5"/>
+                    <path d="M22,52 Q60,62 98,52 Q96,30 90,30 Q50,45 24,35" fill="url(#grad2)" stroke="#0D4F8A" stroke-width="1"/>
+                    <defs>
+                        <radialGradient id="grad1" cx="0" cy="0" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#ffeba3"/>
+                            <stop offset="100%" stop-color="#b57b2b"/>
+                        </radialGradient>
+                        <linearGradient id="grad2" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" stop-color="#1971C2" />
+                            <stop offset="25%" stop-color="#71cff5" />
+                            <stop offset="50%" stop-color="#1971C2" />
+                            <stop offset="100%" stop-color="#400982" />
+                        </linearGradient>
+                        <radialGradient id="grad3" cx="60%" cy="5%" r="100%" fx="0" fy="0">
+                            <stop offset="0%" stop-color="#b57b2b"/>
+                            <stop offset="100%" stop-color="#fac47a"/>
+                        </radialGradient>
+                    </defs>
+                </svg>
+            </div>
             <div class="start-logo-ring">
                 <img src="assets/logo_fundepar.png" alt="Logo Fundepar">
             </div>
@@ -37,25 +54,30 @@
             <div class="start-sep">✦ &ensp; ✦ &ensp; ✦</div>
             <p class="start-choose">Escolha o tipo de vitória da 1ª rodada</p>
             <div class="win-type-grid">
-                <div class="win-type-card selected" data-tipo="linha">
-                    <div class="win-type-icon">☰</div>
-                    <div class="win-type-name">Linha</div>
-                    <div class="win-type-desc">Qualquer linha horizontal</div>
-                </div>
-                <div class="win-type-card" data-tipo="coluna">
+                <div class="win-type-card selected" data-tipo="coluna">
                     <div class="win-type-icon">⋮⋮</div>
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B-O</div>
                 </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal</div>
+                </div>
                 <div class="win-type-card" data-tipo="diagonal">
                     <div class="win-type-icon">╲╱</div>
                     <div class="win-type-name">Diagonal</div>
-                    <div class="win-type-desc">Os 4 cantos + centro</div>
+                    <div class="win-type-desc">Qualquer diagonal</div>
                 </div>
                 <div class="win-type-card" data-tipo="cantos">
                     <div class="win-type-icon">◰</div>
                     <div class="win-type-name">4 Cantos</div>
                     <div class="win-type-desc">Os 4 cantos da cartela</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonaisX">
+                    <div class="win-type-icon">X</div>
+                    <div class="win-type-name">Diagonais em X</div>
+                    <div class="win-type-desc">Ambas as diagonais</div>
                 </div>
                 <div class="win-type-card" data-tipo="completa">
                     <div class="win-type-icon">⊞</div>
@@ -76,13 +98,14 @@
             <button id="settingsBtn" class="btn-icon" aria-label="Configurações" title="Configurações">⚙️</button>
         </nav>
         <div class="nav-stripe"></div>
-        <div class="bandeirinhas-tier2" aria-hidden="true"></div>
     </header>
+
+    <div class="bandeirinhas-container">
+        <div class="bandeirinhas" aria-hidden="true"></div>
+    </div>
 
     <!-- Bandeirinhas + Cabeçalho da página -->
     <div class="page-hero">
-        <div class="bandeirinhas" aria-hidden="true"></div>
-
         <div class="page-header">
             <div class="logo-container">
                 <img src="assets/logo_fundepar.png" alt="Logo FUNDEPAR">
@@ -95,7 +118,6 @@
     </div>
 
     <main class="sorteador-main">
-
         <!-- Palco noturno: navegação + bola + sortear -->
         <div class="hero-stage">
             <img class="stage-fire fire-left" src="assets/3153859.png">
@@ -115,11 +137,6 @@
 
             <div style="text-align:center; margin: 1px 0 12px;">
                 <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
-            </div>
-
-            <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
-                <span class="round-premio-ticket-icon">🎁</span>
-                <span class="round-premio-ticket-text" id="roundPremioText"></span>
             </div>
 
             <div class="current-ball-wrapper">
@@ -145,30 +162,44 @@
             <div class="bingo-board" id="bingoBoard"></div>
         </div>
 
-        <!-- Histórico -->
-        <div class="history-panel card-panel">
-            <p class="history-title">Pedras sorteadas — em ordem</p>
-            <div class="history-list" id="historyList"></div>
-        </div>
+        <!-- Pódio fixo no fluxo da página -->
+        <section class="podium-panel card-panel" aria-labelledby="podiumTitle">
+            <p class="podium-title" id="podiumTitle">🏆 Pódio de Vencedores</p>
+            <div class="podium-list" id="winnersPodiumList"></div>
+        </section>
 
         <!-- Encerrar rodada -->
         <div class="end-round-section">
-            <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+            <div class="end-round-actions">
+                <button class="btn btn-danger" id="endRoundBtn">Encerrar Rodada 1 e Iniciar a Próxima ▶</button>
+                <button class="btn btn-orange" id="tieBreakBtn">Desempate por Pedra Maior</button>
+            </div>
             <button class="btn btn-secondary btn-sm" id="restartBtn" style="margin-top:10px;">🗑️ Reiniciar Evento do Zero</button>
         </div>
 
     </main>
 
-    <!-- Painel flutuante: pódio de vencedores de todas as rodadas -->
-    <div class="winners-float" id="winnersFloat">
-        <button class="winners-float-header" id="winnersFloatToggle">
-            <span>🏆 Pódio de Vencedores</span>
-            <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
+    <!-- Painel flutuante e recolhível: histórico de pedras -->
+    <aside class="history-float" id="historyFloat">
+        <button
+            class="history-float-header"
+            id="historyFloatToggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="historyFloatBody"
+        >
+            <span>
+                🎱 Pedras sorteadas
+                <span class="history-float-count" id="historyFloatCount">(0)</span>
+            </span>
+
+            <span class="history-float-arrow" aria-hidden="true">▾</span>
         </button>
-        <div class="winners-float-body" id="winnersFloatBody">
-            <div class="podium-list" id="winnersFloatList"></div>
+
+        <div class="history-float-body" id="historyFloatBody">
+            <div class="history-list" id="historyList"></div>
         </div>
-    </div>
+    </aside>
 
     <!-- Modal: configurações -->
     <div class="modal" id="settingsModal">
@@ -181,10 +212,32 @@
             </label>
 
             <div class="settings-section">
-                <label for="premioInput">🎁 Prêmio da rodada <span id="premioRodadaLabel">1</span></label>
-                <div class="settings-row">
-                    <input type="text" id="premioInput" class="modal-input premio-input" placeholder="Ex: Caixa de paçoca" maxlength="60">
-                    <button class="btn btn-primary btn-sm" id="premioSave">Salvar</button>
+                <label>
+                    🎁 Prêmios da rodada <span id="premioRodadaLabel">1</span>
+                </label>
+
+                <p class="settings-hint">
+                    Cadastre todos os prêmios que serão entregues nesta rodada.
+                </p>
+
+                <div class="premios-list" id="premiosList"></div>
+
+                <div class="settings-row premio-add-row">
+                    <input
+                        type="text"
+                        id="premioInput"
+                        class="modal-input premio-input"
+                        placeholder="Ex: Caixa de paçoca"
+                        maxlength="60"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="premioAdd"
+                    >
+                        + Adicionar
+                    </button>
                 </div>
             </div>
 
@@ -238,8 +291,29 @@
             <p id="resultMessage"></p>
             <div class="result-card-thumb" id="resultCardThumb" style="display:none;"></div>
             <div class="winner-name-box" id="winnerNameBox" style="display:none;">
-                <input type="text" id="winnerNameInput" class="modal-input winner-name-input" placeholder="Nome do vencedor" maxlength="40">
-                <button class="btn btn-primary btn-sm" id="winnerNameSave">Salvar</button>
+                <input
+                    type="text"
+                    id="winnerNameInput"
+                    class="modal-input winner-name-input"
+                    placeholder="Nome do vencedor"
+                    maxlength="40"
+                >
+
+                <select
+                    id="winnerPrizeSelect"
+                    class="winner-prize-select"
+                    aria-label="Prêmio do vencedor"
+                >
+                    <option value="">Sem prêmio associado</option>
+                </select>
+
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    id="winnerNameSave"
+                >
+                    Salvar vencedor
+                </button>
             </div>
             <div class="winners-rank" id="winnersRank" style="display:none;">
                 <div class="winners-rank-title">🏅 Vencedores da rodada</div>
@@ -247,6 +321,61 @@
             </div>
             <div class="modal-actions">
                 <button class="btn btn-primary" id="resultClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: desempate por pedra maior -->
+    <div class="modal" id="tieBreakModal">
+        <div class="modal-box tie-break-modal-box">
+            <div class="tie-break-header">
+                <div class="tie-break-icon">🔥</div>
+                <h2>Desempate por Pedra Maior</h2>
+                <p>Sorteie uma pedra para cada finalista. A maior pedra vence o desempate.</p>
+            </div>
+
+            <div class="tie-break-content">
+                <div class="tie-break-stage">
+                    <div class="tie-break-callout">Clique no botão abaixo para iniciar o desempate</div>
+                    <div class="current-ball idle" id="tieBreakBall">
+                        <span class="ball-letter" id="tieBreakBallLetter"></span>
+                        <span class="ball-number" id="tieBreakBallNumber">?</span>
+                    </div>
+                    <p class="ball-caption" id="tieBreakCaption">Aguardando desempate</p>
+                    <div class="draw-section tie-break-draw-section">
+                        <button class="btn-draw tie-break-draw-btn" id="tieBreakDrawBtn">CLIQUE AQUI PARA SORTEAR</button>
+                    </div>
+                    <div class="tie-break-summary" id="tieBreakSummary">Nenhuma pedra sorteada ainda.</div>
+                </div>
+
+                <div class="tie-break-camera">
+                    <div class="tie-break-camera-toolbar">
+                        <span class="tie-break-camera-title">Webcam</span>
+                        <button class="tie-break-camera-toggle is-on" id="tieBreakCameraToggleBtn" type="button" aria-pressed="true">
+                            <span class="tie-break-toggle-track" aria-hidden="true">
+                                <span class="tie-break-toggle-thumb"></span>
+                            </span>
+                            <span class="tie-break-toggle-label">Ligada</span>
+                        </button>
+                    </div>
+                    <div class="tie-break-camera-frame">
+                        <video id="tieBreakWebcam" autoplay muted playsinline></video>
+                        <div class="tie-break-camera-placeholder" id="tieBreakCameraPlaceholder">
+                            Espelho da webcam
+                        </div>
+                    </div>
+                    <p class="tie-break-camera-status" id="tieBreakCameraStatus">A webcam será ativada ao abrir o desempate.</p>
+                </div>
+            </div>
+
+            <div class="history-panel tie-break-history">
+                <p class="history-title">Pedras do desempate — maior vence</p>
+                <div class="history-list" id="tieBreakHistory"></div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" id="tieBreakResetBtn">Limpar Desempate</button>
+                <button class="btn btn-primary" id="tieBreakCloseBtn">Fechar</button>
             </div>
         </div>
     </div>
@@ -261,15 +390,15 @@
             </div>
 
             <div class="win-type-grid">
-                <div class="win-type-card" data-tipo="linha">
-                    <div class="win-type-icon">☰</div>
-                    <div class="win-type-name">Linha</div>
-                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
-                </div>
                 <div class="win-type-card" data-tipo="coluna">
                     <div class="win-type-icon">⋮⋮</div>
                     <div class="win-type-name">Coluna</div>
                     <div class="win-type-desc">Qualquer coluna B, I, N, G ou O completa</div>
+                </div>
+                <div class="win-type-card" data-tipo="linha">
+                    <div class="win-type-icon">☰</div>
+                    <div class="win-type-name">Linha</div>
+                    <div class="win-type-desc">Qualquer linha horizontal completa</div>
                 </div>
                 <div class="win-type-card" data-tipo="diagonal">
                     <div class="win-type-icon">╲╱</div>
@@ -285,6 +414,11 @@
                     <div class="win-type-icon">⊞</div>
                     <div class="win-type-name">Cartela Cheia</div>
                     <div class="win-type-desc">Todos os 24 números da cartela sorteados</div>
+                </div>
+                <div class="win-type-card" data-tipo="diagonaisX">
+                    <div class="win-type-icon">X</div>
+                    <div class="win-type-name">Diagonais em X</div>
+                    <div class="win-type-desc">Ambas as diagonais</div>
                 </div>
             </div>
 
