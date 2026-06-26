@@ -14,22 +14,58 @@ function loadWinners(rodada) {
     }
 }
 
-function saveWinner(rodada, serial, nome) {
+function saveWinner(rodada, serial, nome, premio = '') {
     const winners = loadWinners(rodada);
-    winners.push({ serial, nome: nome.trim() || `Cartela #${String(serial).padStart(4, '0')}` });
-    localStorage.setItem(winnersKey(rodada), JSON.stringify(winners));
+
+    winners.push({
+        serial,
+        nome: nome.trim() ||
+            `Cartela #${String(serial).padStart(4, '0')}`,
+        premio: String(premio || '').trim()
+    });
+
+    localStorage.setItem(
+        winnersKey(rodada),
+        JSON.stringify(winners)
+    );
+
     return winners;
 }
 
 function winnersRankItemsHTML(winners) {
     const medals = ['🥇', '🥈', '🥉'];
-    return winners.map((w, i) => `
-        <div class="winners-rank-item">
-            <span class="winners-rank-pos">${medals[i] || (i + 1) + 'º'}</span>
-            <span class="winners-rank-name">${escapeHTML(w.nome)}</span>
-            <span class="winners-rank-serial">#${String(w.serial).padStart(4, '0')}</span>
-        </div>
-    `).join('');
+
+    return winners.map((winner, indice) => {
+        const premioHTML = winner.premio
+            ? `
+                <span class="winners-rank-prize">
+                    🎁 ${escapeHTML(winner.premio)}
+                </span>
+            `
+            : `
+                <span class="winners-rank-no-prize">
+                    sem prêmio
+                </span>
+            `;
+
+        return `
+            <div class="winners-rank-item">
+                <span class="winners-rank-pos">
+                    ${medals[indice] || `${indice + 1}º`}
+                </span>
+
+                <span class="winners-rank-name">
+                    ${escapeHTML(winner.nome)}
+                </span>
+
+                <span class="winners-rank-serial">
+                    #${String(winner.serial).padStart(4, '0')}
+                </span>
+
+                ${premioHTML}
+            </div>
+        `;
+    }).join('');
 }
 
 function renderWinnersRank(rodada) {
@@ -44,22 +80,77 @@ function renderWinnersRank(rodada) {
     box.style.display = 'block';
 }
 
-const STORAGE_RANK_FLOAT_COLLAPSED = 'bingo-rank-float-collapsed';
+const STORAGE_HISTORY_FLOAT_COLLAPSED = 'bingo-history-float-collapsed';
 
 function renderWinnersPodium() {
-    const list = document.getElementById('winnersFloatList');
+    const list = document.getElementById('winnersPodiumList');
+
+    if (!list) {
+        return;
+    }
+
     let html = '';
-    for (let r = 1; r <= rodadaAtual; r++) {
-        const winners = loadWinners(r);
-        const winnerHTML = winners.length
-            ? winners.map(w => escapeHTML(w.nome)).join(', ')
-            : '<span class="podium-pending">aguardando vencedor</span>';
+
+    for (let rodada = 1; rodada <= rodadaAtual; rodada++) {
+        const winners = loadWinners(rodada);
+
+        let winnersHTML;
+
+        if (winners.length === 0) {
+            winnersHTML = `
+                <div class="podium-pending">
+                    Aguardando vencedor
+                </div>
+            `;
+        } else {
+            winnersHTML = winners.map((winner, indice) => {
+                const premioHTML = winner.premio
+                    ? `
+                        <span class="podium-prize">
+                            🎁 ${escapeHTML(winner.premio)}
+                        </span>
+                    `
+                    : `
+                        <span class="podium-no-prize">
+                            Sem prêmio associado
+                        </span>
+                    `;
+
+                return `
+                    <div class="podium-winner-row">
+                        <span class="podium-position">
+                            ${indice + 1}º
+                        </span>
+
+                        <span class="podium-winner-info">
+                            <strong class="podium-winner-name">
+                                ${escapeHTML(winner.nome)}
+                            </strong>
+
+                            <small class="podium-winner-serial">
+                                Cartela #${String(winner.serial).padStart(4, '0')}
+                            </small>
+                        </span>
+
+                        ${premioHTML}
+                    </div>
+                `;
+            }).join('');
+        }
+
         html += `
             <div class="podium-item">
-                <span class="podium-round">Rodada ${r}</span>
-                <span class="podium-winner">${winnerHTML}</span>
-            </div>`;
+                <div class="podium-round">
+                    Rodada ${rodada}
+                </div>
+
+                <div class="podium-winners-list">
+                    ${winnersHTML}
+                </div>
+            </div>
+        `;
     }
+
     list.innerHTML = html;
 }
 
@@ -110,16 +201,197 @@ function getRodadaTipo(r) {
     return Array.isArray(tipo) ? tipo : [tipo];
 }
 
-function getRodadaPremio(r) {
-    const d = localStorage.getItem(storageKey(r));
-    if (!d) return '';
-    return JSON.parse(d).premio || '';
+function getRodadaPremios(rodada) {
+    const saved = localStorage.getItem(storageKey(rodada));
+
+    if (!saved) {
+        return [];
+    }
+
+    try {
+        const data = JSON.parse(saved);
+
+        if (Array.isArray(data.premios)) {
+            return data.premios
+                .map(premio => String(premio).trim())
+                .filter(Boolean);
+        }
+
+        /*
+         * Compatibilidade com dados antigos, quando existia somente
+         * a propriedade "premio".
+         */
+        if (typeof data.premio === 'string' && data.premio.trim()) {
+            return [data.premio.trim()];
+        }
+
+        return [];
+    } catch {
+        return [];
+    }
 }
 
-function setRodadaPremio(r, premio) {
-    const data = JSON.parse(localStorage.getItem(storageKey(r))) || {};
-    data.premio = premio.trim();
-    localStorage.setItem(storageKey(r), JSON.stringify(data));
+function setRodadaPremios(rodada, premios) {
+    const saved = localStorage.getItem(storageKey(rodada));
+
+    let data = {};
+
+    try {
+        data = saved ? JSON.parse(saved) : {};
+    } catch {
+        data = {};
+    }
+
+    data.premios = premios
+        .map(premio => String(premio).trim())
+        .filter(Boolean);
+
+    // Remove o formato antigo.
+    delete data.premio;
+
+    localStorage.setItem(
+        storageKey(rodada),
+        JSON.stringify(data)
+    );
+}
+
+function addRodadaPremio(rodada, premio) {
+    const texto = String(premio || '').trim();
+
+    if (!texto) {
+        return false;
+    }
+
+    const premios = getRodadaPremios(rodada);
+
+    premios.push(texto);
+    setRodadaPremios(rodada, premios);
+
+    return true;
+}
+
+function removeRodadaPremio(rodada, indice) {
+    const premios = getRodadaPremios(rodada);
+
+    if (indice < 0 || indice >= premios.length) {
+        return;
+    }
+
+    premios.splice(indice, 1);
+    setRodadaPremios(rodada, premios);
+}
+
+function getRodadaPremiosDisponiveis(rodada) {
+    const disponiveis = [...getRodadaPremios(rodada)];
+    const winners = loadWinners(rodada);
+
+    /*
+     * Remove da lista um prêmio para cada vencedor que já recebeu
+     * aquele prêmio. Funciona inclusive quando há prêmios repetidos.
+     */
+    winners.forEach(winner => {
+        if (!winner.premio) {
+            return;
+        }
+
+        const indice = disponiveis.indexOf(winner.premio);
+
+        if (indice !== -1) {
+            disponiveis.splice(indice, 1);
+        }
+    });
+
+    return disponiveis;
+}
+
+function populateWinnerPrizeSelect(rodada) {
+    const select = document.getElementById('winnerPrizeSelect');
+
+    if (!select) {
+        return;
+    }
+
+    const premios = getRodadaPremiosDisponiveis(rodada);
+
+    select.innerHTML = `
+        <option value="">Sem prêmio associado</option>
+    `;
+
+    premios.forEach((premio, indice) => {
+        const option = document.createElement('option');
+
+        option.value = premio;
+        option.textContent = `🎁 ${premio}`;
+
+        /*
+         * Facilita a identificação visual quando existem dois
+         * prêmios com o mesmo nome.
+         */
+        const repetidosAntes = premios
+            .slice(0, indice)
+            .filter(item => item === premio)
+            .length;
+
+        if (repetidosAntes > 0) {
+            option.textContent += ` (${repetidosAntes + 1})`;
+        }
+
+        select.appendChild(option);
+    });
+}
+
+function renderPremiosSettings(rodada) {
+    const container = document.getElementById('premiosList');
+
+    if (!container) {
+        return;
+    }
+
+    const premios = getRodadaPremios(rodada);
+
+    if (premios.length === 0) {
+        container.innerHTML = `
+            <p class="premios-empty">
+                Nenhum prêmio cadastrado para esta rodada.
+            </p>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = premios.map((premio, indice) => `
+        <div class="premio-settings-item">
+            <span class="premio-settings-number">
+                ${indice + 1}º
+            </span>
+
+            <span class="premio-settings-name">
+                🎁 ${escapeHTML(premio)}
+            </span>
+
+            <button
+                type="button"
+                class="premio-row-remove"
+                data-premio-index="${indice}"
+                aria-label="Remover prêmio ${escapeHTML(premio)}"
+                title="Remover prêmio"
+            >
+                ✕
+            </button>
+        </div>
+    `).join('');
+
+    container
+        .querySelectorAll('[data-premio-index]')
+        .forEach(button => {
+            button.addEventListener('click', () => {
+                const indice = Number(button.dataset.premioIndex);
+
+                removeRodadaPremio(rodada, indice);
+                renderPremiosSettings(rodada);
+                renderWinnersPodium();
+            });
+        });
 }
 
 // ── Tela inicial ───────────────────────────────
@@ -133,7 +405,7 @@ function startGame() {
     }
 
     localStorage.setItem(storageKey(1), JSON.stringify({
-        sorteados: [], tipo, encerrada: false, premio: '',
+        sorteados: [], tipo, encerrada: false, premios: [],
     }));
 
     const screen = document.getElementById('startScreen');
@@ -250,7 +522,7 @@ function confirmCreateRound() {
         sorteados: [],
         tipo,
         encerrada: false,
-        premio: '',
+        premios: [],
     }));
 
     rodadaAtual = proxima;
@@ -745,7 +1017,14 @@ function renderBoardData(drawnList, readOnly) {
 
 function renderHistoryData(list) {
     const histList = document.getElementById('historyList');
+    const count = document.getElementById('historyFloatCount');
+
+    if (count) {
+        count.textContent = `(${list.length})`;
+    }
+
     histList.innerHTML = '';
+
     if (list.length === 0) {
         const empty = document.createElement('span');
         empty.className = 'history-empty';
@@ -753,12 +1032,15 @@ function renderHistoryData(list) {
         histList.appendChild(empty);
         return;
     }
+
     list.forEach(n => {
         const letter = getBingoLetter(n);
         const chip = document.createElement('span');
+
         chip.className = 'history-chip';
         chip.dataset.letter = letter;
         chip.textContent = `${letter}-${n}`;
+
         histList.appendChild(chip);
     });
 }
@@ -773,19 +1055,16 @@ function renderControls() {
 
 function updateRoundBadges(rodada) {
     const tipos = getRodadaTipo(rodada);
-    const labels = tipos.map(t => WIN_TYPES[t] || t);
-    const badgeText = labels.length <= 2 ? labels.join(' + ') : `${labels.length} tipos de vitória`;
-    document.getElementById('roundTipoBadge').textContent = `🏆 ${badgeText}`;
-    document.getElementById('roundTipoBadge').title = labels.join(', ');
+    const labels = tipos.map(tipo => WIN_TYPES[tipo] || tipo);
 
-    const premio = getRodadaPremio(rodada);
-    const premioTicket = document.getElementById('roundPremioTicket');
-    if (premio) {
-        document.getElementById('roundPremioText').textContent = premio;
-        premioTicket.style.display = 'flex';
-    } else {
-        premioTicket.style.display = 'none';
-    }
+    const badgeText = labels.length <= 2
+        ? labels.join(' + ')
+        : `${labels.length} tipos de vitória`;
+
+    const badge = document.getElementById('roundTipoBadge');
+
+    badge.textContent = `🏆 ${badgeText}`;
+    badge.title = labels.join(', ');
 }
 
 function flashWinTypeGridError(scopeSelector) {
@@ -829,9 +1108,12 @@ function showResult(icon, title, message, cardThumbHTML, rodadaRef, serial) {
     const nameInput = document.getElementById('winnerNameInput');
     if (rodadaRef !== undefined && serial !== undefined) {
         nameInput.value = '';
+
         nameBox.style.display = 'flex';
         nameBox.dataset.rodada = rodadaRef;
         nameBox.dataset.serial = serial;
+
+        populateWinnerPrizeSelect(rodadaRef);
         renderWinnersRank(rodadaRef);
         renderWinnersPodium();
     } else {
@@ -853,6 +1135,39 @@ function closeModal(id) {
     }
 }
 
+function addPremioPelasConfiguracoes() {
+    const rodadaRef = rodadaVisualizando !== null
+        ? rodadaVisualizando
+        : rodadaAtual;
+
+    const input = document.getElementById('premioInput');
+
+    if (!addRodadaPremio(rodadaRef, input.value)) {
+        input.focus();
+        return;
+    }
+
+    input.value = '';
+
+    renderPremiosSettings(rodadaRef);
+    renderWinnersPodium();
+
+    input.focus();
+}
+
+document
+    .getElementById('premioAdd')
+    .addEventListener('click', addPremioPelasConfiguracoes);
+
+document
+    .getElementById('premioInput')
+    .addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            addPremioPelasConfiguracoes();
+        }
+    });
+
 // ── Init ───────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -873,22 +1188,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.classList.toggle('hide-sortear', hideSortear);
 
     document.getElementById('settingsBtn').addEventListener('click', () => {
-        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
-        document.getElementById('premioRodadaLabel').textContent = rodadaRef;
-        document.getElementById('premioInput').value = getRodadaPremio(rodadaRef);
-        document.getElementById('importBackupError').style.display = 'none';
+        const rodadaRef = rodadaVisualizando !== null
+            ? rodadaVisualizando
+            : rodadaAtual;
+        document.getElementById('premioRodadaLabel').textContent =
+            rodadaRef;
+        document.getElementById('premioInput').value = '';
+        renderPremiosSettings(rodadaRef);
+        document.getElementById('importBackupError').style.display =
+            'none';
         openModal('settingsModal');
     });
     document.getElementById('settingsClose').addEventListener('click', () => closeModal('settingsModal'));
     document.getElementById('hideSortearToggle').addEventListener('change', e => {
         localStorage.setItem(STORAGE_HIDE_SORTEAR, e.target.checked);
         document.body.classList.toggle('hide-sortear', e.target.checked);
-    });
-
-    document.getElementById('premioSave').addEventListener('click', () => {
-        const rodadaRef = rodadaVisualizando !== null ? rodadaVisualizando : rodadaAtual;
-        setRodadaPremio(rodadaRef, document.getElementById('premioInput').value);
-        updateRoundBadges(rodadaRef);
     });
 
     document.getElementById('exportBackupBtn').addEventListener('click', () => exportBackup());
@@ -924,11 +1238,31 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    const winnersFloat = document.getElementById('winnersFloat');
-    winnersFloat.classList.toggle('collapsed', localStorage.getItem(STORAGE_RANK_FLOAT_COLLAPSED) === 'true');
-    document.getElementById('winnersFloatToggle').addEventListener('click', () => {
-        const collapsed = winnersFloat.classList.toggle('collapsed');
-        localStorage.setItem(STORAGE_RANK_FLOAT_COLLAPSED, collapsed);
+    const historyFloat = document.getElementById('historyFloat');
+    const historyFloatToggle = document.getElementById('historyFloatToggle');
+
+    const historyCollapsed =
+        localStorage.getItem(STORAGE_HISTORY_FLOAT_COLLAPSED) === 'true';
+
+    historyFloat.classList.toggle('collapsed', historyCollapsed);
+
+    historyFloatToggle.setAttribute(
+        'aria-expanded',
+        String(!historyCollapsed)
+    );
+
+    historyFloatToggle.addEventListener('click', () => {
+        const collapsed = historyFloat.classList.toggle('collapsed');
+
+        historyFloatToggle.setAttribute(
+            'aria-expanded',
+            String(!collapsed)
+        );
+
+        localStorage.setItem(
+            STORAGE_HISTORY_FLOAT_COLLAPSED,
+            String(collapsed)
+        );
     });
 
     document.getElementById('startGameBtn').addEventListener('click', startGame);
@@ -980,13 +1314,30 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('verifyCancel').addEventListener('click', () => closeModal('verifyModal'));
     document.getElementById('resultClose').addEventListener('click', () => closeModal('resultModal'));
 
-    document.getElementById('winnerNameSave').addEventListener('click', () => {
+   document
+    .getElementById('winnerNameSave')
+    .addEventListener('click', () => {
         const box = document.getElementById('winnerNameBox');
-        const rodada = parseInt(box.dataset.rodada);
-        const serial = parseInt(box.dataset.serial);
-        const nome = document.getElementById('winnerNameInput').value;
-        saveWinner(rodada, serial, nome);
+
+        const rodada = Number(box.dataset.rodada);
+        const serial = Number(box.dataset.serial);
+
+        const nome =
+            document.getElementById('winnerNameInput').value;
+
+        const premio =
+            document.getElementById('winnerPrizeSelect').value;
+
+        saveWinner(
+            rodada,
+            serial,
+            nome,
+            premio
+        );
+
         document.getElementById('winnerNameInput').value = '';
+
+        populateWinnerPrizeSelect(rodada);
         renderWinnersRank(rodada);
         renderWinnersPodium();
     });

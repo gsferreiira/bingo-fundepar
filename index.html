@@ -139,11 +139,6 @@
                 <span id="roundTipoBadge" class="round-tipo-badge">🏆 Diagonal</span>
             </div>
 
-            <div class="round-premio-ticket" id="roundPremioTicket" style="display:none;">
-                <span class="round-premio-ticket-icon">🎁</span>
-                <span class="round-premio-ticket-text" id="roundPremioText"></span>
-            </div>
-
             <div class="current-ball-wrapper">
                 <div class="current-ball idle" id="currentBall">
                     <span class="ball-letter" id="ballLetter"></span>
@@ -167,11 +162,11 @@
             <div class="bingo-board" id="bingoBoard"></div>
         </div>
 
-        <!-- Histórico -->
-        <div class="history-panel card-panel">
-            <p class="history-title">Pedras sorteadas — em ordem</p>
-            <div class="history-list" id="historyList"></div>
-        </div>
+        <!-- Pódio fixo no fluxo da página -->
+        <section class="podium-panel card-panel" aria-labelledby="podiumTitle">
+            <p class="podium-title" id="podiumTitle">🏆 Pódio de Vencedores</p>
+            <div class="podium-list" id="winnersPodiumList"></div>
+        </section>
 
         <!-- Encerrar rodada -->
         <div class="end-round-section">
@@ -184,16 +179,27 @@
 
     </main>
 
-    <!-- Painel flutuante: pódio de vencedores de todas as rodadas -->
-    <div class="winners-float" id="winnersFloat">
-        <button class="winners-float-header" id="winnersFloatToggle">
-            <span>🏆 Pódio de Vencedores</span>
-            <span class="winners-float-arrow" id="winnersFloatArrow">▾</span>
+    <!-- Painel flutuante e recolhível: histórico de pedras -->
+    <aside class="history-float" id="historyFloat">
+        <button
+            class="history-float-header"
+            id="historyFloatToggle"
+            type="button"
+            aria-expanded="true"
+            aria-controls="historyFloatBody"
+        >
+            <span>
+                🎱 Pedras sorteadas
+                <span class="history-float-count" id="historyFloatCount">(0)</span>
+            </span>
+
+            <span class="history-float-arrow" aria-hidden="true">▾</span>
         </button>
-        <div class="winners-float-body" id="winnersFloatBody">
-            <div class="podium-list" id="winnersFloatList"></div>
+
+        <div class="history-float-body" id="historyFloatBody">
+            <div class="history-list" id="historyList"></div>
         </div>
-    </div>
+    </aside>
 
     <!-- Modal: configurações -->
     <div class="modal" id="settingsModal">
@@ -206,10 +212,32 @@
             </label>
 
             <div class="settings-section">
-                <label for="premioInput">🎁 Prêmio da rodada <span id="premioRodadaLabel">1</span></label>
-                <div class="settings-row">
-                    <input type="text" id="premioInput" class="modal-input premio-input" placeholder="Ex: Caixa de paçoca" maxlength="60">
-                    <button class="btn btn-primary btn-sm" id="premioSave">Salvar</button>
+                <label>
+                    🎁 Prêmios da rodada <span id="premioRodadaLabel">1</span>
+                </label>
+
+                <p class="settings-hint">
+                    Cadastre todos os prêmios que serão entregues nesta rodada.
+                </p>
+
+                <div class="premios-list" id="premiosList"></div>
+
+                <div class="settings-row premio-add-row">
+                    <input
+                        type="text"
+                        id="premioInput"
+                        class="modal-input premio-input"
+                        placeholder="Ex: Caixa de paçoca"
+                        maxlength="60"
+                    >
+
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-sm"
+                        id="premioAdd"
+                    >
+                        + Adicionar
+                    </button>
                 </div>
             </div>
 
@@ -263,8 +291,29 @@
             <p id="resultMessage"></p>
             <div class="result-card-thumb" id="resultCardThumb" style="display:none;"></div>
             <div class="winner-name-box" id="winnerNameBox" style="display:none;">
-                <input type="text" id="winnerNameInput" class="modal-input winner-name-input" placeholder="Nome do vencedor" maxlength="40">
-                <button class="btn btn-primary btn-sm" id="winnerNameSave">Salvar</button>
+                <input
+                    type="text"
+                    id="winnerNameInput"
+                    class="modal-input winner-name-input"
+                    placeholder="Nome do vencedor"
+                    maxlength="40"
+                >
+
+                <select
+                    id="winnerPrizeSelect"
+                    class="winner-prize-select"
+                    aria-label="Prêmio do vencedor"
+                >
+                    <option value="">Sem prêmio associado</option>
+                </select>
+
+                <button
+                    type="button"
+                    class="btn btn-primary btn-sm"
+                    id="winnerNameSave"
+                >
+                    Salvar vencedor
+                </button>
             </div>
             <div class="winners-rank" id="winnersRank" style="display:none;">
                 <div class="winners-rank-title">🏅 Vencedores da rodada</div>
